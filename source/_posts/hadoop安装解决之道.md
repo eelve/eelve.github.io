@@ -2,6 +2,7 @@
 title: hadoop安装解决之道
 date: 2019-08-09 17:12:58
 tags: hadoop
+categories: hadoop
 ---
 # 壹、故障现象
 ```xml
