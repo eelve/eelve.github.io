@@ -715,3 +715,4 @@ public class ServerConfig  implements ApplicationListener<WebServerInitializedEv
 可以看到，这里已经让我们输入用户名和密码了，说明**spring-boot-starter-security**已经配置成功，这时我们输入配置的用户名:lovin和密码:lovin
 ![192204](https://eelve.com/upload/2019/8/192204-6274036a13d34d1a849bb78c95494349.png)
 这里我们可以看到已经成功了，那么到这里Eureka的配置已经全部成功了。
+* [最后的最后是本博客的源码,欢迎关注这一套SpringCloud的实践](https://github.com/lovinstudio/lovincloud)
