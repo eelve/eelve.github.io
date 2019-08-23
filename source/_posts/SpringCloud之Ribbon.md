@@ -116,7 +116,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 }
 ~~~
-- 然后向程序的ioc容器中注入一个bean: restTemplate;并通过@LoadBalanced注解表明这个restRemplate开启负载均衡的功能。：
+- 然后向程序的ioc容器中注入一个bean: restTemplate;并通过@LoadBalanced注解表明这个restRemplate开启负载均衡的功能。
 ~~~java
 package com.eelve.lovin;
 
