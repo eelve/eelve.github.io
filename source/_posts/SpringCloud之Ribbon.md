@@ -27,8 +27,8 @@ ServerListFilter ribbonServerListFilter: ZonePreferenceServerListFilter
 ILoadBalancer ribbonLoadBalancer: ZoneAwareLoadBalancer
 ~~~
 
-# 贰、新建一个ribbon子工程**lovin-ribbon-client**，用于后面的操作
-- 下面是主要的pom依赖
+# 贰、准备工作
+- 新建一个ribbon子工程**lovin-ribbon-client**，用于后面的操作。下面是主要的pom依赖
 ~~~pom
 <parent>
         <artifactId>lovincloud</artifactId>
