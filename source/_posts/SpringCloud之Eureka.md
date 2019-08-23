@@ -349,12 +349,6 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://lovin:lovin@localhost:8881/eureka/   # 注册到的eureka服务地址
-  instance:
-    leaseRenewalIntervalInSeconds: 10
-    health-check-url-path: /actuator/health
-    metadata-map:
-      user.name: lovin
-      user.password: lovin
 ~~~
 - 添加security配置
 ~~~java
@@ -637,12 +631,6 @@ eureka:
   client:
     serviceUrl:
       defaultZone: http://lovin:lovin@localhost:8881/eureka/   # 注册到的eureka服务地址
-  instance:
-    leaseRenewalIntervalInSeconds: 10
-    health-check-url-path: /actuator/health
-    metadata-map:
-      user.name: lovin
-      user.password: lovin
 ~~~
 - 添加security配置
 ~~~java
