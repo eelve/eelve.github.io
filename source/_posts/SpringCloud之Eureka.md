@@ -222,7 +222,7 @@ spring:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://lovin:lovin@localhost:8881/eureka/   # 注册到的eureka服务地址
+      defaultZone: http://localhost:8881/eureka/   # 注册到的eureka服务地址
 ~~~
 - 新建一个Controller写一个测试接口
 ~~~java
@@ -381,7 +381,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 }
 ~~~
-- 另外为了测试多客服端注册，我们可以修改再给客户端新建一个配置文件，然后开启IDEA的多节点运行
+- 另外为了测试多客服端注册，我们可以修改再给客户端新建一个配置文件，然后开启IDEA的多节点运行，如下图所示勾选**Allow parallel run**
 ![192203](https://eelve.com/upload/2019/8/192203-4b74b03a3b3647f5a2c607c61e3a089e.png)
 - 然后为了区分是哪个节点的请求我们可以添加获取端口
 ~~~java
