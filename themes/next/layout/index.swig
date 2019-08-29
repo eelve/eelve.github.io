@@ -8,11 +8,13 @@
 {% endblock %}
 
 {% block content %}
-  <section id="posts" class="posts-expand">
-    {%- for post in page.posts %}
-      {{ partial('_macro/post.swig', {is_index: true}) }}
-    {%- endfor %}
-  </section>
+    <section id="posts" class="posts-expand">
+      {% for post in page.posts %}
+          {% if post.notshow != true %}
+              {{ partial('_macro/post.swig', {is_index: true}) }}
+          {% endif %}
+      {% endfor %}
+    </section>
 
   {% include '_partials/pagination.swig' %}
 {% endblock %}
