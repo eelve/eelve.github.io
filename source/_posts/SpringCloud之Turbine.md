@@ -4,7 +4,7 @@ date: 2019-08-31 11:25:22
 tags: Turbine
 categories: SpringCloud
 ---
-【**前面的话**】书接上文，本文的某些知识依赖我的第一篇SpringCLoud的文章：[SpringCloud之Feign](https://eelve.com/archives/SpringCloudFeign)，如果没有看过可以先移步去看一下。前文提到了hystrix的应用，以及hystrix的监控，当时我们在实际生产过程中往往会在多个服务中或者说网关集群中使用hystrix，这样我们来监控的是否再去分别查看当时的每个应用的话，效率就会显得很低下呢，这里我们就要用的上文提到的集群监控了。
+【**前面的话**】书接上文，本文的某些知识依赖我的上一篇SpringCLoud的文章：[SpringCloud之Feign](https://eelve.com/archives/SpringCloudFeign)，如果没有看过可以先移步去看一下。前文提到了hystrix的应用，以及hystrix的监控，当时我们在实际生产过程中往往会在多个服务中或者说网关集群中使用hystrix，这样我们来监控的是否再去分别查看当时的每个应用的话，效率就会显得很低下呢，这里我们就要用的上文提到的集群监控了。
 
 ---
 # 壹、Turbine的简介
