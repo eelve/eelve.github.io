@@ -468,3 +468,7 @@ key= true and value= [User(id=6, name=克鲁伊夫, age=43)]
 【**写在后面的话**】留下stream的类实现的方法和依赖图，前面的实践也只是挑选了几个比较常用的Api。
 
 ![stream](https://eelve.com/upload/2019/7/stream-d2e3fe9045e945ce9411d8db6043b32c.png)
+
+
+---
+![薏米笔记](https://eelve.com/upload/2019/8/eblog-b269767ff45b4e01a1c380e38898c1c0.png)

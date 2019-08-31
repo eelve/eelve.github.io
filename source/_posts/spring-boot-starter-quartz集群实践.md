@@ -378,3 +378,7 @@ public class QuartzService {
 ![SpringbootquartztwoApplication](https://eelve.com/upload/2019/8/2-db731d38c3ed4b4b8123482c9b3ef28d.png)
 
 【**写在后面的话**】下面给出的是所需要脚本的连接地址：[脚本下载地址](http://www.quartz-scheduler.org/downloads/)，另外这边又一个自己实现的[demo](https://github.com/eelve/springbootquartzs.git)
+
+
+---
+![薏米笔记](https://eelve.com/upload/2019/8/eblog-b269767ff45b4e01a1c380e38898c1c0.png)

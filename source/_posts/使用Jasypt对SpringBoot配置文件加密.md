@@ -121,3 +121,8 @@ java -jar -Djasypt.encryptor.password=${JASYPT_PASSWORD} xxx.jar
 ![图片.png](https://eelve.com/upload/2019/6/springbootjasypyresult-5f2ef70fe5124f5595a48b341807f2c3.png)
 
 [官方地址：https://github.com/ulisesbocchio/jasypt-spring-boot](https://github.com/ulisesbocchio/jasypt-spring-boot)
+
+
+
+---
+![薏米笔记](https://eelve.com/upload/2019/8/eblog-b269767ff45b4e01a1c380e38898c1c0.png)

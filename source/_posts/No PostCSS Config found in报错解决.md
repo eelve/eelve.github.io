@@ -37,3 +37,7 @@ npm run dev
 
 ---
 [淘宝 NPM 镜像](http://npm.taobao.org/)：这是一个完整 npmjs.org 镜像，你可以用此代替官方版本(只读)，同步频率目前为 10分钟 一次以保证尽量与官方服务同步。
+
+
+---
+![薏米笔记](https://eelve.com/upload/2019/8/eblog-b269767ff45b4e01a1c380e38898c1c0.png)

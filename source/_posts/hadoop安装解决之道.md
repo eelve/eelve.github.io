@@ -51,3 +51,6 @@ This command was run using /D:/Seven/ways/hadoop-2.7.3/share/hadoop/common/hadoo
 
 C:\Users\Chirius>
 ```
+
+---
+![薏米笔记](https://eelve.com/upload/2019/8/eblog-b269767ff45b4e01a1c380e38898c1c0.png)

@@ -316,3 +316,8 @@ spring.boot.admin.notify.mail.to=zzz@qq.com
 
 ----
 最后是一个用http方式监听的demo：[Spring Boot Admin使用http连接server端](https://github.com/eelve/springbootadmin)
+
+
+
+---
+![薏米笔记](https://eelve.com/upload/2019/8/eblog-b269767ff45b4e01a1c380e38898c1c0.png)

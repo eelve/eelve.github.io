@@ -205,3 +205,8 @@ h2:
 ```
 即可，启动项目，然后在项目访问路径后面加上配置的path**/h2-console**就可以查看具体结果了：
 ![通过H2 Console查看的结果](https://eelve.com/upload/2019/6/12344-e3c905ae1b794528af9706227afa9b38.png)
+
+
+
+---
+![薏米笔记](https://eelve.com/upload/2019/8/eblog-b269767ff45b4e01a1c380e38898c1c0.png)

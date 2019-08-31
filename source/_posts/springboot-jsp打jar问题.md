@@ -158,3 +158,7 @@ spring.mvc.view.suffix=.jsp
 ![修改后的配置](https://eelve.com/upload/2019/7/2019071906-d580c788cbd94ff7ba7cb43d70fb5ebb.png)
 ![配置Artifacts](https://eelve.com/upload/2019/7/2019071906-4c565cc7039a4ed7b0dff2044d3e1bae.png)
 ![最后的配置成功的结果](https://eelve.com/upload/2019/7/2019071907-1a3c18ec66514327b6f5b635dfde0f67.png)
+
+
+---
+![薏米笔记](https://eelve.com/upload/2019/8/eblog-b269767ff45b4e01a1c380e38898c1c0.png)
