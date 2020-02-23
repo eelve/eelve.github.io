@@ -14,6 +14,8 @@ categories: hexo
 * 2.执行hexo d -g上传博客内容
 * 3.使用git命令提交源代码到eblog分支
 **这样当你换电脑或者重新构建项目的时候就可以从github拉去代码就可以进行继续编写了，是不是很方便**
+
+---
 【**小贴士**】常用hexo插件
 * 1.permalink_pinyin,将文章标题中的汉字转为拼音，有利于SEO
 ```yaml
