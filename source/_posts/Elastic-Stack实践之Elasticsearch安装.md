@@ -6,7 +6,7 @@ tags: [ELK,Elasticsearch]
 categories: Elastic Stack
 ---
 
-[**前面的话**]前面已经准备好了服务器环境，今天就来开始安装Elasticsearch然后体验。
+【**前面的话**】前面已经准备好了服务器环境，今天就来开始安装Elasticsearch然后体验。
 
 ---
 
