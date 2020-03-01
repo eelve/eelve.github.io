@@ -5,7 +5,41 @@ tags: [ELK,Linux,VM]
 categories: Elastic Stack
 ---
 
-【**前面的话**】首先还是是简单说一下[Elastic Stack](https://www.elastic.co/)技术栈吧。ELK = Elasticsearch, Logstash, Kibana 是一套实时数据收集，存储，索引，检索，统计分析及可视化的解决方案。最新版本已经改名为Elastic Stack，并新增了Beats项目。但是很多用户还是用ELK来代替Elastic Stack，并且目前的最新版本已经来到了7.6.0，在后面的实践过程中如果没有特指的话，都会是基于最新版本的实践。下面来说一下我的环境，我本人的云服务器，性能不是很够，这边我的解决方案是用虚拟机来解决。所以在这篇文章中是主要介绍在VM中搭建linux服务器的，并且为了资源不浪费，我这边会做最小化安装。
+【**前面的话**】首先还是是简单说一下[Elastic Stack](https://www.elastic.co/)技术栈吧。ELK = Elasticsearch, Logstash, Kibana 是一套实时数据收集，存储，索引，检索，统计分析及可视化的解决方案。最新版本已经改名为Elastic Stack，并新增了Beats项目。
+
+![2020030104](https://eelve.com/upload/2020/3/2020030104-b3bb574e37fd4c9a959c5b8ba383033c.png)
+![2020030105](https://eelve.com/upload/2020/3/2020030105-8644c0540b6041d9a726b0fdf31845a0.png)
+
+**Elasticsearch**
+
+    Elasticsearch 基于java，是个开源分布式搜索引擎，它的特点有：分布式，零配置，自动发现，索引自动分片，索引
+    副本机制，restful风格接口，多数据源，自动搜索负载等。
+
+
+**Logstash**
+    
+    Logstash 基于java，是一个开源的用于收集,分析和存储日志的工具。
+    
+**Kibana**
+
+    Kibana 基于nodejs，也是一个开源和免费的工具，Kibana可以为 Logstash 和 ElasticSearch 提供的日志分析友好的
+    Web 界面，可以汇总、分析和搜索重要数据日志。
+
+**Beats**
+
+    Beats是elastic公司开源的一款采集系统监控数据的代理agent，是在被监控服务器上以客户端形式运行的数据收集
+    器的统称，可以直接把数据发送给Elasticsearch或者通过Logstash发送给Elasticsearch，然后进行后续的数据分析活
+    动。
+    Beats由如下组成:
+    Packetbeat：是一个网络数据包分析器，用于监控、收集网络流量信息，Packetbeat嗅探服务器之间的流量，
+    解析应用层协议，并关联到消息的处理，其支 持ICMP (v4 and v6)、DNS、HTTP、Mysql、PostgreSQL、
+    Redis、MongoDB、Memcache等协议；
+    Filebeat：用于监控、收集服务器日志文件，其已取代 logstash forwarder；
+    Metricbeat：可定期获取外部系统的监控指标信息，其可以监控、收集 Apache、HAProxy、MongoDB
+    MySQL、Nginx、PostgreSQL、Redis、System、Zookeeper等服务；
+    Winlogbeat：用于监控、收集Windows系统的日志信息；
+    
+但是很多用户还是用ELK来代替Elastic Stack，并且目前的最新版本已经来到了7.6.0，在后面的实践过程中如果没有特指的话，都会是基于最新版本的实践。下面来说一下我的环境，我本人的云服务器，性能不是很够，这边我的解决方案是用虚拟机来解决。所以在这篇文章中是主要介绍在VM中搭建linux服务器的，并且为了资源不浪费，我这边会做最小化安装。
 
 ---
 
