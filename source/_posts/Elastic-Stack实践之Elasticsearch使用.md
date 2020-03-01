@@ -439,7 +439,7 @@ Elasticsearch中支持的类型如下：
 
 ---
 
-【**后面的话**】记住Elasticsearch是整个**Elastic Stack**的核心。具有查询分析、高速度、可扩展性、相关度和弹性，后面我们还会具体实践。
+【**后面的话**】记住Elasticsearch是整个**Elastic Stack**的核心。具有查询分析、高速度、可扩展性、相关度和弹性，后面我们还会具体实践。另外关于Elasticsearch的还有组合搜索，权重，分词等等还没有实践，等后面实践之后文章会继续更新，可能会写一篇关于Elasticsearch深度使用的文章。
 
 
 ---
