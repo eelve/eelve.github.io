@@ -4,7 +4,6 @@ title: Elastic Stack实践之Elasticsearch安装
 date: 2020-03-01 12:34:22
 tags: [ELK,Elasticsearch]
 categories: Elastic Stack
-notshow: true
 ---
 
 [**前面的话**]前面已经准备好了服务器环境，今天就来开始安装Elasticsearch然后体验。
