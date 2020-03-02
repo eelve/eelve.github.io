@@ -6,7 +6,7 @@ tags: [ELK,Elasticsearch]
 categories: Elastic Stack
 ---
 
-【**前面的话**】前面已经准备好了服务器环境，今天就来开始安装Elasticsearch然后体验。
+【**前面的话**】前面已经准备好了服务器环境，今天就来开始安装[Elasticsearch](https://www.elastic.co/cn/elasticsearch)然后体验。
 
 ---
 
@@ -51,7 +51,7 @@ Java HotSpot(TM) 64-Bit Server VM (build 25.211-b12, mixed mode)
 [elasticsearch-7.6.0-linux-x86_64.tar.gz](https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.6.0-linux-x86_64.tar.gz)
 ---
 
-## 2.2 解压elasticsearch-7.1.1-linux-x86_64.tar.gz
+## 2.2 解压elasticsearch-7.6.0-linux-x86_64.tar.gz
 
 ```shell script
 tar -zvxf elasticsearch-7.6.0-linux-x86_64.tar.gz -C /usr/elastic
