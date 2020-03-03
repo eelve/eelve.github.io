@@ -11,12 +11,15 @@ categories: SpringCloud
 Spring cloud bus通过轻量消息代理连接各个分布的节点。这会用在广播状态的变化（例如配置变化）或者其他的消息指令。Spring bus的一个核心思想是通过分布式的启动器对spring boot应用进行扩展，也可以用来建立一个多个应用之间的通信频道。目前唯一实现的方式是用AMQP消息代理作为通道，同样特性的设置（有些取决于通道的设置）在更多通道的文档中。
 
 # 贰、解决方案
+
 ## 方案一：
+
 * Spring cloud bus被国内很多都翻译为消息总线，也挺形象的。大家可以将它理解为管理和传播所有分布式项目中的消息既可，其实本质是利用了MQ的广播机制在分布式的系统中传播消息，目前常用的有Kafka和RabbitMQ。利用bus的机制可以做很多的事情，其中配置中心客户端刷新就是典型的应用场景之一，我们用一张图来描述bus在配置中心使用的机制。
 
 ![方案一流程图](https://i.loli.net/2019/08/30/efY37U8EdqP2VNA.png)
 
 根据此图我们可以看出利用Spring Cloud Bus做配置更新的步骤:
+
 ~~~
     1、提交代码触发post给客户端A发送/actuator/bus-refresh
     2、客户端A接收到请求从Server端更新配置并且发送给Spring Cloud Bus
@@ -24,18 +27,23 @@ Spring cloud bus通过轻量消息代理连接各个分布的节点。这会用�
     4、其它客户端接收到通知，请求Server端获取最新配置
     5、全部客户端均获取到最新的配置
 ~~~
+
 ## 方案二：
+
 * 在方案一中我们已经到达了利用消息总线触发一个客户端/actuator/bus-refresh,而刷新所有客户端的配置的目的。但这种方式并不优雅。原因如下：
+
  ~~~ 
     打破了微服务的职责单一性。微服务本身是业务模块，它本不应该承担配置刷新的职责。
     破坏了微服务各节点的对等性。
     有一定的局限性。例如，微服务在迁移时，它的网络地址常常会发生变化，此时如果想要做到自动刷新，那就不得不修改WebHook的配置。
   ~~~
+
    因此我们将方案一的架构模式稍微改变一下
    
   ![方案二流程图](https://i.loli.net/2019/08/30/If9PwxiMWRo7mZC.png)
   
   这时Spring Cloud Bus做配置更新步骤如下:
+
   ~~~
     1、提交代码触发post请求给bus/refresh
     2、server端接收到请求并发送给Spring Cloud Bus
@@ -43,10 +51,13 @@ Spring cloud bus通过轻量消息代理连接各个分布的节点。这会用�
     4、其它客户端接收到通知，请求Server端获取最新配置
     5、全部客户端均获取到最新的配置
   ~~~
+
   下面我们就采用方案二来改造我们的工程，这样的话我们在server端的代码做一些改动，来支持bus/refresh
   
 # 叁、改造服务端
+
 - 改造上文的config的服务端子工程**lovin-config-server**，添加RabbitMQ的依赖。下面是改造后的主要的pom依赖:
+
 ~~~pom
 <parent>
         <artifactId>lovincloud</artifactId>
@@ -100,6 +111,7 @@ Spring cloud bus通过轻量消息代理连接各个分布的节点。这会用�
 ~~~
 
 - 添加rabbitmq的连接配置
+
 ~~~yaml
 server:
   port: 8886   # 服务端口号
@@ -131,9 +143,10 @@ eureka:
 ~~~
 
 
-
 # 肆、改造配置客户端
+
 - 改造上文的config的服务端子工程**lovin-config-client**，添加RabbitMQ的依赖。下面是改造后的主要的pom依赖:
+
 ~~~pom
     <parent>
         <artifactId>lovincloud</artifactId>
@@ -194,8 +207,11 @@ eureka:
         </plugins>
     </build>
 ~~~
+
 - 添加连接rabbitmq的相关配置
+
 1. 修改**bootstrap.yml**添加连接rabbitmq的配置
+
 ~~~yaml
 server:
   port: 8807   # 服务端口号
@@ -218,7 +234,10 @@ spring:
     username: guest
     password: guest
 ~~~
+
+
 2. 修改**application.yml**开启消息跟踪
+
 ~~~yaml
 spring:
   cloud:
@@ -241,31 +260,40 @@ eureka:
 ~~~
 
 # 伍、启动测试
+
 - 1.首先依次启动lovin-eureka-server、lovin-econfig-server、lovin-econfig-client
+
 - 2.查看lovin-econfig-server查询配置
 
 ![查看lovin-econfig-server查询配置](https://i.loli.net/2019/08/30/dQinHZMc5LARPGu.png)
+
 - 3.查看lovin-econfig-client查询配置
 
 ![查看lovin-econfig-client查询配置](https://i.loli.net/2019/08/30/3i1ELfl6buBnvqm.png)
+
 - 4.修改配置，并提交见token的值由lovin改为lovinupdate
 
 ![修改token](https://i.loli.net/2019/08/30/FQblZJdPM3eTDj7.png)
+
 - 5.再次查看lovin-econfig-server查询配置
 
 ![再次查询服务端](https://i.loli.net/2019/08/30/DfESYQXoy4bp3sw.png)
 - 6.再次查看lovin-econfig-client查询配置
 
 ![再次查询客户端](https://i.loli.net/2019/08/30/YUCThEAD3Mlvkxg.png)
+
 - 7.刷新消息总线
+
 由于api变更，url由老版本的/bus/refresh变为actuator/bus-refresh
 
 ![属性消息总线](https://i.loli.net/2019/08/30/2qcYG5hDRwX1L9d.png)
+
 - 8.再次查看lovin-econfig-client查询配置
 
 ![再次查看客户端配置](https://i.loli.net/2019/08/30/Rq1jtT5cVfdZlP6.png)
 
 我们可以看到已经刷新成功，至此消息总线配置已经完成
+
 
 # 陆、局部刷新
 
@@ -275,6 +303,7 @@ eureka:
 - 例如：/actuator/bus-refresh?destination=customers:**，这样就可以触发customers微服务所有实例的配置刷新。
 
 ---
+
 * [最后的最后是本博客的源码,欢迎关注这一套SpringCloud的实践](https://github.com/lovinstudio/lovincloud)
 
 

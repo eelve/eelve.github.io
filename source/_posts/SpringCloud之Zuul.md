@@ -8,6 +8,7 @@ categories: SpringCloud
 【**前面的话**】书接上文，前面已经讲过了SpringCloud的注册中心Eureka、Ribbon和Feign等等，如果有不清楚的也可以去看看我的[微服务系列文章](https://eelve.com/tags/springcloud#blog)。这篇文章我要说的是微服务中的网关。
 
 ---
+
 # 壹、Zuul的简介
 Zuul的主要功能是路由转发和过滤器。路由功能是微服务的一部分，比如／api/user转发到到user服务，/api/shop转发到到shop服务。zuul默认和Ribbon结合实现了负载均衡的功能。
 
@@ -27,6 +28,7 @@ zuul有以下功能：
 
 # 贰、准备工作
 新建一个feign子工程**lovin-cloud-zuul**，用于后面的操作。下面是主要的pom依赖:
+
 ~~~pom
 <parent>
         <artifactId>lovincloud</artifactId>
@@ -84,7 +86,9 @@ zuul有以下功能：
         </plugins>
     </build>
 ~~~
+
 - 这里为了安全，我这里还是添加**spring-boot-starter-security**，同时配置路由规则发送/api-ribbon/打头开始的服务转发到lovinribbonclient而发送/api-feign/打头的服务转发到lovinfeignclient，可以看出这里是配置相应的路由规则。
+
 ~~~yaml
 server:
   port: 8882   # 服务端口号
@@ -116,7 +120,9 @@ eureka:
       user.name: lovin
       user.password: lovin
 ~~~
+
 - 配置**spring-boot-starter-security**，这里为了方便我这里放开所有请求
+
 ~~~java
 package com.eelve.lovin.config;
 
@@ -141,7 +147,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 }
 ~~~
+
 - 在主类上添加**@EnableZuulProxy** ，当然也需要注册到注册中心：
+
 ~~~java
 package com.eelve.lovin;
 
@@ -166,7 +174,9 @@ public class LovinCloudZuulApplication {
     }
 }
 ~~~
+
 - 这里为了方便测试，这里配置相应的过滤规则：
+
 ~~~java
 package com.eelve.lovin.filter;
 
@@ -237,6 +247,7 @@ public class MyFilter extends ZuulFilter {
     }
 }
 ~~~
+
 ~~~
     filterType：返回一个字符串代表过滤器的类型，在zuul中定义了四种不同生命周期的过滤器类型，具体如下：
         pre：路由之前
@@ -249,8 +260,11 @@ public class MyFilter extends ZuulFilter {
 ~~~
 
 # 叁、启动测试
+
 - 依次启动eureka的服务端和两个客户端和lovin-feign-client、lovin-ribbon-client，以及新建的lovin-cloud-zuul
+
 - 然后访问http://localhost:8882/api-feign/getHello和http://localhost:8882/api-ribbon/hello，然后我们可以带上token访问来验证过滤器
+
 ![zuul网关转发结果](https://i.loli.net/2019/08/29/469cLCIQ5bqBYW3.png)
 ![zuul网关转发结果](https://i.loli.net/2019/08/29/RH3YL1d4AErNkmD.png)
 ![zuul网关转发结果](https://i.loli.net/2019/08/29/DcRArv7pPim2Un8.png)
@@ -261,6 +275,7 @@ public class MyFilter extends ZuulFilter {
 ![zuul网关转发结果](https://i.loli.net/2019/08/29/4HB1qdz3YpQiAcj.png)
 
 # 肆、网络架构
+
 - 我们可以看到我们调用的服务不再是像再上一篇文章中的直接访问对应的服务，而是通过feign的Ribbon的负载均衡的去调用的，而且这里说明一点，Ribbon的默认机制是轮询。
 ![目前的网络架构](https://i.loli.net/2019/08/29/8TRhYSej5afF9Cs.png)
 

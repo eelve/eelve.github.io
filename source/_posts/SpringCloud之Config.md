@@ -7,16 +7,20 @@ categories: SpringCloud
 【**前面的话**】本文的某些知识依赖我的[微服务系列文章](https://eelve.com/tags/springcloud#blog)，如果没有看过可以先移步去看一下。在前面的应用当中，我们所有的配置都是写在**yaml**配置文件当中的，这样就会造成几个问题：安全、统一管理等等。而SpringCloud也是考虑到这一点，给出的方案就是**Spring Cloud Config**。
 
 ---
+
 # 壹、Config的简介
+
 Spring Cloud Config是Spring Cloud团队创建的一个全新项目，用来为分布式系统中的基础设施和微服务应用提供集中化的外部配置支持，它分为服务端与客户端两个部分。其中服务端也称为分布式配置中心，它是一个独立的微服务应用，用来连接配置仓库并为客户端提供获取配置信息、加密/解密信息等访问接口；而客户端则是微服务架构中的各个微服务应用或基础设施，它们通过指定的配置中心来管理应用资源与业务相关的配置内容，并在启动的时候从配置中心获取和加载配置信息。Spring Cloud Config实现了对服务端和客户端中环境变量和属性配置的抽象映射，所以它除了适用于Spring构建的应用程序之外，也可以在任何其他语言运行的应用程序中使用。由于Spring Cloud Config实现的配置中心默认采用Git来存储配置信息，所以使用Spring Cloud Config构建的配置服务器，天然就支持对微服务应用配置信息的版本管理，并且可以通过Git客户端工具来方便的管理和访问配置内容。当然它也提供了对其他存储方式的支持，比如：SVN仓库、本地化文件系统。
 
 # 贰、准备工作
+
 - 首先在工程下面新建**lovin-config-repo**，作为存放配置文件的地方，并且添加dev，test，pro的相关配置文件，最后在配置文件中添加**token**的配置，具体见下图
 
 ![新建配置中心](https://i.loli.net/2019/08/30/hfKen9RXmUdGoAO.png)
 ![添加token配置](https://i.loli.net/2019/08/30/wxIMYhPXiuHgOyq.png)
 
 - 新建一个config的服务端子工程**lovin-config-server**，用于后面的操作。下面是主要的pom依赖:
+
 ~~~pom
 <parent>
         <artifactId>lovincloud</artifactId>
@@ -70,6 +74,7 @@ Spring Cloud Config是Spring Cloud团队创建的一个全新项目，用来为�
 ~~~
 
 - 这里为了安全，我这里还是添加**spring-boot-starter-security**
+
 ~~~yaml
 server:
   port: 8886   # 服务端口号
@@ -94,7 +99,9 @@ eureka:
     serviceUrl:
       defaultZone: http://lovin:lovin@localhost:8881/eureka/   # 注册到的eureka服务地址
 ~~~
+
 - 上面的配置文件是用git作为配置文件管理中心，还有svn和本地文件系统两种，我这里也在下面简单罗列以下：
+
 ## git版本配置
 
 ```yaml
@@ -109,6 +116,7 @@ spring:
             password: #如果是私人仓库，还需要配置密码，公共仓库可以省略
         label: master
 ```
+
 ## svn版本配置
 
 ~~~yaml
@@ -124,7 +132,9 @@ spring:
   profiles:
     active: subversion  #这里需要显式声明为subversion
 ~~~
+
 同时还需要引入相应的配置：
+
 ~~~pom
         <!--SVN-->
         <dependency>
@@ -132,6 +142,7 @@ spring:
             <artifactId>svnkit</artifactId>
         </dependency>
 ~~~
+
 ## 本地版本配置
 
 ~~~yaml
@@ -144,7 +155,9 @@ spring:
   profiles:
     active: native  #native
 ~~~
+
 - 配置**spring-boot-starter-security**，这里为了方便我这里放开所有请求
+
 ~~~java
 package com.eelve.lovin.config;
 
@@ -170,7 +183,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 }
 
 ~~~
+
 - 在主类上添加**@EnableConfigServer**，当然也需要注册到注册中心：
+
 ~~~java
 package com.eelve.lovin;
 
@@ -196,13 +211,17 @@ public class LovinConfigServerApplication {
 }
 
 ~~~
+
 # 叁、启动测试
+
 - 依次启动eureka的服务端和新建的lovin-config-server
 * 访问地址：http://chirius:8886/lovin-config/dev。
 * 结果原始数据：
+
 ~~~
 {"name":"lovin-config","profiles":["dev"],"label":null,"version":"f0aeca26887490e3bcb8be317d4dfb378313a76f","state":null,"propertySources":[{"name":"https://github.com/lovinstudio/lovincloud/lovin-config-repo/lovin-config-dev.properties","source":{"lovin.token":"lovin"}}]}
 ~~~
+
 这时我们通过浏览器、POSTMAN或CURL等工具直接来访问到我们的配置内容了。访问配置信息的URL与配置文件的映射关系如下：
 
 ~~~
@@ -212,6 +231,7 @@ public class LovinConfigServerApplication {
     /{application}-{profile}.properties
     /{label}/{application}-{profile}.properties
 ~~~
+
 上面的url会映射{application}-{profile}.properties对应的配置文件，其中{label}对应Git上不同的分支，默认为master。我们可以尝试构造不同的url来访问不同的配置内容，比如，要访问master分支，config-client应用的dev环境，就可以访问这个url：http://chirius:8806/lovin-config/dev，并获得如下返回：
 ![成功访问配置](https://i.loli.net/2019/08/30/OvLtJy6R71fuzP2.png)
 **这里有一点疑问，我通过http://localhost:8886/lovin-config/dev/去访问是一直不成功的，但是在换成其他github上面别人的配置仓库又是可以直接访问的**
@@ -232,6 +252,7 @@ ps：通过日志我们可以看到配置文件是被保存在我们本地的，
 
 # 肆、新建配置客户端
 新建一个config的服务端子工程**lovin-config-client**，用于后面的操作。下面是主要的pom依赖:
+
 ~~~pom
 <parent>
         <artifactId>lovincloud</artifactId>
@@ -284,9 +305,13 @@ ps：通过日志我们可以看到配置文件是被保存在我们本地的，
         </plugins>
     </build>
 ~~~
+
 ps：在这里为了监控配置变化我们需要添加**spring-boot-starter-actuator**的依赖
+
 - 这里为了安全，我这里还是添加**spring-boot-starter-security**的配置
-1. 新建**bootstrap.yml**
+
+1、 新建**bootstrap.yml**
+
 ~~~yaml
 spring:
   cloud:
@@ -300,7 +325,9 @@ eureka:
     serviceUrl:
       defaultZone: http://lovin:lovin@localhost:8881/eureka/   # 注意在高可用的时候需要见注册中心配置移到该文件中，在application.yml中见会读取不到配置
 ~~~
-2. 添加**application.yml**
+
+2、 添加**application.yml**
+
 ~~~yaml
 server:
   port: 8807   # 服务端口号
@@ -314,7 +341,9 @@ spring:
       name: lovin
       password: ${REGISTRY_SERVER_PASSWORD:lovin}
 ~~~
+
 - 配置**spring-boot-starter-security**，这里为了方便我这里放开所有请求
+
 ~~~java
 package com.eelve.lovin.config;
 
@@ -339,7 +368,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 }
 ~~~
+
 - 我们需要注册到注册中心：
+
 ~~~java
 package com.eelve.lovin;
 
@@ -362,7 +393,9 @@ public class LovinConfigClientApplication {
     }
 }
 ~~~
+
 - 添加**ConfigController**用来测试获取配置
+
 ~~~java
 package com.eelve.lovin.controller;
 
@@ -390,7 +423,9 @@ public class ConfigController {
     }
 }
 ~~~
+
 **PS：其中RefreshScope注解是为了刷新配置来添加的，这样让配置仓库中的配置发生改变的时候，我们可以通过访问/refresh请求来刷新配置（由spring-boot-starter-actuator提供的监控功能）**
+
 ## 通过客户端去访问获取配置数据
 
 - 访问**http://localhost:8807/token**，见下图
