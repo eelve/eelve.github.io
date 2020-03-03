@@ -6,7 +6,7 @@ tags: [ELK,Kibana]
 categories: Elastic Stack
 ---
 
-【**前面的话**】在前面已经安装好了Elasticsearch和Logstash，今天就来[Kibana](https://www.elastic.co/cn/kibana)进行一下初步体验。。
+【**前面的话**】在前面已经安装好了Elasticsearch和Logstash，今天就来[Kibana](https://www.elastic.co/cn/kibana)进行一下初步体验。
 
 
 ---
