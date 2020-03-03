@@ -251,6 +251,16 @@ elasticsearch.hosts: ["http://192.168.237.11:9200"] #这里为你的elasticsearc
 
 ![2020030313](https://eelve.com/upload/2020/3/2020030313-425f770de5064b06b8951748d6a0d01b.png)
 
+然后我们还可以使用一下Kibana的开发工具，给**eelve**新加一条数据
+
+![2020030314](https://eelve.com/upload/2020/3/2020030314-1689d96967794fc38f042ea3807dfc1d.png)
+![2020030315](https://eelve.com/upload/2020/3/2020030315-68061267b1ac4b13a7844b873aa06c6b.png)
+
+然后再刷新图表，可以看到数据会产生相应的变化
+
+![2020030316](https://eelve.com/upload/2020/3/2020030316-bb66b6f0ba19419abc0ea3b674703f1b.png)
+
+也就是说如果数据是实时变化的话，这边的图表也会跟着变化。
 
 # 伍、Kibana特性
 
