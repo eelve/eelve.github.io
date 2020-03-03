@@ -2,9 +2,8 @@
 layout: elastic
 title: Elastic Stack实战之Kibana初体验
 date: 2020-03-03 19:49:22
-tags: [ELK,Kibana,Beats]
+tags: [ELK,Kibana]
 categories: Elastic Stack
-notshow: true
 ---
 
 【**前面的话**】在前面已经安装好了Elasticsearch和Logstash，今天就来[Kibana](https://www.elastic.co/cn/kibana)进行一下初步体验。。
@@ -58,7 +57,199 @@ Kibana: kibana-7.6.0
 
 # 叁、Kibana安装
 
+## 3.1 下载地址
+
+[kibana-7.6.0-linux-x86_64.tar.gz](https://artifacts.elastic.co/downloads/kibana/kibana-7.6.0-linux-x86_64.tar.gz)
+
+---
+
+## 3.2 解压kibana-7.6.0-linux-x86_64.tar.gz
+
+```shell script
+tar -zvxf kibana-7.6.0-linux-x86_64.tar.gz -C /usr/elastic
+```
+## 3.3 kibana配置说明
+
+默认配置配置不需要改，下面给出一个最小的配置
+
+```shell script
+server.port: 5601 #浏览器访问端口
+server.host: "192.168.237.11"  #对外的服务地址
+elasticsearch.hosts: ["http://192.168.237.11:9200"] #这里为你的elasticsearch集群的地址
+```
+
 # 肆、Kibana简单使用
+
+## 4.1 启动Elasticsearch
+
+首先我门要启动Elasticsearch，不然Kibana没有数据来源。同时检查是否启动成功，如下图
+
+![2020030301](https://eelve.com/upload/2020/3/2020030301-00f0ff22c74c4275be3690daa471cfa2.jpg)
+
+## 4.2 启动Kibana
+
+```shell script
+[iio@192 bin]$ ./kibana
+
+```
+
+然后观察日志
+
+```shell script
+  log   [13:27:27.338] [info][plugins-service] Plugin "case" is disabled.
+  log   [13:27:33.648] [info][plugins-system] Setting up [37] plugins: [licensing,taskManager,siem,code,infra,encryptedSavedObjects,usageCollection,metrics,canvas,timelion,features,security,apm_oss,translations,reporting,uiActions,data,navigation,newsfeed,share,status_page,home,spaces,cloud,apm,graph,bfetch,kibana_legacy,management,dev_tools,eui_utils,inspector,expressions,visualizations,embeddable,advancedUiActions,dashboard_embeddable_container]
+  log   [13:27:33.650] [info][licensing][plugins] Setting up plugin
+  log   [13:27:33.652] [info][plugins][taskManager] Setting up plugin
+  log   [13:27:33.667] [info][plugins][siem] Setting up plugin
+  log   [13:27:33.667] [info][code][plugins] Setting up plugin
+  log   [13:27:33.668] [info][infra][plugins] Setting up plugin
+  log   [13:27:33.670] [info][encryptedSavedObjects][plugins] Setting up plugin
+  log   [13:27:33.671] [warning][config][encryptedSavedObjects][plugins] Generating a random key for xpack.encryptedSavedObjects.encryptionKey. To be able to decrypt encrypted saved objects attributes after restart, please set xpack.encryptedSavedObjects.encryptionKey in kibana.yml
+  log   [13:27:33.677] [info][plugins][usageCollection] Setting up plugin
+  log   [13:27:33.679] [info][metrics][plugins] Setting up plugin
+  log   [13:27:33.680] [info][canvas][plugins] Setting up plugin
+  log   [13:27:33.687] [info][plugins][timelion] Setting up plugin
+  log   [13:27:33.689] [info][features][plugins] Setting up plugin
+  log   [13:27:33.690] [info][plugins][security] Setting up plugin
+  log   [13:27:33.691] [warning][config][plugins][security] Generating a random key for xpack.security.encryptionKey. To prevent sessions from being invalidated on restart, please set xpack.security.encryptionKey in kibana.yml
+  log   [13:27:33.691] [warning][config][plugins][security] Session cookies will be transmitted over insecure connections. This is not recommended.
+  log   [13:27:33.714] [info][apm_oss][plugins] Setting up plugin
+  log   [13:27:33.715] [info][plugins][translations] Setting up plugin
+  log   [13:27:33.715] [info][data][plugins] Setting up plugin
+  log   [13:27:33.722] [info][plugins][share] Setting up plugin
+  log   [13:27:33.724] [info][home][plugins] Setting up plugin
+  log   [13:27:33.730] [info][plugins][spaces] Setting up plugin
+  log   [13:27:33.736] [info][cloud][plugins] Setting up plugin
+  log   [13:27:33.738] [info][apm][plugins] Setting up plugin
+  log   [13:27:33.915] [info][graph][plugins] Setting up plugin
+  log   [13:27:33.921] [info][bfetch][plugins] Setting up plugin
+  log   [13:27:33.933] [info][savedobjects-service] Waiting until all Elasticsearch nodes are compatible with Kibana before starting saved objects migrations...
+  log   [13:27:33.933] [info][savedobjects-service] Starting saved objects migrations
+  log   [13:27:34.115] [info][plugins-system] Starting [22] plugins: [licensing,taskManager,siem,code,infra,encryptedSavedObjects,usageCollection,metrics,canvas,timelion,features,security,apm_oss,translations,data,share,home,spaces,cloud,apm,graph,bfetch]
+  log   [13:27:40.328] [info][status][plugin:kibana@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:40.346] [info][status][plugin:elasticsearch@7.6.0] Status changed from uninitialized to yellow - Waiting for Elasticsearch
+  log   [13:27:40.348] [info][status][plugin:elasticsearch@7.6.0] Status changed from yellow to green - Ready
+  log   [13:27:40.358] [info][status][plugin:xpack_main@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:40.392] [info][status][plugin:graph@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:40.426] [info][kibana-monitoring][monitoring] Starting monitoring stats collection
+  log   [13:27:40.430] [info][status][plugin:monitoring@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:40.471] [info][status][plugin:spaces@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:40.507] [info][status][plugin:security@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:40.543] [info][status][plugin:searchprofiler@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:40.557] [info][status][plugin:ml@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:40.807] [info][status][plugin:tilemap@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:40.812] [info][status][plugin:watcher@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:40.836] [info][status][plugin:grokdebugger@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:40.856] [info][status][plugin:dashboard_mode@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:40.863] [info][status][plugin:logstash@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:40.891] [info][status][plugin:beats_management@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:40.958] [info][status][plugin:apm_oss@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:41.000] [info][status][plugin:apm@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:41.071] [info][status][plugin:maps@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:41.083] [info][status][plugin:interpreter@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:41.122] [info][status][plugin:canvas@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:41.130] [info][status][plugin:license_management@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:41.141] [info][status][plugin:index_management@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:41.228] [info][status][plugin:console@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:41.238] [info][status][plugin:console_extensions@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:41.245] [info][status][plugin:index_lifecycle_management@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:41.286] [info][status][plugin:kuery_autocomplete@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:41.304] [info][status][plugin:metrics@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:41.425] [info][status][plugin:infra@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:41.437] [info][plugins][taskManager][taskManager] TaskManager is identified by the Kibana UUID: ce42b997-a913-4d58-be46-bb1937feedd6
+  log   [13:27:41.441] [info][status][plugin:task_manager@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:41.448] [info][status][plugin:rollup@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:41.547] [info][status][plugin:transform@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:41.555] [info][status][plugin:encryptedSavedObjects@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:41.605] [info][status][plugin:actions@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:41.677] [info][status][plugin:alerting@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:41.853] [info][status][plugin:siem@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:41.868] [info][status][plugin:remote_clusters@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:41.876] [info][status][plugin:cross_cluster_replication@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:41.937] [info][status][plugin:upgrade_assistant@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:41.994] [info][status][plugin:uptime@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:42.006] [info][status][plugin:oss_telemetry@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:42.022] [info][status][plugin:file_upload@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:42.032] [info][status][plugin:data@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:42.067] [info][status][plugin:lens@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:42.136] [info][status][plugin:snapshot_restore@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:42.151] [info][status][plugin:input_control_vis@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:42.164] [info][status][plugin:navigation@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:42.169] [info][status][plugin:management@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:42.174] [info][status][plugin:kibana_react@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:42.178] [info][status][plugin:region_map@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:42.217] [info][status][plugin:telemetry@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:42.226] [info][status][plugin:metric_vis@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:42.230] [info][status][plugin:markdown_vis@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:42.399] [info][status][plugin:timelion@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:42.403] [info][status][plugin:ui_metric@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:42.406] [info][status][plugin:tagcloud@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:42.410] [info][status][plugin:table_vis@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:42.414] [info][status][plugin:vega@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:42.421] [warning][browser-driver][reporting] Enabling the Chromium sandbox provides an additional layer of protection.
+  log   [13:27:44.878] [warning][reporting] Generating a random key for xpack.reporting.encryptionKey. To prevent pending reports from failing on restart, please set xpack.reporting.encryptionKey in kibana.yml
+  log   [13:27:44.888] [info][status][plugin:reporting@7.6.0] Status changed from uninitialized to green - Ready
+  log   [13:27:44.970] [info][listening] Server running at http://192.168.237.11:5601
+  log   [13:27:45.502] [info][server][Kibana][http] http server running at http://192.168.237.11:5601
+  log   [13:27:45.549] [error][reporting] The Reporting plugin encountered issues launching Chromium in a self-test. You may have trouble generating reports.
+  log   [13:27:45.549] [error][reporting] ErrorEvent {
+  target:
+   WebSocket {
+     _events:
+      [Object: null prototype] { open: [Function], error: [Function] },
+     _eventsCount: 2,
+     _maxListeners: undefined,
+     readyState: 3,
+     protocol: '',
+     _binaryType: 'nodebuffer',
+     _closeFrameReceived: false,
+     _closeFrameSent: false,
+     _closeMessage: '',
+     _closeTimer: null,
+     _closeCode: 1006,
+     _extensions: {},
+     _receiver: null,
+     _sender: null,
+     _socket: null,
+     _isServer: false,
+     _redirects: 0,
+     url:
+      'ws://127.0.0.1:44598/devtools/browser/cde91cb8-faad-4730-9d12-57c1e8ffd49a',
+     _req: null },
+  type: 'error',
+  message: 'connect ECONNREFUSED 127.0.0.1:44598',
+  error:
+   { Error: connect ECONNREFUSED 127.0.0.1:44598
+       at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1107:14)
+     errno: 'ECONNREFUSED',
+     code: 'ECONNREFUSED',
+     syscall: 'connect',
+     address: '127.0.0.1',
+     port: 44598 } }
+  log   [13:27:45.557] [warning][reporting] See Chromium's log output at "/usr/elastic/kibana/data/headless_shell-linux/chrome_debug.log"
+  log   [13:27:45.559] [warning][reporting] Reporting plugin self-check generated a warning: Error: Could not close browser client handle!
+```
+
+## 4.3 浏览器访问
+
+![2020030302](https://eelve.com/upload/2020/3/2020030302-e7c518603e69473a8438fb32a9454154.png)
+
+下面我们继续操作，利用搭建Elasticsearch的时候添加的数据做一个可视化图表出来
+
+![2020030306](https://eelve.com/upload/2020/3/2020030306-5f167cf3142041ad944de9b7b0ff0eb9.png)
+![2020030303](https://eelve.com/upload/2020/3/2020030303-9787af1aceb148ef8b2f6a49015630c4.png)
+![2020030304](https://eelve.com/upload/2020/3/2020030304-a74acb31fabc4f4da44e96e0c7a28610.png)
+![2020030305](https://eelve.com/upload/2020/3/2020030305-c4f00a780a704435b28eb34f360857da.png)
+![2020030308](https://eelve.com/upload/2020/3/2020030308-53cd70f082074829afb4ee887948b24a.png)
+![2020030311](https://eelve.com/upload/2020/3/2020030311-d8de4d9839d34d38b731ba0ce0be2336.png)
+
+我们可以看到已经利用数据做出了一个柱饼图了，下面就再美化以下，得到最终结果
+
+![2020030312](https://eelve.com/upload/2020/3/2020030312-452f0ac1954844cab0ea2955bd43dfa2.png)
+
+另外我们还可以保存分享
+
+![2020030313](https://eelve.com/upload/2020/3/2020030313-425f770de5064b06b8951748d6a0d01b.png)
 
 
 # 伍、Kibana特性
@@ -125,7 +316,7 @@ Kibana: kibana-7.6.0
 
 ---
 
-【**后面的话**】利用Kibana我们可以做出炫酷的符合业务且满足客户可视化展示。
+【**后面的话**】利用Kibana我们可以做出炫酷的符合业务且满足客户可视化展示。并且Kibana本身都提供相当多数量的各种图标模板，通过各种图标的组合可以轻松的开发一个属于我们自己的大屏。另外我们需要注意的是，我们应该根据我们的数据的特点选择合适的图表进行展示，这样可以是我们的图表显得更美观。
 
 ---
 
