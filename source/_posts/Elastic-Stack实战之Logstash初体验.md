@@ -6,16 +6,19 @@ tags: [ELK,Logstash]
 categories: Elastic Stack
 ---
 
-【**前面的话**】在前面已经安装好了Elasticsearch，今天就来安装和简单使用一下[Logstash](https://www.elastic.co/cn/logstash)。
+【**前面的话**】在前面已经安装好了Elasticsearch，今天就来对[Logstash](https://www.elastic.co/cn/logstash)进行一下初步体验。
+
 
 ---
 
 # 壹、软件版本
+
 ```yaml
 Centos：CentOS-7-x86_64-Minimal-1908
 VM: 15.5.0 build-14665864
 Java: 1.8.0_211
-Elasticsearch: logstash-7.6.0
+Elasticsearch: elasticsearch-7.6.0
+Logstash: logstash-7.6.0
 ```
 
 # 贰、Logstash介绍
