@@ -1,6 +1,6 @@
 ---
 layout: elastic
-title: Elastic Stack实践之Elasticsearch使用(一)
+title: Elastic Stack实战之Elasticsearch初体验(二)
 date: 2020-03-01 19:49:22
 tags: [ELK,Elasticsearch]
 categories: Elastic Stack

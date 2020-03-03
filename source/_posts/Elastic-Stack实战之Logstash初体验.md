@@ -1,6 +1,6 @@
 ---
 layout: elastic
-title: Elastic Stack实践之Logstash
+title: Elastic Stack实战之Logstash初体验
 date: 2020-03-02 21:49:22
 tags: [ELK,Logstash]
 categories: Elastic Stack

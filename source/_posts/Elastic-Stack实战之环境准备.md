@@ -1,5 +1,5 @@
 ---
-title: Elastic Stack实践之环境准备
+title: Elastic Stack实战之环境准备
 date: 2020-02-29 16:29:26
 tags: [ELK,Linux,VM]
 categories: Elastic Stack

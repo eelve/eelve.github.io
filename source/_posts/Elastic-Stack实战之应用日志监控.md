@@ -1,8 +1,8 @@
 ---
 layout: elastic
-title: Elastic Stack实践之FileBeat安装
+title: Elastic Stack实战之应用日志监控
 date: 2020-02-29 21:49:22
-tags: [ELK,FileBeat]
+tags: [ELK]
 categories: Elastic Stack
 notshow: true
 ---

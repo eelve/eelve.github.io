@@ -1,6 +1,6 @@
 ---
 layout: elastic
-title: Elastic Stack实践之Elasticsearch安装
+title: Elastic Stack实战之Elasticsearch初体验(一)
 date: 2020-03-01 12:34:22
 tags: [ELK,Elasticsearch]
 categories: Elastic Stack

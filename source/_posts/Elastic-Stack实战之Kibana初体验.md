@@ -1,8 +1,8 @@
 ---
 layout: elastic
-title: Elastic Stack实践之Kibana安装
+title: Elastic Stack实战之Kibana初体验
 date: 2020-02-29 21:49:22
-tags: [ELK,Kibana]
+tags: [ELK,Kibana,Beats]
 categories: Elastic Stack
 notshow: true
 ---

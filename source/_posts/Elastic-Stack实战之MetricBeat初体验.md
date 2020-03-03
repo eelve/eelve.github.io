@@ -1,8 +1,8 @@
 ---
 layout: elastic
-title: Elastic Stack实践之Elasticsearch使用
+title: Elastic Stack实战之MetricBeat初体验
 date: 2020-02-29 21:49:22
-tags: [ELK]
+tags: [ELK,MetricBeat,Beats]
 categories: Elastic Stack
 notshow: true
 ---
