@@ -1,6 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>Elastic Stack实战之Beats家族介绍</title>
+    <url>/2020/03/05/elastic-stack-shi-zhan-zhi-beats-jia-zu-jie-shao/</url>
+    <content><![CDATA[<p>【<strong>前面的话</strong>】前面我们已经体验过了Elasticsearch、Logstash和Kibanan，也是就是ELK三大剑客。记得在前文<a href="https://eelve.com/archives/logstash" target="_blank" rel="noopener">Elastic Stack实战之Logstash初体验</a>中提到过Elastic Stack大家族中增加了一个新的高效率的采集组件，那就是Beats家族，那今天就来了解一下。</p>
+<hr>
+<h1 id="壹、什么是Beats"><a href="#壹、什么是Beats" class="headerlink" title="壹、什么是Beats"></a>壹、什么是Beats</h1><p><img src="https://eelve.com/upload/2020/3/illustration-beats-header-overflow-1ba7ff649dbf41598d71ed24d1ade8da.png" alt="illustration-beats-header-overflow"></p>
+<p><strong>Beats</strong>是轻量型数据采集器。</p>
+<p><strong>Beats</strong>平台集合了多种单一用途数据采集器。它们从成百上千或成千上万台机器和系统向 Logstash 或 Elasticsearch 发送数据。 </p>
+<h1 id="贰、Beats系列"><a href="#贰、Beats系列" class="headerlink" title="贰、Beats系列"></a>贰、Beats系列</h1><p>全品类采集器，搞定所有数据类型。</p>
+<ul>
+<li><p><a href="https://www.elastic.co/beats/filebeat" target="_blank" rel="noopener">Filebeat</a>：用于采集日志文件</p>
+</li>
+<li><p><a href="https://www.elastic.co/beats/metricbeat" target="_blank" rel="noopener">Metricbeat</a>:</p>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Elastic Stack</category>
+      </categories>
+      <tags>
+        <tag>ELK</tag>
+        <tag>Beats</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Elastic Stack实战之Kibana初体验</title>
     <url>/2020/03/03/elastic-stack-shi-zhan-zhi-kibana-chu-ti-yan/</url>
     <content><![CDATA[<p>【<strong>前面的话</strong>】在前面已经安装好了Elasticsearch和Logstash，今天就来<a href="https://www.elastic.co/cn/kibana" target="_blank" rel="noopener">Kibana</a>进行一下初步体验。</p>
@@ -534,8 +558,8 @@ keyword类型的字段只能通过精确值搜索到。</code></pre><p><img src=
       </categories>
       <tags>
         <tag>ELK</tag>
-        <tag>FileBeat</tag>
         <tag>Beats</tag>
+        <tag>FileBeat</tag>
       </tags>
   </entry>
   <entry>
