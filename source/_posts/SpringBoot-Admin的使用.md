@@ -320,4 +320,5 @@ spring.boot.admin.notify.mail.to=zzz@qq.com
 
 
 ---
-![薏米笔记](https://eelve.com/upload/2019/8/eblog-b269767ff45b4e01a1c380e38898c1c0.png)
+
+![薏米笔记](https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png)

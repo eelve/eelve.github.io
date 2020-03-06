@@ -14,7 +14,7 @@ categories: springboot
 查询结果：
 ![h2ideadatabase查询结果](https://eelve.com/upload/2019/6/h2databaseselect-5f10495470e446f98af7b8aff0228ef2.png)
 但是但是这个时候启动**项目会报错**：
-```java
+```shell script
 org.h2.jdbc.JdbcSQLException: Database may be already in use: null. Possible solutions: close all other connection(s); use the server mode [90020-197]
 	at org.h2.message.DbException.getJdbcSQLException(DbException.java:357) ~[h2-1.4.197.jar:1.4.197]
 	at org.h2.message.DbException.get(DbException.java:168) ~[h2-1.4.197.jar:1.4.197]
@@ -209,4 +209,5 @@ h2:
 
 
 ---
-![薏米笔记](https://eelve.com/upload/2019/8/eblog-b269767ff45b4e01a1c380e38898c1c0.png)
+
+![薏米笔记](https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png)

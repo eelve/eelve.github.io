@@ -355,6 +355,7 @@ public class QuartzService {
 # 陆、初始化任务
 这里不准备给用户用web界面来配置定时任务，故此采用**CommandLineRunner**来子啊应用初始化的时候来初始化任务。只需要实现CommandLineRunner的run()方法即可。
 ~~~java
+
 @Override
     public void run(String... args) throws Exception {
         HashMap<String,Object> map = new HashMap<>();
@@ -369,9 +370,10 @@ public class QuartzService {
         map.put("name",3);
         quartzService.deleteJob("job3", "test2");
         quartzService.addJob(Job.class, "job3", "test2", "15 * * * * ?", map);
-
     }
+
 ~~~
+
 # 柒、测试验证
 分别夏侯启动两个应用，然后观察任务执行，以及在运行过程中杀死某个服务，来观察定时任务的执行。
 ![SpringbootquartzoneApplication](https://eelve.com/upload/2019/8/1-a8a710a578ad47a8afc8ace72f3cbd7c.png)
@@ -381,4 +383,5 @@ public class QuartzService {
 
 
 ---
-![薏米笔记](https://eelve.com/upload/2019/8/eblog-b269767ff45b4e01a1c380e38898c1c0.png)
+
+![薏米笔记](https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png)

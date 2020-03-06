@@ -33,7 +33,8 @@ categories: springboot
 ```
 
 **输出信息**
-```java
+
+```shell script
 username:NZmLHOOHX0SEjc285iG9YQ==
 password:1JByM5wu5o+9H1Ba2o++Pg==
 2019-06-14 14:55:49.863  INFO 8904 --- [       Thread-3] o.s.s.concurrent.ThreadPoolTaskExecutor  : Shutting down ExecutorService 'applicationTaskExecutor'
@@ -42,11 +43,11 @@ password:1JByM5wu5o+9H1Ba2o++Pg==
 2019-06-14 14:55:49.878  INFO 8904 --- [       Thread-3] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
 ```
 ## 1.2. 或者使用Maven下载好的jar包加密\Maven\org\jasypt\jasypt\2.0.0\jasypt-2.0.0.jar
-```java
+```shell script
 java -cp jasypt-1.9.2.jar org.jasypt.intf.cli.JasyptPBEStringEncryptionCLI password=1Qaz0oKm algorithm=PBEWithMD5AndDES input=root
 ```
 **输出信息**
-```java
+```shell script
 ----ENVIRONMENT-----------------
 Runtime: Oracle Corporation Java HotSpot(TM) 64-Bit Server VM 25.171-b11
 
@@ -61,7 +62,7 @@ NZmLHOOHX0SEjc285iG9YQ==
 拷贝-OUTPUT-下的结果即可
 # **2.配置properties文件**
 将生成的加密串配置ENC(加密串)到application.properties中
-```xml
+```yaml
 server:
   port: 8080
 spring:
@@ -99,11 +100,11 @@ private final StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryp
 ![图片.png](https://eelve.com/upload/2019/6/springbootjasypydiagrams-3a7616cc841c4f7583fc7173e32aaab4.png)
 # **3.部署时配置salt(盐)值**
 **1. 为了防止salt(盐)泄露,反解出密码.可以在项目部署的时候使用命令传入salt(盐)值**
-```java
+```shell script
 java -jar -Djasypt.encryptor.password=1Qaz0oKm xxx.jar
 ```
 **2. 或者在服务器的环境变量里配置,进一步提高安全性**
-```java
+```shell script
 打开/etc/profile文件
 vim /etc/profile
 
@@ -125,4 +126,5 @@ java -jar -Djasypt.encryptor.password=${JASYPT_PASSWORD} xxx.jar
 
 
 ---
-![薏米笔记](https://eelve.com/upload/2019/8/eblog-b269767ff45b4e01a1c380e38898c1c0.png)
+
+![薏米笔记](https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png)

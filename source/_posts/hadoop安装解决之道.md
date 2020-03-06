@@ -5,7 +5,7 @@ tags: hadoop
 categories: hadoop
 ---
 # 壹、故障现象
-```xml
+```shell script
 Microsoft Windows [版本 10.0.18362.239]
 (c) 2019 Microsoft Corporation。保留所有权利。
 
@@ -37,7 +37,7 @@ C:\Users\Chirius>
 
 注意：在$HADOOP_HOME/etc/hadoop/hadoop-env.cmd文件中的这一行 set JAVA_HOME=C:\PROGRA~1\Java\jdk1.8.0_161 中不能有空格！
 
-```xml
+```shell script
 Microsoft Windows [版本 10.0.18362.239]
 (c) 2019 Microsoft Corporation。保留所有权利。
 
@@ -53,4 +53,5 @@ C:\Users\Chirius>
 ```
 
 ---
-![薏米笔记](https://eelve.com/upload/2019/8/eblog-b269767ff45b4e01a1c380e38898c1c0.png)
+
+![薏米笔记](https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png)

@@ -18,13 +18,13 @@ categories: java
 
 ----
 导入命令
-```xml
+```shell script
 mvn install:install-file -Dfile=D:\link\lib\todo-1.0.jar  -DgroupId=com.eelve -DartifactId=todo -Dversion=1.0 -Dpackaging=jar
 ```
 
 -----
 命令详解
-```xml
+```
 -Dfile：jar包所在本地的具体路径
 -DgroupId：项目组织唯一的标识符，实际对应JAVA的包的结构
 -DartifactId：项目的唯一的标识符，实际对应项目的名称，就是项目根目录的名称
@@ -61,4 +61,5 @@ maven寻找得顺序大致可以理解为：
 
 
 ---
-![薏米笔记](https://eelve.com/upload/2019/8/eblog-b269767ff45b4e01a1c380e38898c1c0.png)
+
+![薏米笔记](https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png)
