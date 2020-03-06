@@ -64,8 +64,8 @@
 <meta property="og:description" content="【前情提要】在日常开发过程中，我们总是不可避免的需要依赖某些不在中央仓库，同时也不在本地仓库中的jar包，这是我们就需要使用命令行将需要导入本地仓库中的jar包导入本地仓库，使得项目依赖本地仓库中的代码。  例如我们需要将下面pom文件中的jar包引入本地仓库 12345&amp;lt;dependency&amp;gt;      &amp;lt;groupId&amp;gt;com.eelve&amp;lt;/groupId&amp;gt;">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://eelve.com/upload/2019/6/%E5%AF%BC%E5%85%A5jar%E5%8C%85%E7%BB%93%E6%9E%9C-859bee2db9f14a2a8079b449d38e061c.png">
-<meta property="og:image" content="https://eelve.com/upload/2019/8/eblog-b269767ff45b4e01a1c380e38898c1c0.png">
-<meta property="og:updated_time" content="2020-03-04T02:07:06.977Z">
+<meta property="og:image" content="https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png">
+<meta property="og:updated_time" content="2020-03-06T09:26:18.252Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="用命令将本地jar包导入到本地maven仓库">
 <meta name="twitter:description" content="【前情提要】在日常开发过程中，我们总是不可避免的需要依赖某些不在中央仓库，同时也不在本地仓库中的jar包，这是我们就需要使用命令行将需要导入本地仓库中的jar包导入本地仓库，使得项目依赖本地仓库中的代码。  例如我们需要将下面pom文件中的jar包引入本地仓库 12345&amp;lt;dependency&amp;gt;      &amp;lt;groupId&amp;gt;com.eelve&amp;lt;/groupId&amp;gt;">
@@ -326,7 +326,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-04 10:07:06" itemprop="dateModified" datetime="2020-03-04T10:07:06+08:00">2020-03-04</time>
+                <time title="修改时间：2020-03-06 17:26:18" itemprop="dateModified" datetime="2020-03-06T17:26:18+08:00">2020-03-06</time>
               </span>
             
           
@@ -370,11 +370,11 @@
 
 <hr>
 <p>导入命令</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mvn install:install-file -Dfile=D:\link\lib\todo-1.0.jar  -DgroupId=com.eelve -DartifactId=todo -Dversion=1.0 -Dpackaging=jar</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><figcaption><span>script</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mvn install:install-file -Dfile=D:\link\lib\todo-1.0.jar  -DgroupId=com.eelve -DartifactId=todo -Dversion=1.0 -Dpackaging=jar</span><br></pre></td></tr></table></figure>
 
 <hr>
 <p>命令详解</p>
-<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-Dfile：jar包所在本地的具体路径</span><br><span class="line">-DgroupId：项目组织唯一的标识符，实际对应JAVA的包的结构</span><br><span class="line">-DartifactId：项目的唯一的标识符，实际对应项目的名称，就是项目根目录的名称</span><br><span class="line">-Dversion：版本号</span><br><span class="line">-Dpackaging：打包的类型</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">-Dfile：jar包所在本地的具体路径</span><br><span class="line">-DgroupId：项目组织唯一的标识符，实际对应JAVA的包的结构</span><br><span class="line">-DartifactId：项目的唯一的标识符，实际对应项目的名称，就是项目根目录的名称</span><br><span class="line">-Dversion：版本号</span><br><span class="line">-Dpackaging：打包的类型</span><br></pre></td></tr></table></figure>
 
 <hr>
 <p>结果示例<br><img src="https://eelve.com/upload/2019/6/%E5%AF%BC%E5%85%A5jar%E5%8C%85%E7%BB%93%E6%9E%9C-859bee2db9f14a2a8079b449d38e061c.png" alt="导入jar包结果"></p>
@@ -385,7 +385,7 @@
 <p>补充：<br>1，如果在找寻的过程中，如果发现该仓库有镜像设置，则用镜像的地址代替。<br>2，如果仓库的id设置成“central”，则该配置会覆盖maven默认的中央仓库配置。</p>
 <p>以上，通过实践得来的，可能不全面，仅当参考</p>
 <hr>
-<p><img src="https://eelve.com/upload/2019/8/eblog-b269767ff45b4e01a1c380e38898c1c0.png" alt="薏米笔记"></p>
+<p><img src="https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png" alt="薏米笔记"></p>
 
     </div>
 
