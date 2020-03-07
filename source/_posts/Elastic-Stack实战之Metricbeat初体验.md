@@ -1,6 +1,6 @@
 ---
 layout: elastic
-title: Elastic Stack实战之MetricBeat初体验
+title: Elastic Stack实战之Metricbeat初体验
 date: 2020-03-07 21:36:20
 tags: [ELK,MetricBeat,Beats]
 categories: Elastic Stack

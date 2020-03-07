@@ -1,6 +1,6 @@
 ---
 layout: elastic
-title: Elastic Stack实战之FileBeat初体验
+title: Elastic Stack实战之Filebeat初体验
 date: 2020-03-07 17:49:22
 tags: [ELK,FileBeat,Beats]
 categories: Elastic Stack
