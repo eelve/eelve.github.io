@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Elastic Stack实战之MetricBeat初体验</title>
+    <title>Elastic Stack实战之Metricbeat初体验</title>
     <url>/2020/03/07/elastic-stack-shi-zhan-zhi-metricbeat-chu-ti-yan/</url>
     <content><![CDATA[<p>【<strong>前面的话</strong>】<a href="https://eelve.com/archives/beats" target="_blank" rel="noopener">前面介绍了Elastic Stack的Beats家族</a>，并且<a href="https://eelve.com/archives/filebeat" target="_blank" rel="noopener">体验了Filebeat</a>，接下来我们就继续来体验一下</p>
 <hr>
@@ -139,7 +139,7 @@
       </tags>
   </entry>
   <entry>
-    <title>Elastic Stack实战之FileBeat初体验</title>
+    <title>Elastic Stack实战之Filebeat初体验</title>
     <url>/2020/03/07/elastic-stack-shi-zhan-zhi-filebeat-chu-ti-yan/</url>
     <content><![CDATA[<p>【<strong>前面的话</strong>】<a href="https://eelve.com/archives/beats" target="_blank" rel="noopener">前文</a>介绍了Elastic Stack的Beats家族，今天我们就来体验其中的专门用于采集文件的<a href="https://www.elastic.co/cn/beats/filebeat" target="_blank" rel="noopener">Filebeat</a>，走起。</p>
 <hr>
