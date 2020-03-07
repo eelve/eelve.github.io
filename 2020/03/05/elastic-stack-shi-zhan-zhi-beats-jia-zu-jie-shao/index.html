@@ -63,18 +63,18 @@
 <meta property="og:site_name" content="南国薏米">
 <meta property="og:description" content="【前面的话】前面我们已经体验过了Elasticsearch、Logstash和Kibanan，也是就是ELK三大剑客。记得在前文Elastic Stack实战之Logstash初体验中提到过Elastic Stack大家族中增加了一个新的高效率的采集组件，那就是Beats家族，那今天就来了解一下。  壹、什么是Beats Beats是轻量型数据采集器。 Beats平台集合了多种单一用途数据采集器。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://eelve.com/upload/2020/3/illustration-beats-header-overflow-1ba7ff649dbf41598d71ed24d1ade8da.png">
-<meta property="og:image" content="https://eelve.com/upload/2020/3/illustration-beats-lightweight-d6ee1493b6a64579a71fb63e2e95b4ac.svg">
-<meta property="og:image" content="https://eelve.com/upload/2020/3/screenshot-beats-modules-8dec132b351e4c6a9835d806e24e520e.jpg">
-<meta property="og:image" content="https://eelve.com/upload/2020/3/screenshot-infrastructure-ui-368a637d105b42a4b87d0df2b2158275.png">
-<meta property="og:image" content="https://eelve.com/upload/2020/3/illustration-beats-exstensible-555-white-bg-1767d533ca824a5290360eb027eed811.svg">
-<meta property="og:image" content="https://eelve.com/upload/2020/3/illustration-beats-elasticsearch-service-e783d59f07bc406c95c0942484f91c22.svg">
+<meta property="og:image" content="https://image.eelve.com/eblog/illustration-beats-header-overflow-1ba7ff649dbf41598d71ed24d1ade8da.png">
+<meta property="og:image" content="https://image.eelve.com/eblog/illustration-beats-lightweight-d6ee1493b6a64579a71fb63e2e95b4ac.svg">
+<meta property="og:image" content="https://image.eelve.com/eblog/screenshot-beats-modules-8dec132b351e4c6a9835d806e24e520e.jpg">
+<meta property="og:image" content="https://image.eelve.com/eblog/screenshot-infrastructure-ui-368a637d105b42a4b87d0df2b2158275.png">
+<meta property="og:image" content="https://image.eelve.com/eblog/illustration-beats-exstensible-555-white-bg-1767d533ca824a5290360eb027eed811.svg">
+<meta property="og:image" content="https://image.eelve.com/eblog/illustration-beats-elasticsearch-service-e783d59f07bc406c95c0942484f91c22.svg">
 <meta property="og:image" content="https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png">
-<meta property="og:updated_time" content="2020-03-06T15:52:54.335Z">
+<meta property="og:updated_time" content="2020-03-07T13:05:08.705Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Elastic Stack实战之Beats家族介绍">
 <meta name="twitter:description" content="【前面的话】前面我们已经体验过了Elasticsearch、Logstash和Kibanan，也是就是ELK三大剑客。记得在前文Elastic Stack实战之Logstash初体验中提到过Elastic Stack大家族中增加了一个新的高效率的采集组件，那就是Beats家族，那今天就来了解一下。  壹、什么是Beats Beats是轻量型数据采集器。 Beats平台集合了多种单一用途数据采集器。">
-<meta name="twitter:image" content="https://eelve.com/upload/2020/3/illustration-beats-header-overflow-1ba7ff649dbf41598d71ed24d1ade8da.png">
+<meta name="twitter:image" content="https://image.eelve.com/eblog/illustration-beats-header-overflow-1ba7ff649dbf41598d71ed24d1ade8da.png">
   <link rel="alternate" href="/atom.xml" title="南国薏米" type="application/atom+xml">
   <link rel="canonical" href="http://zzlve.win/2020/03/05/elastic-stack-shi-zhan-zhi-beats-jia-zu-jie-shao/">
 
@@ -331,7 +331,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-06 23:52:54" itemprop="dateModified" datetime="2020-03-06T23:52:54+08:00">2020-03-06</time>
+                <time title="修改时间：2020-03-07 21:05:08" itemprop="dateModified" datetime="2020-03-07T21:05:08+08:00">2020-03-07</time>
               </span>
             
           
@@ -370,7 +370,7 @@
       
         <p>【<strong>前面的话</strong>】前面我们已经体验过了Elasticsearch、Logstash和Kibanan，也是就是ELK三大剑客。记得在前文<a href="https://eelve.com/archives/logstash" target="_blank" rel="noopener">Elastic Stack实战之Logstash初体验</a>中提到过Elastic Stack大家族中增加了一个新的高效率的采集组件，那就是Beats家族，那今天就来了解一下。</p>
 <hr>
-<h1 id="壹、什么是Beats"><a href="#壹、什么是Beats" class="headerlink" title="壹、什么是Beats"></a>壹、什么是Beats</h1><p><img src="https://eelve.com/upload/2020/3/illustration-beats-header-overflow-1ba7ff649dbf41598d71ed24d1ade8da.png" alt="illustration-beats-header-overflow"></p>
+<h1 id="壹、什么是Beats"><a href="#壹、什么是Beats" class="headerlink" title="壹、什么是Beats"></a>壹、什么是Beats</h1><p><img src="https://image.eelve.com/eblog/illustration-beats-header-overflow-1ba7ff649dbf41598d71ed24d1ade8da.png" alt="illustration-beats-header-overflow"></p>
 <p><strong>Beats</strong>是轻量型数据采集器。</p>
 <p><strong>Beats</strong>平台集合了多种单一用途数据采集器。它们从成百上千或成千上万台机器和系统向 Logstash 或 Elasticsearch 发送数据。 </p>
 <h1 id="贰、Beats系列简介"><a href="#贰、Beats系列简介" class="headerlink" title="贰、Beats系列简介"></a>贰、Beats系列简介</h1><p>全品类采集器，搞定所有数据类型。</p>
@@ -393,23 +393,23 @@
 <h1 id="叁、Beats特点"><a href="#叁、Beats特点" class="headerlink" title="叁、Beats特点"></a>叁、Beats特点</h1><ul>
 <li>轻量型：Beats 是数据采集的得力工具。将Beats和您的容器一起置于服务器上，或者将Beats作为功能加以部署，然后便可在 Elasticsearch中集中处理数据。Beats能够采集符合 Elastic Common Schema(ECS)要求的数据，如果您希望拥有更加强大的处理能力，Beats能够将数据转发至Logstash进行转换和解析。 </li>
 </ul>
-<p><img src="https://eelve.com/upload/2020/3/illustration-beats-lightweight-d6ee1493b6a64579a71fb63e2e95b4ac.svg" alt="illustration-beats-lightweight"></p>
+<p><img src="https://image.eelve.com/eblog/illustration-beats-lightweight-d6ee1493b6a64579a71fb63e2e95b4ac.svg" alt="illustration-beats-lightweight"></p>
 <ul>
 <li>即插即用：借助模块加速数据可视化体验。Filebeat 和 Metricbeat 中包含的一些模块能够简化从关键数据源（例如云平台、容器和系统，以及网络技术）采集、解析和可视化信息的过程。只需运行一行命令，即可开始探索。 </li>
 </ul>
-<p><img src="https://eelve.com/upload/2020/3/screenshot-beats-modules-8dec132b351e4c6a9835d806e24e520e.jpg" alt="screenshot-beats-modules"></p>
+<p><img src="https://image.eelve.com/eblog/screenshot-beats-modules-8dec132b351e4c6a9835d806e24e520e.jpg" alt="screenshot-beats-modules"></p>
 <ul>
 <li>从环境中获得洞见：Beats 从您的专属环境中收集日志和指标，然后通过来自主机、诸如 Docker 和 Kubernetes 等容器平台以及云服务提供商的必要元数据对这些内容进行记录，然后再传输到 Elastic Stack 中。从监测容器到从无需服务器的架构传输数据，我们确保您拥有所需的上下文。 </li>
 </ul>
-<p><img src="https://eelve.com/upload/2020/3/screenshot-infrastructure-ui-368a637d105b42a4b87d0df2b2158275.png" alt="screenshot-infrastructure-ui"></p>
+<p><img src="https://image.eelve.com/eblog/screenshot-infrastructure-ui-368a637d105b42a4b87d0df2b2158275.png" alt="screenshot-infrastructure-ui"></p>
 <ul>
 <li>可扩展：缺少某种采集器？别着急。您可以自行构建并分享。每款开源 Beat 都以 libbeat（转发数据时所用的通用库）为基石。需要监控某个专用协议？自行构建。我们将为您提供所需的构建基块。</li>
 </ul>
-<p><img src="https://eelve.com/upload/2020/3/illustration-beats-exstensible-555-white-bg-1767d533ca824a5290360eb027eed811.svg" alt="illustration-beats-exstensible-555-white-bg"></p>
+<p><img src="https://image.eelve.com/eblog/illustration-beats-exstensible-555-white-bg-1767d533ca824a5290360eb027eed811.svg" alt="illustration-beats-exstensible-555-white-bg"></p>
 <ul>
 <li>托管式：Beats 同样能向 Elastic Cloud 输送数据</li>
 </ul>
-<p><img src="https://eelve.com/upload/2020/3/illustration-beats-elasticsearch-service-e783d59f07bc406c95c0942484f91c22.svg" alt="illustration-beats-elasticsearch-service"></p>
+<p><img src="https://image.eelve.com/eblog/illustration-beats-elasticsearch-service-e783d59f07bc406c95c0942484f91c22.svg" alt="illustration-beats-elasticsearch-service"></p>
 <hr>
 <p>【<strong>后面的话</strong>】本文只是Beasts家族的一个介绍，后面还有相关文章进行体验。Beats采集数据之后可以直接给Elasticsearch，也可以经过Logstash过滤处理之后再由Logstash存入Elasticsearch。在后面的文章会做相应的演示的。</p>
 <hr>
@@ -441,8 +441,8 @@
           <div class="post-nav">
             <div class="post-nav-next post-nav-item">
               
-                <a href="/2020/03/03/elastic-stack-shi-zhan-zhi-kibana-chu-ti-yan/" rel="next" title="Elastic Stack实战之Kibana初体验">
-                  <i class="fa fa-chevron-left"></i> Elastic Stack实战之Kibana初体验
+                <a href="/2020/03/05/elastic-stack-shi-zhan-zhi-beats-jia-zu-jie-shao-ben-di-ban/" rel="next" title="Elastic Stack实战之Beats家族介绍">
+                  <i class="fa fa-chevron-left"></i> Elastic Stack实战之Beats家族介绍
                 </a>
               
             </div>
@@ -451,7 +451,7 @@
 
             <div class="post-nav-prev post-nav-item">
               
-                <a href="/2020/03/07/elastic-stack-shi-zhan-zhi-filebeat-chu-ti-yan/" rel="prev" title="Elastic Stack实战之Filebeat初体验">
+                <a href="/2020/03/07/elastic-stack-shi-zhan-zhi-filebeat-chu-ti-yan-ben-di-ban/" rel="prev" title="Elastic Stack实战之Filebeat初体验">
                   Elastic Stack实战之Filebeat初体验 <i class="fa fa-chevron-right"></i>
                 </a>
               
@@ -517,7 +517,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-count">43</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -550,7 +550,9 @@
         
           
         
-        <span class="site-state-item-count">9</span>
+          
+        
+        <span class="site-state-item-count">10</span>
         <span class="site-state-item-name">分类</span>
         </a>
       </div>
@@ -635,7 +637,9 @@
         
           
         
-        <span class="site-state-item-count">35</span>
+          
+        
+        <span class="site-state-item-count">36</span>
         <span class="site-state-item-name">标签</span>
         </a>
       </div>
@@ -747,7 +751,7 @@
 </div>
 <div class="theme-info">
 <div class="powered-by"></div>
-<span class="post-count">博客全站共51.7k字</span>
+<span class="post-count">博客全站共66.7k字</span>
 </div>
 
         

@@ -63,24 +63,24 @@
 <meta property="og:site_name" content="南国薏米">
 <meta property="og:description" content="【前面的话】前文介绍了Elastic Stack的Beats家族，今天我们就来体验其中的专门用于采集文件的Filebeat，走起。  壹、软件版本1234567Centos：CentOS-7-x86_64-Minimal-1908VM: 15.5.0 build-14665864Java: 1.8.0_211Elasticsearch: elasticsearch-7.6.0Logstash: l">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://eelve.com/upload/2020/3/animated-gif-logs-ui-optimized-7bf3c88845c84ee3a0564f7a608726b5.gif">
-<meta property="og:image" content="https://eelve.com/upload/2020/3/filebeat-modules-system-1fcfe648ed244a3eb6981805e48eb805.jpg">
-<meta property="og:image" content="https://eelve.com/upload/2020/3/filebeat-modules-nginx-60aafcc8bf6e416e8489e30b85e84446.jpg">
-<meta property="og:image" content="https://eelve.com/upload/2020/3/filebeat-modules-mysql-532077e16cc3495291fbe4c7b15e7f36.jpg">
-<meta property="og:image" content="https://eelve.com/upload/2020/3/filebeat-modules-auditd-593f8272484b4aa4ac01bc3fcd596d43.jpg">
-<meta property="og:image" content="https://eelve.com/upload/2020/3/filebeat-diagram-71397eba004043f3a0593620b0139364.svg">
-<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030701-f6f0c410456c47e7872c7719e1fe4205.png">
-<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030702-c17fe51d42ca47a3b4c452fa14131e92.png">
-<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030703-14356801335d4ea8a4256bce80a9bf5f.png">
-<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030704-84aabcd7f21a4af0ab1ccb694e2f5f47.png">
-<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030705-77c1f59279aa40d4b8319560da4a6ae5.png">
-<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030706-9f858efbcaba4dd898b07e54c2f42a0d.png">
+<meta property="og:image" content="https://image.eelve.com/eblog/animated-gif-logs-ui-optimized-7bf3c88845c84ee3a0564f7a608726b5.gif">
+<meta property="og:image" content="https://image.eelve.com/eblog/filebeat-modules-system-1fcfe648ed244a3eb6981805e48eb805.jpg">
+<meta property="og:image" content="https://image.eelve.com/eblog/filebeat-modules-nginx-60aafcc8bf6e416e8489e30b85e84446.jpg">
+<meta property="og:image" content="https://image.eelve.com/eblog/filebeat-modules-mysql-532077e16cc3495291fbe4c7b15e7f36.jpg">
+<meta property="og:image" content="https://image.eelve.com/eblog/filebeat-modules-auditd-593f8272484b4aa4ac01bc3fcd596d43.jpg">
+<meta property="og:image" content="https://image.eelve.com/eblog/filebeat-diagram-71397eba004043f3a0593620b0139364.svg">
+<meta property="og:image" content="https://image.eelve.com/eblog/2020030701-f6f0c410456c47e7872c7719e1fe4205.png">
+<meta property="og:image" content="https://image.eelve.com/eblog/2020030702-c17fe51d42ca47a3b4c452fa14131e92.png">
+<meta property="og:image" content="https://image.eelve.com/eblog/2020030703-14356801335d4ea8a4256bce80a9bf5f.png">
+<meta property="og:image" content="https://image.eelve.com/eblog/2020030704-84aabcd7f21a4af0ab1ccb694e2f5f47.png">
+<meta property="og:image" content="https://image.eelve.com/eblog/2020030705-77c1f59279aa40d4b8319560da4a6ae5.png">
+<meta property="og:image" content="https://image.eelve.com/eblog/2020030706-9f858efbcaba4dd898b07e54c2f42a0d.png">
 <meta property="og:image" content="https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png">
-<meta property="og:updated_time" content="2020-03-07T12:33:57.108Z">
+<meta property="og:updated_time" content="2020-03-07T13:00:30.886Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Elastic Stack实战之Filebeat初体验">
 <meta name="twitter:description" content="【前面的话】前文介绍了Elastic Stack的Beats家族，今天我们就来体验其中的专门用于采集文件的Filebeat，走起。  壹、软件版本1234567Centos：CentOS-7-x86_64-Minimal-1908VM: 15.5.0 build-14665864Java: 1.8.0_211Elasticsearch: elasticsearch-7.6.0Logstash: l">
-<meta name="twitter:image" content="https://eelve.com/upload/2020/3/animated-gif-logs-ui-optimized-7bf3c88845c84ee3a0564f7a608726b5.gif">
+<meta name="twitter:image" content="https://image.eelve.com/eblog/animated-gif-logs-ui-optimized-7bf3c88845c84ee3a0564f7a608726b5.gif">
   <link rel="alternate" href="/atom.xml" title="南国薏米" type="application/atom+xml">
   <link rel="canonical" href="http://zzlve.win/2020/03/07/elastic-stack-shi-zhan-zhi-filebeat-chu-ti-yan/">
 
@@ -326,7 +326,7 @@
                 
               
 
-              <time title="创建时间：2020-03-07 17:49:22 / 修改时间：20:33:57" itemprop="dateCreated datePublished" datetime="2020-03-07T17:49:22+08:00">2020-03-07</time>
+              <time title="创建时间：2020-03-07 17:49:22 / 修改时间：21:00:30" itemprop="dateCreated datePublished" datetime="2020-03-07T17:49:22+08:00">2020-03-07</time>
             </span>
           
             
@@ -374,7 +374,7 @@
 <ul>
 <li>汇总、“tail -f”和搜索：启动 Filebeat 后，打开 Logs UI，直接在 Kibana 中观看对您的文件进行 tail 操作的过程。通过搜索栏按照服务、应用程序、主机、数据中心或者其他条件进行筛选，以跟踪您的全部汇总日志中的异常行为。</li>
 </ul>
-<p><img src="https://eelve.com/upload/2020/3/animated-gif-logs-ui-optimized-7bf3c88845c84ee3a0564f7a608726b5.gif" alt="animated-gif-logs-ui-optimized"></p>
+<p><img src="https://image.eelve.com/eblog/animated-gif-logs-ui-optimized-7bf3c88845c84ee3a0564f7a608726b5.gif" alt="animated-gif-logs-ui-optimized"></p>
 <ul>
 <li><p>性能稳健，不错过任何检测信号：无论在任何环境中，随时都潜伏着应用程序中断的风险。Filebeat 能够读取并转发日志行，如果出现中断，还会在一切恢复正常后，从中断前停止的位置继续开始。</p>
 </li>
@@ -382,19 +382,19 @@
 <ul>
 <li>系统</li>
 </ul>
-<p><img src="https://eelve.com/upload/2020/3/filebeat-modules-system-1fcfe648ed244a3eb6981805e48eb805.jpg" alt="filebeat-modules-system"></p>
+<p><img src="https://image.eelve.com/eblog/filebeat-modules-system-1fcfe648ed244a3eb6981805e48eb805.jpg" alt="filebeat-modules-system"></p>
 <ul>
 <li>NGINX</li>
 </ul>
-<p><img src="https://eelve.com/upload/2020/3/filebeat-modules-nginx-60aafcc8bf6e416e8489e30b85e84446.jpg" alt="filebeat-modules-nginx"></p>
+<p><img src="https://image.eelve.com/eblog/filebeat-modules-nginx-60aafcc8bf6e416e8489e30b85e84446.jpg" alt="filebeat-modules-nginx"></p>
 <ul>
 <li>MySQL</li>
 </ul>
-<p><img src="https://eelve.com/upload/2020/3/filebeat-modules-mysql-532077e16cc3495291fbe4c7b15e7f36.jpg" alt="filebeat-modules-mysql"></p>
+<p><img src="https://image.eelve.com/eblog/filebeat-modules-mysql-532077e16cc3495291fbe4c7b15e7f36.jpg" alt="filebeat-modules-mysql"></p>
 <ul>
 <li>Auditd</li>
 </ul>
-<p><img src="https://eelve.com/upload/2020/3/filebeat-modules-auditd-593f8272484b4aa4ac01bc3fcd596d43.jpg" alt="filebeat-modules-auditd"></p>
+<p><img src="https://image.eelve.com/eblog/filebeat-modules-auditd-593f8272484b4aa4ac01bc3fcd596d43.jpg" alt="filebeat-modules-auditd"></p>
 </li>
 </ul>
 <ul>
@@ -403,7 +403,7 @@
 <li><p>它不会导致您的管道过载：当将数据发送到 Logstash 或 Elasticsearch 时，Filebeat 使用背压敏感协议，以应对更多的数据量。如果 Logstash 正在忙于处理数据，则会告诉 Filebeat 减慢读取速度。一旦拥堵得到解决，Filebeat 就会恢复到原来的步伐并继续传输数据。 </p>
 </li>
 </ul>
-<p><img src="https://eelve.com/upload/2020/3/filebeat-diagram-71397eba004043f3a0593620b0139364.svg" alt="filebeat-diagram"></p>
+<p><img src="https://image.eelve.com/eblog/filebeat-diagram-71397eba004043f3a0593620b0139364.svg" alt="filebeat-diagram"></p>
 <ul>
 <li><p>输送至 Elasticsearch 或 Logstash。在 Kibana 中实现可视化。</p>
 <p>Filebeat 是 Elastic Stack 的一部分，因此能够与 Logstash、Elasticsearch 和 Kibana 无缝协作。无论您要使用 Logstash 转换或充实日志和文件，还是在 Elasticsearch 中随意处理一些数据分析，亦或在 Kibana 中构建和分享仪表板，Filebeat 都能轻松地将您的数据发送至最关键的地方。</p>
@@ -450,7 +450,7 @@
 <ul>
 <li>刷新页面观察结果</li>
 </ul>
-<p><img src="https://eelve.com/upload/2020/3/2020030701-f6f0c410456c47e7872c7719e1fe4205.png" alt="2020030701"><br><img src="https://eelve.com/upload/2020/3/2020030702-c17fe51d42ca47a3b4c452fa14131e92.png" alt="2020030702"></p>
+<p><img src="https://image.eelve.com/eblog/2020030701-f6f0c410456c47e7872c7719e1fe4205.png" alt="2020030701"><br><img src="https://image.eelve.com/eblog/2020030702-c17fe51d42ca47a3b4c452fa14131e92.png" alt="2020030702"></p>
 <p>我们可以看到采集已经成功，并且我们配置的tags也已经成功了</p>
 <h2 id="3-6-使用nginx-module采集nginx日志"><a href="#3-6-使用nginx-module采集nginx日志" class="headerlink" title="3.6 使用nginx module采集nginx日志"></a>3.6 使用nginx module采集nginx日志</h2><ul>
 <li>开启filebeat的nginx module</li>
@@ -479,7 +479,7 @@
 <ul>
 <li>查看结果</li>
 </ul>
-<p><img src="https://eelve.com/upload/2020/3/2020030703-14356801335d4ea8a4256bce80a9bf5f.png" alt="2020030703"></p>
+<p><img src="https://image.eelve.com/eblog/2020030703-14356801335d4ea8a4256bce80a9bf5f.png" alt="2020030703"></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	&quot;msg&quot;: &quot;2020-02-29 02:30:26,634 [myid:] - WARN  [NIOServerCxn.Factory:0.0.0.0\/0.0.0.0:2181:NIOServerCnxn@376] - Unable to read additional data from client sessionid 0x0, likely client has closed socket&quot;,</span><br><span class="line">	&quot;rawmsg&quot;: &quot;2020-02-29 02:30:26,634 [myid:] - WARN  [NIOServerCxn.Factory:0.0.0.0\/0.0.0.0:2181:NIOServerCnxn@376] - Unable to read additional data from client sessionid 0x0, likely client has closed socket&quot;,</span><br><span class="line">	&quot;timereported&quot;: &quot;2020-02-29T10:30:26.635186+08:00&quot;,</span><br><span class="line">	&quot;hostname&quot;: &quot;izbp1a4b02uc2nj550yzs1z&quot;,</span><br><span class="line">	&quot;syslogtag&quot;: &quot;journal:&quot;,</span><br><span class="line">	&quot;inputname&quot;: &quot;imjournal&quot;,</span><br><span class="line">	&quot;fromhost&quot;: &quot;izbp1a4b02uc2nj550yzs1z&quot;,</span><br><span class="line">	&quot;fromhost-ip&quot;: &quot;127.0.0.1&quot;,</span><br><span class="line">	&quot;pri&quot;: &quot;14&quot;,</span><br><span class="line">	&quot;syslogfacility&quot;: &quot;1&quot;,</span><br><span class="line">	&quot;syslogseverity&quot;: &quot;6&quot;,</span><br><span class="line">	&quot;timegenerated&quot;: &quot;2020-02-29T10:30:26.635186+08:00&quot;,</span><br><span class="line">	&quot;programname&quot;: &quot;journal&quot;,</span><br><span class="line">	&quot;protocol-version&quot;: &quot;0&quot;,</span><br><span class="line">	&quot;structured-data&quot;: &quot;-&quot;,</span><br><span class="line">	&quot;app-name&quot;: &quot;journal&quot;,</span><br><span class="line">	&quot;procid&quot;: &quot;-&quot;,</span><br><span class="line">	&quot;msgid&quot;: &quot;-&quot;,</span><br><span class="line">	&quot;uuid&quot;: null,</span><br><span class="line">	&quot;$!&quot;: &#123;</span><br><span class="line">		&quot;_UID&quot;: &quot;0&quot;,</span><br><span class="line">		&quot;_GID&quot;: &quot;0&quot;,</span><br><span class="line">		&quot;_CAP_EFFECTIVE&quot;: &quot;1fffffffff&quot;,</span><br><span class="line">		&quot;_BOOT_ID&quot;: &quot;1c6d86e336cc4dc7b733ea3c53351d65&quot;,</span><br><span class="line">		&quot;_MACHINE_ID&quot;: &quot;f0f31005fb5a436d88e3c6cbf54e25aa&quot;,</span><br><span class="line">		&quot;_HOSTNAME&quot;: &quot;izbp1a4b02uc2nj550yzs1z&quot;,</span><br><span class="line">		&quot;_SYSTEMD_SLICE&quot;: &quot;system.slice&quot;,</span><br><span class="line">		&quot;PRIORITY&quot;: &quot;6&quot;,</span><br><span class="line">		&quot;_TRANSPORT&quot;: &quot;journal&quot;,</span><br><span class="line">		&quot;CONTAINER_ID_FULL&quot;: &quot;bdc76f9b56dbeb3f5005ca110d72945c6b949178b6948345febf5bc657433703&quot;,</span><br><span class="line">		&quot;CONTAINER_NAME&quot;: &quot;zookeeper&quot;,</span><br><span class="line">		&quot;CONTAINER_TAG&quot;: &quot;bdc76f9b56db&quot;,</span><br><span class="line">		&quot;CONTAINER_ID&quot;: &quot;bdc76f9b56db&quot;,</span><br><span class="line">		&quot;_PID&quot;: &quot;16046&quot;,</span><br><span class="line">		&quot;_COMM&quot;: &quot;dockerd-current&quot;,</span><br><span class="line">		&quot;_EXE&quot;: &quot;\/usr\/bin\/dockerd-current&quot;,</span><br><span class="line">		&quot;_CMDLINE&quot;: &quot;\/usr\/bin\/dockerd-current --add-runtime docker-runc=\/usr\/libexec\/docker\/docker-runc-current --default-runtime=docker-runc --exec-opt native.cgroupdriver=systemd --userland-proxy-path=\/usr\/libexec\/docker\/docker-proxy-current --init-path=\/usr\/libexec\/docker\/docker-init-current --seccomp-profile=\/etc\/docker\/seccomp.json --selinux-enabled --log-driver=journald --signature-verification=false --storage-driver overlay2&quot;,</span><br><span class="line">		&quot;_SYSTEMD_CGROUP&quot;: &quot;\/system.slice\/docker.service&quot;,</span><br><span class="line">		&quot;_SYSTEMD_UNIT&quot;: &quot;docker.service&quot;,</span><br><span class="line">		&quot;MESSAGE&quot;: &quot;2020-02-29 02:30:26,634 [myid:] - WARN  [NIOServerCxn.Factory:0.0.0.0\/0.0.0.0:2181:NIOServerCnxn@376] - Unable to read additional data from client sessionid 0x0, likely client has closed socket&quot;,</span><br><span class="line">		&quot;_SOURCE_REALTIME_TIMESTAMP&quot;: &quot;1582943426634852&quot;</span><br><span class="line">	&#125;</span><br><span class="line">&#125; &#123;</span><br><span class="line">	&quot;_index&quot;: &quot;filebeat-7.6.0-2020.03.07-000001&quot;,</span><br><span class="line">	&quot;_type&quot;: &quot;_doc&quot;,</span><br><span class="line">	&quot;_id&quot;: &quot;hBtStHAB2wqxgggKYbTw&quot;,</span><br><span class="line">	&quot;_version&quot;: 1,</span><br><span class="line">	&quot;_score&quot;: 1,</span><br><span class="line">	&quot;_source&quot;: &#123;</span><br><span class="line">		&quot;agent&quot;: &#123;</span><br><span class="line">			&quot;hostname&quot;: &quot;192.168.237.11&quot;,</span><br><span class="line">			&quot;id&quot;: &quot;4f346e18-c77b-4a8c-ae9a-f97b2007be60&quot;,</span><br><span class="line">			&quot;ephemeral_id&quot;: &quot;b9759c98-cfbe-4240-8c7d-1e64c1caeec3&quot;,</span><br><span class="line">			&quot;type&quot;: &quot;filebeat&quot;,</span><br><span class="line">			&quot;version&quot;: &quot;7.6.0&quot;</span><br><span class="line">		&#125;,</span><br><span class="line">		&quot;nginx&quot;: &#123;</span><br><span class="line">			&quot;access&quot;: &#123;</span><br><span class="line">				&quot;remote_ip_list&quot;: [</span><br><span class="line">					&quot;192.168.237.1&quot;</span><br><span class="line">				]</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;,</span><br><span class="line">		&quot;log&quot;: &#123;</span><br><span class="line">			&quot;file&quot;: &#123;</span><br><span class="line">				&quot;path&quot;: &quot;/usr/local/nginx/logs/access.log&quot;</span><br><span class="line">			&#125;,</span><br><span class="line">			&quot;offset&quot;: 83567</span><br><span class="line">		&#125;,</span><br><span class="line">		&quot;source&quot;: &#123;</span><br><span class="line">			&quot;address&quot;: &quot;192.168.237.1&quot;,</span><br><span class="line">			&quot;ip&quot;: &quot;192.168.237.1&quot;</span><br><span class="line">		&#125;,</span><br><span class="line">		&quot;fileset&quot;: &#123;</span><br><span class="line">			&quot;name&quot;: &quot;access&quot;</span><br><span class="line">		&#125;,</span><br><span class="line">		&quot;url&quot;: &#123;</span><br><span class="line">			&quot;original&quot;: &quot;/&quot;</span><br><span class="line">		&#125;,</span><br><span class="line">		&quot;input&quot;: &#123;</span><br><span class="line">			&quot;type&quot;: &quot;log&quot;</span><br><span class="line">		&#125;,</span><br><span class="line">		&quot;@timestamp&quot;: &quot;2020-03-07T09:27:40.000Z&quot;,</span><br><span class="line">		&quot;ecs&quot;: &#123;</span><br><span class="line">			&quot;version&quot;: &quot;1.4.0&quot;</span><br><span class="line">		&#125;,</span><br><span class="line">		&quot;service&quot;: &#123;</span><br><span class="line">			&quot;type&quot;: &quot;nginx&quot;</span><br><span class="line">		&#125;,</span><br><span class="line">		&quot;host&quot;: &#123;</span><br><span class="line">			&quot;name&quot;: &quot;192.168.237.11&quot;</span><br><span class="line">		&#125;,</span><br><span class="line">		&quot;http&quot;: &#123;</span><br><span class="line">			&quot;request&quot;: &#123;</span><br><span class="line">				&quot;referrer&quot;: &quot;-&quot;,</span><br><span class="line">				&quot;method&quot;: &quot;GET&quot;</span><br><span class="line">			&#125;,</span><br><span class="line">			&quot;response&quot;: &#123;</span><br><span class="line">				&quot;status_code&quot;: 304,</span><br><span class="line">				&quot;body&quot;: &#123;</span><br><span class="line">					&quot;bytes&quot;: 0</span><br><span class="line">				&#125;</span><br><span class="line">			&#125;,</span><br><span class="line">			&quot;version&quot;: &quot;1.1&quot;</span><br><span class="line">		&#125;,</span><br><span class="line">		&quot;event&quot;: &#123;</span><br><span class="line">			&quot;timezone&quot;: &quot;+08:00&quot;,</span><br><span class="line">			&quot;created&quot;: &quot;2020-03-07T09:27:41.512Z&quot;,</span><br><span class="line">			&quot;module&quot;: &quot;nginx&quot;,</span><br><span class="line">			&quot;dataset&quot;: &quot;nginx.access&quot;</span><br><span class="line">		&#125;,</span><br><span class="line">		&quot;user&quot;: &#123;</span><br><span class="line">			&quot;name&quot;: &quot;-&quot;</span><br><span class="line">		&#125;,</span><br><span class="line">		&quot;user_agent&quot;: &#123;</span><br><span class="line">			&quot;original&quot;: &quot;Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36&quot;,</span><br><span class="line">			&quot;os&quot;: &#123;</span><br><span class="line">				&quot;name&quot;: &quot;Windows&quot;,</span><br><span class="line">				&quot;version&quot;: &quot;10&quot;,</span><br><span class="line">				&quot;full&quot;: &quot;Windows 10&quot;</span><br><span class="line">			&#125;,</span><br><span class="line">			&quot;name&quot;: &quot;Chrome&quot;,</span><br><span class="line">			&quot;device&quot;: &#123;</span><br><span class="line">				&quot;name&quot;: &quot;Other&quot;</span><br><span class="line">			&#125;,</span><br><span class="line">			&quot;version&quot;: &quot;80.0.3987.132&quot;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>我们开用使用filebeat提供的modules采集nginx日志也成功,而且可以看到展示的信息也更加完善了。可以看到filebeat提供的各种modules就是帮我们做了一些解析工作，其他modules的用法类似。</p>
@@ -497,7 +497,7 @@
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#安装仪表盘到Kibana</span><br><span class="line">./metricbeat setup --dashboards</span><br></pre></td></tr></table></figure>
 
-<p><img src="https://eelve.com/upload/2020/3/2020030704-84aabcd7f21a4af0ab1ccb694e2f5f47.png" alt="2020030704"></p>
+<p><img src="https://image.eelve.com/eblog/2020030704-84aabcd7f21a4af0ab1ccb694e2f5f47.png" alt="2020030704"></p>
 <ul>
 <li>启动Filebeat</li>
 </ul>
@@ -506,7 +506,7 @@
 <ul>
 <li>观察结果</li>
 </ul>
-<p><img src="https://eelve.com/upload/2020/3/2020030705-77c1f59279aa40d4b8319560da4a6ae5.png" alt="2020030705"><br><img src="https://eelve.com/upload/2020/3/2020030706-9f858efbcaba4dd898b07e54c2f42a0d.png" alt="2020030706"></p>
+<p><img src="https://image.eelve.com/eblog/2020030705-77c1f59279aa40d4b8319560da4a6ae5.png" alt="2020030705"><br><img src="https://image.eelve.com/eblog/2020030706-9f858efbcaba4dd898b07e54c2f42a0d.png" alt="2020030706"></p>
 <p>可以看到Kibana内置的nginx的仪表盘的展示情况，展示相当仿佛，并且还可以随着时间变化而刷新</p>
 <h1 id="肆、Filebeat工作原理"><a href="#肆、Filebeat工作原理" class="headerlink" title="肆、Filebeat工作原理"></a>肆、Filebeat工作原理</h1><p>Filebeat由两个主要组件组成：prospector 和 harvester。</p>
 <ul>
@@ -577,8 +577,8 @@
           <div class="post-nav">
             <div class="post-nav-next post-nav-item">
               
-                <a href="/2020/03/05/elastic-stack-shi-zhan-zhi-beats-jia-zu-jie-shao/" rel="next" title="Elastic Stack实战之Beats家族介绍">
-                  <i class="fa fa-chevron-left"></i> Elastic Stack实战之Beats家族介绍
+                <a href="/2020/03/07/elastic-stack-shi-zhan-zhi-filebeat-chu-ti-yan-ben-di-ban/" rel="next" title="Elastic Stack实战之Filebeat初体验">
+                  <i class="fa fa-chevron-left"></i> Elastic Stack实战之Filebeat初体验
                 </a>
               
             </div>
@@ -587,7 +587,7 @@
 
             <div class="post-nav-prev post-nav-item">
               
-                <a href="/2020/03/07/elastic-stack-shi-zhan-zhi-metricbeat-chu-ti-yan/" rel="prev" title="Elastic Stack实战之Metricbeat初体验">
+                <a href="/2020/03/07/elastic-stack-shi-zhan-zhi-metricbeat-chu-ti-yan-ben-di-ban/" rel="prev" title="Elastic Stack实战之Metricbeat初体验">
                   Elastic Stack实战之Metricbeat初体验 <i class="fa fa-chevron-right"></i>
                 </a>
               
@@ -653,7 +653,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">36</span>
+          <span class="site-state-item-count">43</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -686,7 +686,9 @@
         
           
         
-        <span class="site-state-item-count">9</span>
+          
+        
+        <span class="site-state-item-count">10</span>
         <span class="site-state-item-name">分类</span>
         </a>
       </div>
@@ -771,7 +773,9 @@
         
           
         
-        <span class="site-state-item-count">35</span>
+          
+        
+        <span class="site-state-item-count">36</span>
         <span class="site-state-item-name">标签</span>
         </a>
       </div>
@@ -883,7 +887,7 @@
 </div>
 <div class="theme-info">
 <div class="powered-by"></div>
-<span class="post-count">博客全站共51.7k字</span>
+<span class="post-count">博客全站共66.7k字</span>
 </div>
 
         

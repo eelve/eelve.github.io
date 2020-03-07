@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+
+
+
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="generator" content="Hexo 3.9.0">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/virrina.jpg?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/virrina.jpg?v=7.3.0">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/virrina.jpg?v=7.3.0">
+  <link rel="mask-icon" href="/images/virrina.jpg?v=7.3.0" color="#222">
+
+<link rel="stylesheet" href="/css/main.css?v=7.3.0">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.7.0">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '7.3.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    save_scroll: false,
+    copycode: {"enable":false,"show_result":false,"style":null},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    }
+  };
+</script>
+
+  <meta name="description" content="【前面的话】前面介绍了Elastic Stack的Beats家族，并且体验了Filebeat，接下来我们就继续来体验一下  壹、软件版本1234567Centos：CentOS-7-x86_64-Minimal-1908VM: 15.5.0 build-14665864Java: 1.8.0_211Elasticsearch: elasticsearch-7.6.0Logstash: logsta">
+<meta name="keywords" content="hide">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Elastic Stack实战之Metricbeat初体验">
+<meta property="og:url" content="http://zzlve.win/2020/03/07/elastic-stack-shi-zhan-zhi-metricbeat-chu-ti-yan-ben-di-ban/index.html">
+<meta property="og:site_name" content="南国薏米">
+<meta property="og:description" content="【前面的话】前面介绍了Elastic Stack的Beats家族，并且体验了Filebeat，接下来我们就继续来体验一下  壹、软件版本1234567Centos：CentOS-7-x86_64-Minimal-1908VM: 15.5.0 build-14665864Java: 1.8.0_211Elasticsearch: elasticsearch-7.6.0Logstash: logsta">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/screenshot-infrastructure-ui-d2c3e13f47f74d82a6f0f6c2799d94f8.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/metricbeat-modules-system-7f76e2200cfb40089bb112f50aae710e.jpg">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/container-monitoring-screenshot-carousel-docker-908943a547964d11996a9775855235f0.jpg">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/metricbeat-modules-mongo-d5d719649a7a4e2a9bf9f1a984528efc.jpg">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/container-monitoring-screenshot-carousel-kubernetes-0ee5a1fdacf74c3b82d12c81c5c14af1.jpg">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030707-906f151d4ab34f7c8bbcfea65d83f8e9.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030708-ba77ee4e36c6478c8b816a314d730f80.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030709-a40f0d5711fc4707a416e2c39bbbcb79.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030710-267475b4b77648ccb8d57c0fece62055.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030711-c1217270b05241ca96fa42f063ba8d9f.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030712-8ae5730e5301448b974d67545ff98e7a.png">
+<meta property="og:image" content="https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png">
+<meta property="og:updated_time" content="2020-03-07T13:39:12.030Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Elastic Stack实战之Metricbeat初体验">
+<meta name="twitter:description" content="【前面的话】前面介绍了Elastic Stack的Beats家族，并且体验了Filebeat，接下来我们就继续来体验一下  壹、软件版本1234567Centos：CentOS-7-x86_64-Minimal-1908VM: 15.5.0 build-14665864Java: 1.8.0_211Elasticsearch: elasticsearch-7.6.0Logstash: logsta">
+<meta name="twitter:image" content="https://eelve.com/upload/2020/3/screenshot-infrastructure-ui-d2c3e13f47f74d82a6f0f6c2799d94f8.png">
+  <link rel="alternate" href="/atom.xml" title="南国薏米" type="application/atom+xml">
+  <link rel="canonical" href="http://zzlve.win/2020/03/07/elastic-stack-shi-zhan-zhi-metricbeat-chu-ti-yan-ben-di-ban/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+
+  <title>Elastic Stack实战之Metricbeat初体验 | 南国薏米</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?6206b88a2a2be02cc7450a7cb8c20126";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+  <!-- 页面点击小红心 -->
+  <script type="text/javascript" src="/js/clicklove.js"></script>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  <div class="container sidebar-position-left">
+    <div class="headband"></div>
+    <a href="https://github.com/eelve" class="github-corner" aria-label="View source on GitHub"><svg width="80" height="80" viewBox="0 0 250 250" style="fill:#484849; color:#fff; position: absolute; top: 0; border: 0; right: 0;" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a><style>.github-corner:hover .octo-arm{animation:octocat-wave 560ms ease-in-out}@keyframes octocat-wave{0%,100%{transform:rotate(0)}20%,60%{transform:rotate(-25deg)}40%,80%{transform:rotate(10deg)}}@media (max-width:500px){.github-corner:hover .octo-arm{animation:none}.github-corner .octo-arm{animation:octocat-wave 560ms ease-in-out}}</style>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">南国薏米</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">南国不须收薏苡,百年终竟是芭蕉。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+      
+      
+      
+        
+        <li class="menu-item menu-item-home">
+      
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-about">
+      
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-tags">
+      
+    
+
+    <a href="/tags/" rel="section"><i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-categories">
+      
+    
+
+    <a href="/categories/" rel="section"><i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-archives">
+      
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+      
+      
+      
+        
+        <li class="menu-item menu-item-commonweal">
+      
+    
+
+    <a href="/404.html" rel="section"><i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>公益 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a href="javascript:;" class="popup-trigger">
+        
+          <i class="menu-item-icon fa fa-search fa-fw"></i> <br>搜索</a>
+      </li>
+    
+  </ul>
+
+    <div class="site-search">
+      
+  <div class="popup search-popup local-search-popup">
+  <div class="local-search-header clearfix">
+    <span class="search-icon">
+      <i class="fa fa-search"></i>
+    </span>
+    <span class="popup-btn-close">
+      <i class="fa fa-times-circle"></i>
+    </span>
+    <div class="local-search-input-wrapper">
+      <input autocomplete="off"
+             placeholder="搜索..." spellcheck="false"
+             type="text" id="local-search-input">
+    </div>
+  </div>
+  <div id="local-search-result"></div>
+</div>
+
+
+    </div>
+</nav>
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+            
+
+          <div id="content" class="content page-post-detail">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://zzlve.win/2020/03/07/elastic-stack-shi-zhan-zhi-metricbeat-chu-ti-yan-ben-di-ban/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Chillo">
+      <meta itemprop="description" content="A human being,who loves football and music.">
+      <meta itemprop="image" content="/images/virrina.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="南国薏米">
+    </span>
+      <header class="post-header">
+
+        
+          <h1 class="post-title" itemprop="name headline">Elastic Stack实战之Metricbeat初体验
+
+            
+          </h1>
+        
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              
+                
+              
+
+              <time title="创建时间：2020-03-07 21:36:20 / 修改时间：21:39:12" itemprop="dateCreated datePublished" datetime="2020-03-07T21:36:20+08:00">2020-03-07</time>
+            </span>
+          
+            
+
+            
+          
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing"><a href="/categories/hide/" itemprop="url" rel="index"><span itemprop="name">hide</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            <span class="post-meta-item" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>
+            </span>
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>【<strong>前面的话</strong>】<a href="https://eelve.com/archives/beats" target="_blank" rel="noopener">前面介绍了Elastic Stack的Beats家族</a>，并且<a href="https://eelve.com/archives/filebeat" target="_blank" rel="noopener">体验了Filebeat</a>，接下来我们就继续来体验一下</p>
+<hr>
+<h1 id="壹、软件版本"><a href="#壹、软件版本" class="headerlink" title="壹、软件版本"></a>壹、软件版本</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">Centos：CentOS-7-x86_64-Minimal-1908</span></span><br><span class="line"><span class="attr">VM:</span> <span class="number">15.5</span><span class="number">.0</span> <span class="string">build-14665864</span></span><br><span class="line"><span class="attr">Java:</span> <span class="number">1.8</span><span class="string">.0_211</span></span><br><span class="line"><span class="attr">Elasticsearch:</span> <span class="string">elasticsearch-7.6.0</span></span><br><span class="line"><span class="attr">Logstash:</span> <span class="string">logstash-7.6.0</span></span><br><span class="line"><span class="attr">Kibana:</span> <span class="string">kibana-7.6.0</span></span><br><span class="line"><span class="string">MetricBeat：filebeat-7.6.0</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="贰、MetricBeat介绍"><a href="#贰、MetricBeat介绍" class="headerlink" title="贰、MetricBeat介绍"></a>贰、MetricBeat介绍</h1><p>MetricBeat是一种轻量型指标采集器，用于从系统和服务收集指标。Metricbeat 能够以一种轻量型的方式，输送各种系统和服务统计数据，从 CPU 到内存，从 Redis 到 Nginx，不一而足。</p>
+<ul>
+<li>系统级监控，更简洁</li>
+</ul>
+<p><img src="https://eelve.com/upload/2020/3/screenshot-infrastructure-ui-d2c3e13f47f74d82a6f0f6c2799d94f8.png" alt="screenshot-infrastructure-ui"></p>
+<ul>
+<li><p>单个二进制文件提供多种模块</p>
+<p>Metricbeat 提供多种内部模块，这些模块可从多项服务（诸如 Apache、Jolokia、NGINX、MongoDB、MySQL、PostgreSQL、Prometheus 等等）中收集指标。安装简单，完全零依赖性。只需在配置文件中启用您所需的模块即可。</p>
+<p>而且，如果您没有看到要找的模块，还可以自己构建。以 Go 语言编写 Metricbeat 模块，过程十分简单。 </p>
+<ul>
+<li>系统</li>
+</ul>
+<p><img src="https://eelve.com/upload/2020/3/metricbeat-modules-system-7f76e2200cfb40089bb112f50aae710e.jpg" alt="metricbeat-modules-system"></p>
+<ul>
+<li>Docker</li>
+</ul>
+<p><img src="https://eelve.com/upload/2020/3/container-monitoring-screenshot-carousel-docker-908943a547964d11996a9775855235f0.jpg" alt="container-monitoring-screenshot-carousel-docker"></p>
+<ul>
+<li>MongoDB</li>
+</ul>
+<p><img src="https://eelve.com/upload/2020/3/metricbeat-modules-mongo-d5d719649a7a4e2a9bf9f1a984528efc.jpg" alt="metricbeat-modules-mongo"></p>
+<ul>
+<li>Kubernetes</li>
+</ul>
+<p><img src="https://eelve.com/upload/2020/3/container-monitoring-screenshot-carousel-kubernetes-0ee5a1fdacf74c3b82d12c81c5c14af1.jpg" alt="container-monitoring-screenshot-carousel-kubernetes"></p>
+</li>
+<li><p>容器就绪 </p>
+<p>近来是不是所有工作都转移到了 Docker 中？通过 Elastic Stack，您能够轻松地监测容器。将 Metricbeat 部署到同一台主机上的一个单独容器后，它将收集与主机上运行的其他每一个容器相关的统计数据。在收集统计数据时，它直接从 proc 文件系统读取 cgroup 信息，这就意味着它无需特权即可访问 Docker API，并且同样适用于其他 Runtime。针对 Docker 的 Autodiscovery 让事情进一步简化，您只需指定一个条件即可开启 Metricbeat 模块。 </p>
+</li>
+<li><p>不错过任何检测信号</p>
+<p>将指标通过假脱机传输方式输送至磁盘，这样您的数据管道再也不会错过任何一个数据点，即使发生中断（例如网络问题），也勿需担心。Metricbeat 会保留传入的数据，并在重新上线后将这些指标输送至 Elasticsearch 或 Logstash。 </p>
+</li>
+</ul>
+<ul>
+<li><p>输送至 Elasticsearch 或 Logstash。在 Kibana 中实现可视化。</p>
+<p>Metricbeat 是 Elastic Stack 的一部分，因此能够与 Logstash、Elasticsearch 和 Kibana 无缝协作。无论您要使用 Logstash 转换或充实指标，还是在 Elasticsearch 中随意处理一些数据分析，亦或在 Kibana 中构建和分享仪表板，Metricbeat 都能轻松地将您的数据发送至最关键的地方。</p>
+</li>
+</ul>
+<h1 id="叁-MetricBeat安装"><a href="#叁-MetricBeat安装" class="headerlink" title="叁 MetricBeat安装"></a>叁 MetricBeat安装</h1><h2 id="3-1-下载地址"><a href="#3-1-下载地址" class="headerlink" title="3.1 下载地址"></a>3.1 下载地址</h2><p><a href="https://artifacts.elastic.co/downloads/beats/filebeat/metricBeat-7.6.0-linux-x86_64.tar.gz" target="_blank" rel="noopener">metricBeat-7.6.0-linux-x86_64</a></p>
+<h2 id="3-2-解压metricBeat-7-6-0-linux-x86-64"><a href="#3-2-解压metricBeat-7-6-0-linux-x86-64" class="headerlink" title="3.2 解压metricBeat-7.6.0-linux-x86_64"></a>3.2 解压metricBeat-7.6.0-linux-x86_64</h2><figure class="highlight shell"><figcaption><span>script</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -zvxf metricBeat-7.6.0-linux-x86_64.tar.gz -C /usr/elastic</span><br></pre></td></tr></table></figure>
+
+<h2 id="3-3-使用Kibana展示Metricbeat系统指标"><a href="#3-3-使用Kibana展示Metricbeat系统指标" class="headerlink" title="3.3 使用Kibana展示Metricbeat系统指标"></a>3.3 使用Kibana展示Metricbeat系统指标</h2><ul>
+<li>修改Metricbeat配置</li>
+</ul>
+<figure class="highlight shell"><figcaption><span>script</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">output.elasticsearch:</span><br><span class="line"><span class="meta">  #</span> Array of hosts to connect to.</span><br><span class="line">  hosts: ["http://192.168.237.11:9200"]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>启动</li>
+</ul>
+<figure class="highlight shell"><figcaption><span>script</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[iio@192 metricbeat]$ ./metricbeat -e</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>在Elasticsearch中查看采集的数据</li>
+</ul>
+<p><img src="https://eelve.com/upload/2020/3/2020030707-906f151d4ab34f7c8bbcfea65d83f8e9.png" alt="2020030707"></p>
+<ul>
+<li>修改Metricbeat配置</li>
+</ul>
+<figure class="highlight shell"><figcaption><span>script</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">setup.kibana:</span><br><span class="line">  host: "192.168.237.11:5601"</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>安装仪表盘</li>
+</ul>
+<figure class="highlight shell"><figcaption><span>script</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./metricbeat setup --dashboards</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>重启服务查看效果</li>
+</ul>
+<p><img src="https://eelve.com/upload/2020/3/2020030708-ba77ee4e36c6478c8b816a314d730f80.png" alt="2020030708"><br><img src="https://eelve.com/upload/2020/3/2020030709-a40f0d5711fc4707a416e2c39bbbcb79.png" alt="2020030709"></p>
+<p>到这里我们就监控了我们系统的指标，并且利用Kibana提供的仪表板做了图形化展示。</p>
+<h2 id="3-4-使用Kibana展示Metricbeat采集nginx指标"><a href="#3-4-使用Kibana展示Metricbeat采集nginx指标" class="headerlink" title="3.4 使用Kibana展示Metricbeat采集nginx指标"></a>3.4 使用Kibana展示Metricbeat采集nginx指标</h2><ul>
+<li><p>开启nginx的状态查询</p>
+<p>在nginx中，需要开启状态查询，才能查询到指标数据。</p>
+<figure class="highlight shell"><figcaption><span>script</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span>重新编译nginx</span><br><span class="line">./configure --prefix=/usr/local/nginx --with-http_stub_status_module</span><br><span class="line">make</span><br><span class="line">make install</span><br><span class="line"></span><br><span class="line">./nginx -V #查询版本信息</span><br><span class="line">nginx version: nginx/1.12.0</span><br><span class="line">built by gcc 4.8.5 20150623 (Red Hat 4.8.5-39) (GCC) </span><br><span class="line">configure arguments: --prefix=/usr/local/nginx/ --with-http_stub_status_module</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span>配置nginx</span><br><span class="line">vi nginx.conf</span><br><span class="line">location /nginx-status &#123;</span><br><span class="line">    stub_status on;</span><br><span class="line">    access_log off;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<p>  <img src="https://eelve.com/upload/2020/3/2020030710-267475b4b77648ccb8d57c0fece62055.png" alt="2020030710"></p>
+<p>  结果说明：</p>
+<pre><code>- Active connections：正在处理的活动连接数
+- server accepts handled requests
+  - 第一个 server 表示Nginx启动到现在共处理了22个连接
+  - 第二个 accepts 表示Nginx启动到现在共成功创建 22 次握手
+  - 第三个 handled requests 表示总共处理了 193 次请求
+  - 请求丢失数 = 握手数 - 连接数 ，可以看出目前为止没有丢失请求
+- Reading: 0 Writing: 1 Waiting: 2
+  - Reading：Nginx 读取到客户端的 Header 信息数
+  - Writing：Nginx 返回给客户端 Header 信息数
+  - Waiting：Nginx 已经处理完正在等候下一次请求指令的驻留链接（开启keep-alive的情况下，这个值等于 Active - (Reading+Writing)）</code></pre><ul>
+<li><p>配置Nginx Module</p>
+<p>默认Metricbeat之开启了system modules，所以我们这里要手动启用nginx modules</p>
+<figure class="highlight shell"><figcaption><span>script</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./metricbeat modules enable nginx</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight shell"><figcaption><span>script</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><span class="line">[iio@192 metricbeat]$ ./metricbeat modules list</span><br><span class="line">Enabled:</span><br><span class="line">nginx</span><br><span class="line">system</span><br><span class="line"></span><br><span class="line">Disabled:</span><br><span class="line">activemq</span><br><span class="line">aerospike</span><br><span class="line">apache</span><br><span class="line">appsearch</span><br><span class="line">aws</span><br><span class="line">azure</span><br><span class="line">beat</span><br><span class="line">beat-xpack</span><br><span class="line">ceph</span><br><span class="line">cockroachdb</span><br><span class="line">consul</span><br><span class="line">coredns</span><br><span class="line">couchbase</span><br><span class="line">couchdb</span><br><span class="line">docker</span><br><span class="line">dropwizard</span><br><span class="line">elasticsearch</span><br><span class="line">elasticsearch-xpack</span><br><span class="line">envoyproxy</span><br><span class="line">etcd</span><br><span class="line">golang</span><br><span class="line">googlecloud</span><br><span class="line">graphite</span><br><span class="line">haproxy</span><br><span class="line">http</span><br><span class="line">jolokia</span><br><span class="line">kafka</span><br><span class="line">kibana</span><br><span class="line">kibana-xpack</span><br><span class="line">kubernetes</span><br><span class="line">kvm</span><br><span class="line">logstash</span><br><span class="line">logstash-xpack</span><br><span class="line">memcached</span><br><span class="line">mongodb</span><br><span class="line">mssql</span><br><span class="line">munin</span><br><span class="line">mysql</span><br><span class="line">nats</span><br><span class="line">oracle</span><br><span class="line">php_fpm</span><br><span class="line">postgresql</span><br><span class="line">prometheus</span><br><span class="line">rabbitmq</span><br><span class="line">redis</span><br><span class="line">sql</span><br><span class="line">stan</span><br><span class="line">statsd</span><br><span class="line">tomcat</span><br><span class="line">traefik</span><br><span class="line">uwsgi</span><br><span class="line">vsphere</span><br><span class="line">windows</span><br><span class="line">zookeeper</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><p>修改nginx modules的配置</p>
+<figure class="highlight shell"><figcaption><span>script</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">[iio@192 modules.d]$ vi nginx.yml </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> Module: nginx</span><br><span class="line"><span class="meta">#</span> Docs: https://www.elastic.co/guide/en/beats/metricbeat/7.6/metricbeat-module-nginx.html</span><br><span class="line"></span><br><span class="line">- module: nginx</span><br><span class="line"><span class="meta">  #</span>metricsets:</span><br><span class="line"><span class="meta">  #</span>  - stubstatus</span><br><span class="line">  period: 10s</span><br><span class="line"></span><br><span class="line"><span class="meta">  #</span> Nginx hosts</span><br><span class="line">  hosts: ["http://192.168.237.11"]</span><br><span class="line"></span><br><span class="line"><span class="meta">  #</span> Path to server status. Default server-status</span><br><span class="line">  server_status_path: "nginx-status" #配置的nginx状态访问地址</span><br><span class="line"></span><br><span class="line"><span class="meta">  #</span>username: "user"</span><br><span class="line"><span class="meta">  #</span>password: "secret"</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>启动测试</p>
+</li>
+</ul>
+<p><img src="https://eelve.com/upload/2020/3/2020030711-c1217270b05241ca96fa42f063ba8d9f.png" alt="2020030711"><br><img src="https://eelve.com/upload/2020/3/2020030712-8ae5730e5301448b974d67545ff98e7a.png" alt="2020030712"></p>
+<p>到这里我们采集的nginx的指标数据，并且利用Kibana安装的Metricbeatd的nginx仪表盘做了图形化展示。</p>
+<h1 id="肆、Metricbeat组成"><a href="#肆、Metricbeat组成" class="headerlink" title="肆、Metricbeat组成"></a>肆、Metricbeat组成</h1><p>Metricbeat有2部分组成，一部分是Module，另一部分为Metricset。</p>
+<ul>
+<li><p>Module</p>
+<p>收集的对象，如：mysql、redis、nginx、操作系统等；</p>
+</li>
+<li><p>Metricset</p>
+<p>收集指标的集合，如：cpu、memory、network等；  </p>
+</li>
+</ul>
+<hr>
+<p>【<strong>后面的话</strong>】在本文中我们利用Metricbeat监控了系统和nginx的系统指标，并且做了图标化的展示。其他module的使用也类似，他们都是利用Metricbeat给被监控的机器放松状态指令，然后采集数据，再做图形化的展示。同时我们也看到Merticbeat也内置了很多的module，足够了我们日工作需要了。</p>
+<hr>
+<p><img src="https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png" alt="薏米笔记"></p>
+
+    </div>
+
+    
+    
+    
+        
+      
+
+      <footer class="post-footer">
+          
+            
+          
+          <div class="post-tags">
+            
+              <a href="/tags/hide/" rel="tag"><i class="fa fa-tag"></i># hide</a>
+            
+          </div>
+        
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+              
+                <a href="/2020/03/07/elastic-stack-shi-zhan-zhi-filebeat-chu-ti-yan/" rel="next" title="Elastic Stack实战之Filebeat初体验">
+                  <i class="fa fa-chevron-left"></i> Elastic Stack实战之Filebeat初体验
+                </a>
+              
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+              
+                <a href="/2020/03/07/elastic-stack-shi-zhan-zhi-metricbeat-chu-ti-yan/" rel="prev" title="Elastic Stack实战之Metricbeat初体验">
+                  Elastic Stack实战之Metricbeat初体验 <i class="fa fa-chevron-right"></i>
+                </a>
+              
+            </div>
+          </div>
+        
+      </footer>
+    
+  </div>
+  
+  
+  
+  </article>
+
+  </div>
+
+
+          </div>
+          
+    
+    
+  <div class="comments" id="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC80NTk1NS8yMjQ2Ng=="></div>
+  </div>
+  
+  
+
+        </div>
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image"
+      src="/images/virrina.jpg"
+      alt="Chillo">
+  <p class="site-author-name" itemprop="name">Chillo</p>
+  <div class="site-description motion-element" itemprop="description">A human being,who loves football and music.</div>
+</div>
+  <nav class="site-state motion-element">
+      <div class="site-state-item site-state-posts">
+        
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">43</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-categories">
+        
+          
+            <a href="/categories/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">10</span>
+        <span class="site-state-item-name">分类</span>
+        </a>
+      </div>
+    
+      
+      
+      <div class="site-state-item site-state-tags">
+        
+          
+            <a href="/tags/">
+          
+        
+        
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+          
+        
+        <span class="site-state-item-count">36</span>
+        <span class="site-state-item-name">标签</span>
+        </a>
+      </div>
+    
+  </nav>
+  <div class="feed-link motion-element">
+    <a href="/atom.xml" rel="alternate">
+      <i class="fa fa-rss"></i>RSS
+    </a>
+  </div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="https://github.com/eelve" title="GitHub &rarr; https://github.com/eelve" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+    
+      <span class="links-of-author-item">
+      
+      
+        
+      
+      
+        
+      
+        <a href="mailto:i@eelve.com" title="E-Mail &rarr; mailto:i@eelve.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+    
+  </div>
+
+
+  <div class="links-of-blogroll motion-element links-of-blogroll-block">
+    <div class="links-of-blogroll-title">
+      <i class="fa  fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://eelve.com/" title="https://eelve.com/" rel="noopener" target="_blank">南国薏米</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://zzlve.win/" title="http://zzlve.win/">蔚然山庄</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="http://eelve.github.io/" title="http://eelve.github.io/" rel="noopener" target="_blank">Github Pages</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://eelve.gitee.io/" title="https://eelve.gitee.io/" rel="noopener" target="_blank">Gitee Pages</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://shilikun.com/" title="https://shilikun.com/" rel="noopener" target="_blank">坤坤</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://binge.eelve.com/" title="https://binge.eelve.com/" rel="noopener" target="_blank">Binge</a>
+        </li>
+      
+        <li class="links-of-blogroll-item">
+          <a href="https://bobo.eelve.com/" title="https://bobo.eelve.com/" rel="noopener" target="_blank">BoBo</a>
+        </li>
+      
+    </ul>
+  </div>
+
+        </div>
+      </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#壹、软件版本"><span class="nav-number">1.</span> <span class="nav-text">壹、软件版本</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#贰、MetricBeat介绍"><span class="nav-number">2.</span> <span class="nav-text">贰、MetricBeat介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#叁-MetricBeat安装"><span class="nav-number">3.</span> <span class="nav-text">叁 MetricBeat安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-下载地址"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 下载地址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-解压metricBeat-7-6-0-linux-x86-64"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 解压metricBeat-7.6.0-linux-x86_64</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-使用Kibana展示Metricbeat系统指标"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 使用Kibana展示Metricbeat系统指标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-4-使用Kibana展示Metricbeat采集nginx指标"><span class="nav-number">3.4.</span> <span class="nav-text">3.4 使用Kibana展示Metricbeat采集nginx指标</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#肆、Metricbeat组成"><span class="nav-number">4.</span> <span class="nav-text">肆、Metricbeat组成</span></a></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">南国薏米</span>
+</div>
+<div class="theme-info">
+<div class="powered-by"></div>
+<span class="post-count">博客全站共66.7k字</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-user"></i>
+    </span>
+    <span class="site-uv" title="总访客量">
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+    </span>
+  
+    <span class="post-meta-divider">|</span>
+  
+    <span class="post-meta-item-icon">
+      <i class="fa fa-eye"></i>
+    </span>
+    <span class="site-pv" title="总访问量">
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+          <span id="scrollpercent"><span>0</span>%</span>
+        
+      </div>
+
+    
+
+  </div>
+
+  
+    
+    
+  
+  <script color='0,0,255' opacity='0.5' zIndex='-1' count='99' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/jquery/index.js?v=3.4.1"></script>
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+<script src="/js/utils.js?v=7.3.0"></script>
+  <script src="/js/motion.js?v=7.3.0"></script>
+
+
+  <script src="/js/affix.js?v=7.3.0"></script>
+  <script src="/js/schemes/pisces.js?v=7.3.0"></script>
+
+
+<script src="/js/next-boot.js?v=7.3.0"></script>
+
+
+    
+  
+    
+  
+    
+  
+
+  <script>
+    ;((d, w) => {
+      loadThree = () => {
+        let s = d.createElement('script');
+        s.src = '/lib/three/three.min.js';
+        d.body.appendChild(s);
+      }
+      let styles = ['/lib/three/three-waves.min.js', '/lib/three/canvas_lines.min.js', '/lib/three/canvas_sphere.min.js'];
+      loadStyle = () => {
+        styles.forEach(x => {
+          if (x !== '') {
+            let s = d.createElement('script');
+            s.src = x;
+            d.body.appendChild(s);
+          }
+        })
+      }
+      w.addEventListener('DOMContentLoaded', loadThree);
+      w.addEventListener('load', loadStyle);
+    })(document, window);
+  </script>
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <script src="/js/local-search.js?v=7.3.0"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+
+  
+  <script src="/js/scrollspy.js?v=7.3.0"></script>
+<script src="/js/post-details.js?v=7.3.0"></script>
+
+
+    
+<script>
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+</script>
+
+</body>
+</html>
