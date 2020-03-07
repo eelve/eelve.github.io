@@ -48,6 +48,7 @@ highlight:
 # path: Root path for your blogs index page. (default = '')
 # per_page: Posts displayed per page. (0 = disable pagination)
 # order_by: Posts order. (Order by date descending by default)
+
 index_generator:
   path: ''
   per_page: 10
@@ -103,3 +104,12 @@ search:
 permalink_pinyin:
   enable: true
   separator: '-' # default: '-'
+
+# index2 generator是否包含官方的hexo-generator-index，默认true（包含）
+index2_include_index: true
+index2_generator:
+  per_page: 8
+  order_by: -date # 按发布时间排序
+  exclude:
+    - tag hide # 不包含标签为hide的文章
+    - category hide # 不包含分类为hide的文章
