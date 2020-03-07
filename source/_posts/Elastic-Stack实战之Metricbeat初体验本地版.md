@@ -2,8 +2,8 @@
 layout: elastic
 title: Elastic Stack实战之Metricbeat初体验
 date: 2020-03-07 21:36:20
-tags: [ELK,MetricBeat,Beats]
-categories: Elastic Stack
+tags: hide
+categories: hide
 ---
 
 
@@ -31,7 +31,7 @@ MetricBeat是一种轻量型指标采集器，用于从系统和服务收集指�
 
 - 系统级监控，更简洁
 
-![screenshot-infrastructure-ui](https://image.eelve.com/eblog/screenshot-infrastructure-ui-d2c3e13f47f74d82a6f0f6c2799d94f8.png)
+![screenshot-infrastructure-ui](https://eelve.com/upload/2020/3/screenshot-infrastructure-ui-d2c3e13f47f74d82a6f0f6c2799d94f8.png)
 
 - 单个二进制文件提供多种模块
 
@@ -41,19 +41,19 @@ MetricBeat是一种轻量型指标采集器，用于从系统和服务收集指�
 
   - 系统
   
-  ![metricbeat-modules-system](https://image.eelve.com/eblog/metricbeat-modules-system-7f76e2200cfb40089bb112f50aae710e.jpg)
+  ![metricbeat-modules-system](https://eelve.com/upload/2020/3/metricbeat-modules-system-7f76e2200cfb40089bb112f50aae710e.jpg)
   
   - Docker
   
-  ![container-monitoring-screenshot-carousel-docker](https://image.eelve.com/eblog/container-monitoring-screenshot-carousel-docker-908943a547964d11996a9775855235f0.jpg)
+  ![container-monitoring-screenshot-carousel-docker](https://eelve.com/upload/2020/3/container-monitoring-screenshot-carousel-docker-908943a547964d11996a9775855235f0.jpg)
   
   - MongoDB
   
-  ![metricbeat-modules-mongo](https://image.eelve.com/eblog/metricbeat-modules-mongo-d5d719649a7a4e2a9bf9f1a984528efc.jpg)
+  ![metricbeat-modules-mongo](https://eelve.com/upload/2020/3/metricbeat-modules-mongo-d5d719649a7a4e2a9bf9f1a984528efc.jpg)
   
   - Kubernetes
   
-  ![container-monitoring-screenshot-carousel-kubernetes](https://image.eelve.com/eblog/container-monitoring-screenshot-carousel-kubernetes-0ee5a1fdacf74c3b82d12c81c5c14af1.jpg)
+  ![container-monitoring-screenshot-carousel-kubernetes](https://eelve.com/upload/2020/3/container-monitoring-screenshot-carousel-kubernetes-0ee5a1fdacf74c3b82d12c81c5c14af1.jpg)
 
 - 容器就绪 
 
@@ -98,7 +98,7 @@ output.elasticsearch:
 ```
 - 在Elasticsearch中查看采集的数据
 
-![2020030707](https://image.eelve.com/eblog/2020030707-906f151d4ab34f7c8bbcfea65d83f8e9.png)
+![2020030707](https://eelve.com/upload/2020/3/2020030707-906f151d4ab34f7c8bbcfea65d83f8e9.png)
 
 - 修改Metricbeat配置
 
@@ -115,8 +115,8 @@ setup.kibana:
 
 - 重启服务查看效果
 
-![2020030708](https://image.eelve.com/eblog/2020030708-ba77ee4e36c6478c8b816a314d730f80.png)
-![2020030709](https://image.eelve.com/eblog/2020030709-a40f0d5711fc4707a416e2c39bbbcb79.png)
+![2020030708](https://eelve.com/upload/2020/3/2020030708-ba77ee4e36c6478c8b816a314d730f80.png)
+![2020030709](https://eelve.com/upload/2020/3/2020030709-a40f0d5711fc4707a416e2c39bbbcb79.png)
 
 到这里我们就监控了我们系统的指标，并且利用Kibana提供的仪表板做了图形化展示。
 
@@ -147,7 +147,7 @@ setup.kibana:
   }
   ```
   
-  ![2020030710](https://image.eelve.com/eblog/2020030710-267475b4b77648ccb8d57c0fece62055.png)
+  ![2020030710](https://eelve.com/upload/2020/3/2020030710-267475b4b77648ccb8d57c0fece62055.png)
   
   结果说明：
   
@@ -259,8 +259,8 @@ setup.kibana:
 
 - 启动测试
 
-![2020030711](https://image.eelve.com/eblog/2020030711-c1217270b05241ca96fa42f063ba8d9f.png)
-![2020030712](https://image.eelve.com/eblog/2020030712-8ae5730e5301448b974d67545ff98e7a.png)
+![2020030711](https://eelve.com/upload/2020/3/2020030711-c1217270b05241ca96fa42f063ba8d9f.png)
+![2020030712](https://eelve.com/upload/2020/3/2020030712-8ae5730e5301448b974d67545ff98e7a.png)
 
 到这里我们采集的nginx的指标数据，并且利用Kibana安装的Metricbeatd的nginx仪表盘做了图形化展示。
 

@@ -2,8 +2,8 @@
 layout: elastic
 title: Elastic Stack实战之Elasticsearch初体验(一)
 date: 2020-03-01 12:34:22
-tags: [ELK,Elasticsearch]
-categories: Elastic Stack
+tags: hide
+categories: hide
 ---
 
 【**前面的话**】前面已经准备好了服务器环境，今天就来开始安装[Elasticsearch](https://www.elastic.co/cn/elasticsearch)然后体验。
@@ -227,8 +227,8 @@ vm.max_map_count = 655360
 ```
 再次启动，然后检查
 
-![2020010301](https://image.eelve.com/eblog/2020010301-5b565f99650d4acbb3ba464408dca641.png)
-![2020030102](https://image.eelve.com/eblog/2020030102-ff4ef388edeb4bb1b88ddf45df96543f.png)
+![2020010301](https://eelve.com/upload/2020/3/2020010301-5b565f99650d4acbb3ba464408dca641.png)
+![2020030102](https://eelve.com/upload/2020/3/2020030102-ff4ef388edeb4bb1b88ddf45df96543f.png)
 ---
 【**后面的话**】
 后台启动

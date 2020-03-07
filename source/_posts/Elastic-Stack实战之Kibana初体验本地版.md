@@ -2,9 +2,8 @@
 layout: elastic
 title: Elastic Stack实战之Kibana初体验
 date: 2020-03-03 19:49:22
-tags: [ELK,Kibana]
-categories: Elastic Stack
-notshow: true
+tags: hide
+categories: hide
 ---
 
 ---

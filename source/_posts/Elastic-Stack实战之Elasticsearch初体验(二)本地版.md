@@ -2,8 +2,8 @@
 layout: elastic
 title: Elastic Stack实战之Elasticsearch初体验(二)
 date: 2020-03-01 19:49:22
-tags: [ELK,Elasticsearch]
-categories: Elastic Stack
+tags: hide
+categories: hide
 ---
 
 【**前面的话**】前面我们已经安装好了Elasticsearch，现在我们就来尝试简单的使用。
@@ -11,7 +11,7 @@ categories: Elastic Stack
 ---
 # 壹、Elasticsearch介绍
 
-![2020010303](https://image.eelve.com/eblog/2020010303-6acab887ee4441b488ee408c30359ab5.png)
+![2020010303](https://eelve.com/upload/2020/3/2020010303-6acab887ee4441b488ee408c30359ab5.png)
 
 Elasticsearch是整个**Elastic Stack**的核心。
 
@@ -31,11 +31,11 @@ Elasticsearch 是一个分布式、RESTful 风格的搜索和数据分析引擎�
     
 我这边就通过chrome插件的方式安装，在应用商店中搜索，然后安装即可，安装成功之后打开你会得到下面的页面
 
-![2020030106](https://image.eelve.com/eblog/2020030106-e64fe73ddd004fb1bd87885b30563d48.png)
+![2020030106](https://eelve.com/upload/2020/3/2020030106-e64fe73ddd004fb1bd87885b30563d48.png)
 
 然后连接集群，就可以进行操作了
 
-![2020030107](https://image.eelve.com/eblog/2020030107-079a29b224d14779999957304c279291.png)
+![2020030107](https://eelve.com/upload/2020/3/2020030107-079a29b224d14779999957304c279291.png)
 
 
     集群健康值
@@ -106,15 +106,15 @@ PUT /eelve
     }
 }
 ```
-![2020030108](https://image.eelve.com/eblog/2020030108-491386349bf145df999db01f96dca5b7.png)
-![2020030109](https://image.eelve.com/eblog/2020030109-e2e0dbf0610e4c9e815507b3e08824e6.png)
+![2020030108](https://eelve.com/upload/2020/3/2020030108-491386349bf145df999db01f96dca5b7.png)
+![2020030109](https://eelve.com/upload/2020/3/2020030109-e2e0dbf0610e4c9e815507b3e08824e6.png)
 
 ```
 #删除索引
 DELETE /eelve
 ```
 
-![2020030110](https://image.eelve.com/eblog/2020030110-0d0eae2e25ec4788b038d3066e0a34df.png)
+![2020030110](https://eelve.com/upload/2020/3/2020030110-0d0eae2e25ec4788b038d3066e0a34df.png)
 
 ### 3.2.2 插入数据
 
@@ -133,13 +133,13 @@ POST /eelve/user/1001
 }
 ```
 
-![2020030111](https://image.eelve.com/eblog/2020030111-8901ba31e0c841ea9f19b3b3fbf47745.png)
-![2020030112](https://image.eelve.com/eblog/2020030112-3b009a1840754659a01ff665fe545de8.png)
+![2020030111](https://eelve.com/upload/2020/3/2020030111-8901ba31e0c841ea9f19b3b3fbf47745.png)
+![2020030112](https://eelve.com/upload/2020/3/2020030112-3b009a1840754659a01ff665fe545de8.png)
 
 2、不带id 
 
-![2020030113](https://image.eelve.com/eblog/2020030113-48589935a2ce456491006d43f0001194.png)
-![2020030114](https://image.eelve.com/eblog/2020030114-b2119fc6b17f46b998b9b1aed9be3481.png)
+![2020030113](https://eelve.com/upload/2020/3/2020030113-48589935a2ce456491006d43f0001194.png)
+![2020030114](https://eelve.com/upload/2020/3/2020030114-b2119fc6b17f46b998b9b1aed9be3481.png)
 
 ### 3.2.3 更新数据
 
@@ -147,20 +147,20 @@ POST /eelve/user/1001
 
 1、全部修改
 
-![2020030115](https://image.eelve.com/eblog/2020030115-40f1443a848f42d7bf0b1e4a7895315b.png)
-![2020030116](https://image.eelve.com/eblog/2020030116-a6d802f5b1d040088d02bcd97ed58840.png)
+![2020030115](https://eelve.com/upload/2020/3/2020030115-40f1443a848f42d7bf0b1e4a7895315b.png)
+![2020030116](https://eelve.com/upload/2020/3/2020030116-a6d802f5b1d040088d02bcd97ed58840.png)
 
 2、部分修改
 
-![2020030117](https://image.eelve.com/eblog/2020030117-7f32be33ca2b4f2796884f595f31c118.png)
-![2020030118](https://image.eelve.com/eblog/2020030118-69d2588cf500407c87744222d1b9f58a.png)
+![2020030117](https://eelve.com/upload/2020/3/2020030117-7f32be33ca2b4f2796884f595f31c118.png)
+![2020030118](https://eelve.com/upload/2020/3/2020030118-69d2588cf500407c87744222d1b9f58a.png)
 
 可以看到局部更新成功
 
 ### 3.2.4 删除数据
 
-![2020030120](https://image.eelve.com/eblog/2020030120-cf3c2d9526e94c559da3122114a23bea.png)
-![2020030121](https://image.eelve.com/eblog/2020030121-e5026bfd578247b585b0d1aa9f4f43e9.png)
+![2020030120](https://eelve.com/upload/2020/3/2020030120-cf3c2d9526e94c559da3122114a23bea.png)
+![2020030121](https://eelve.com/upload/2020/3/2020030121-e5026bfd578247b585b0d1aa9f4f43e9.png)
 
 数据删除成功之后不会马上删除，只是会打上那个删除标识，Elasticsearch将会在你之后添加更多索引的时候才会在后台进行删除内容的清理。
 
@@ -168,19 +168,19 @@ POST /eelve/user/1001
 
 1、根据id搜索
 
-![2020030123](https://image.eelve.com/eblog/2020030123-d35bcdb8e1a34c599da2c6af06b5999c.png)
+![2020030123](https://eelve.com/upload/2020/3/2020030123-d35bcdb8e1a34c599da2c6af06b5999c.png)
 
 2、全部搜索
 
-![2020030124](https://image.eelve.com/eblog/2020030124-6dd8f7b0b6f64d43b78f007096a0266e.png)
+![2020030124](https://eelve.com/upload/2020/3/2020030124-6dd8f7b0b6f64d43b78f007096a0266e.png)
 
 3、关键词搜索
 
-![2020030125](https://image.eelve.com/eblog/2020030125-6496d651790a4eeaaf6ef01d89007434.png)
+![2020030125](https://eelve.com/upload/2020/3/2020030125-6496d651790a4eeaaf6ef01d89007434.png)
 
 4、查询部分字段
 
-![2020030128](https://image.eelve.com/eblog/2020030128-39b83bc7128041ada8913de3d60d7f94.png)
+![2020030128](https://eelve.com/upload/2020/3/2020030128-39b83bc7128041ada8913de3d60d7f94.png)
 
 
 5、分页查询
@@ -190,7 +190,7 @@ POST /eelve/user/1001
     size: 结果数，默认10
     from: 跳过开始的结果数，默认0
 
-![2020030129](https://image.eelve.com/eblog/2020030129-6cfe8b9d5e3e4eabb08e850336caa524.png)
+![2020030129](https://eelve.com/upload/2020/3/2020030129-6cfe8b9d5e3e4eabb08e850336caa524.png)
 
     应该当心分页太深或者一次请求太多的结果。结果在返回前会被排序。但是记住一个搜索请求常常涉及多个分片。每个分片生成自己排好序的结果，它们接着需要集中起来排序以确保整体排序正确。
     
@@ -206,7 +206,7 @@ POST /eelve/user/1001
     Elasticsearch提供丰富且灵活的查询语言叫做DSL查询(Query DSL),它允许你构建更加复杂、强大的查询。
     DSL(Domain Specific Language特定领域语言)以JSON请求体的形式出现
     
-![2020030126](https://image.eelve.com/eblog/2020030126-fdc18d55a95b49608130225d3aa15d67.png)
+![2020030126](https://eelve.com/upload/2020/3/2020030126-fdc18d55a95b49608130225d3aa15d67.png)
 
 如图我们查询了一个年龄大于10岁，性别为男性的数据
 
@@ -214,7 +214,7 @@ POST /eelve/user/1001
 
     在Elasticsearch中，支持聚合操作，类似SQL中的group by操作。
     
-![2020030127](https://image.eelve.com/eblog/2020030127-dbc8906ff8e540c58e7cb598aabd35e9.png)
+![2020030127](https://eelve.com/upload/2020/3/2020030127-dbc8906ff8e540c58e7cb598aabd35e9.png)
 
 
 ### 3.2.8 _bulk操作
@@ -233,23 +233,23 @@ POST /eelve/user/1001
 
 1、批量插入
 
-![2020030130](https://image.eelve.com/eblog/2020030130-c69ed9ae775445ef90e13bfcf726efd5.png)
-![2020030131](https://image.eelve.com/eblog/2020030131-d32f2761eb464fb085b671a34b08ac0d.png)
+![2020030130](https://eelve.com/upload/2020/3/2020030130-c69ed9ae775445ef90e13bfcf726efd5.png)
+![2020030131](https://eelve.com/upload/2020/3/2020030131-d32f2761eb464fb085b671a34b08ac0d.png)
 
 2、批量删除
 
-![2020030132](https://image.eelve.com/eblog/2020030132-b483295fa7054414a91efcdfbdf689e0.png)
-![2020030134](https://image.eelve.com/eblog/2020030134-3433028e01d941e38d143f0f4f2a7bea.png)
+![2020030132](https://eelve.com/upload/2020/3/2020030132-b483295fa7054414a91efcdfbdf689e0.png)
+![2020030134](https://eelve.com/upload/2020/3/2020030134-3433028e01d941e38d143f0f4f2a7bea.png)
 
 3、批量删除
 
-![2020030135](https://image.eelve.com/eblog/2020030135-13028e1a58e64b82a3f4a8f1316160fb.png)
-![2020030136](https://image.eelve.com/eblog/2020030136-deeff4eb87f143ee95b33468a59a7883.png)
+![2020030135](https://eelve.com/upload/2020/3/2020030135-13028e1a58e64b82a3f4a8f1316160fb.png)
+![2020030136](https://eelve.com/upload/2020/3/2020030136-deeff4eb87f143ee95b33468a59a7883.png)
 
 4、混合操作
 
-![2020030137](https://image.eelve.com/eblog/2020030137-486103db9fab4f16bb639e9ee13c0961.png)
-![2020030138](https://image.eelve.com/eblog/2020030138-dc89cd6f155c48b1a917072b6805c15e.png)
+![2020030137](https://eelve.com/upload/2020/3/2020030137-486103db9fab4f16bb639e9ee13c0961.png)
+![2020030138](https://eelve.com/upload/2020/3/2020030138-dc89cd6f155c48b1a917072b6805c15e.png)
 
 ```json
 {
@@ -335,7 +335,7 @@ Elasticsearch中支持的类型如下：
     keyword类型适用于索引结构化的字段，比如email地址、主机名、状态码和标签。如果字段需要进行过滤(比如查找已发布博客中status属性为published的文章)、排序、聚合。
     keyword类型的字段只能通过精确值搜索到。
 
-![2020030140](https://image.eelve.com/eblog/2020030140-8a169a5294044d41bcfbc531ffa262fb.png)
+![2020030140](https://eelve.com/upload/2020/3/2020030140-8a169a5294044d41bcfbc531ffa262fb.png)
 
 ```json
 {
@@ -364,7 +364,7 @@ Elasticsearch中支持的类型如下：
 }
 ```
 
-![2020030141](https://image.eelve.com/eblog/2020030141-6749ff764e8f46c6a4a2a1e356c129de.png)
+![2020030141](https://eelve.com/upload/2020/3/2020030141-6749ff764e8f46c6a4a2a1e356c129de.png)
 
 ```json
 {

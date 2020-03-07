@@ -2,8 +2,8 @@
 layout: elastic
 title: Elastic Stack实战之Logstash初体验
 date: 2020-03-02 21:49:22
-tags: [ELK,Logstash]
-categories: Elastic Stack
+tags: hide
+categories: hide
 ---
 
 【**前面的话**】在前面已经安装好了Elasticsearch，今天就来对[Logstash](https://www.elastic.co/cn/logstash)进行一下初步体验。
@@ -23,7 +23,7 @@ Logstash: logstash-7.6.0
 
 # 贰、Logstash介绍
 
-![illustration-logstash-header](https://image.eelve.com/eblog/illustration-logstash-header-55d54f588c3b4ba89da489277ca709dc.png)
+![illustration-logstash-header](https://eelve.com/upload/2020/3/illustration-logstash-header-55d54f588c3b4ba89da489277ca709dc.png)
 
     Logstash 的主要作用是集中、转换和存储数据。是开源的服务器端数据处理管道，能够同时从多个来源采集数据，转换数据，然后将数据发送到您最喜欢的“存储库”中。
     
@@ -33,13 +33,13 @@ Logstash: logstash-7.6.0
 
 **输入：** 采集各种样式、大小和来源的数据
 
-![diagram-logstash-inputs](https://image.eelve.com/eblog/diagram-logstash-inputs-2825f9dced964c4abae8dcd1f3012261.svg)
+![diagram-logstash-inputs](https://eelve.com/upload/2020/3/diagram-logstash-inputs-2825f9dced964c4abae8dcd1f3012261.svg)
 
     数据往往以各种各样的形式，或分散或集中地存在于很多系统中。 Logstash 支持 各种输入选择 ，可以在同一时间从众多常用来源捕捉事件。能够以连续的流式传输方式，轻松地从您的日志、指标、Web 应用、数据存储以及各种 AWS 服务采集数据。 
 
 **过滤器：** 实时解析和转换数据
 
-![diagram-logstash-filters](https://image.eelve.com/eblog/diagram-logstash-filters-62adaf05398e48f688e1357503b43f81.svg)
+![diagram-logstash-filters](https://eelve.com/upload/2020/3/diagram-logstash-filters-62adaf05398e48f688e1357503b43f81.svg)
 
     数据从源传输到存储库的过程中，Logstash 过滤器能够解析各个事件，识别已命名的字段以构建结构，并将它们转换成通用格式，以便更轻松、更快速地分析和实现商业价值。
     
@@ -52,7 +52,7 @@ Logstash: logstash-7.6.0
 
 **输出：** 选择您的存储库，导出您的数据
 
-![diagram-logstash-outputs](https://image.eelve.com/eblog/diagram-logstash-outputs-fe56db1595444ddfafe48d62d5623627.svg)
+![diagram-logstash-outputs](https://eelve.com/upload/2020/3/diagram-logstash-outputs-fe56db1595444ddfafe48d62d5623627.svg)
 
      尽管 Elasticsearch 是我们的首选输出方向，能够为我们的搜索和分析带来无限可能，但它并非唯一选择。
     
@@ -298,7 +298,7 @@ Sending Logstash logs to /usr/elastic/logstash/logs which is now configured via 
 
 ```
 
-![2020030201](https://image.eelve.com/eblog/2020030201-c786b611e3664d718a8bc7a24d556d09.png)
+![2020030201](https://eelve.com/upload/2020/3/2020030201-c786b611e3664d718a8bc7a24d556d09.png)
 
 
 ## 4.3 停止服务
