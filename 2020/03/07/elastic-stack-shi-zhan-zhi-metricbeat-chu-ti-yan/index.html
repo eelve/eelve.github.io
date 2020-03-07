@@ -55,13 +55,13 @@
   };
 </script>
 
-  <meta name="description" content="【前面的话】前文介绍了Elastic Stack的Beats家族，今天我们就来体验其中的专门用于采集文件的Filebeat，走起。  壹、软件版本1234567Centos：CentOS-7-x86_64-Minimal-1908VM: 15.5.0 build-14665864Java: 1.8.0_211Elasticsearch: elasticsearch-7.6.0Logstash: l">
-<meta name="keywords" content="ELK,Beats,FileBeat">
+  <meta name="description" content="【前面的话】前面介绍了Elastic Stack的Beats家族，并且体验了Filebeat，接下来我们就继续来体验一下  壹、软件版本1234567Centos：CentOS-7-x86_64-Minimal-1908VM: 15.5.0 build-14665864Java: 1.8.0_211Elasticsearch: elasticsearch-7.6.0Logstash: logsta">
+<meta name="keywords" content="ELK,Beats,MetricBeat">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Elastic Stack实战之FileBeat初体验">
-<meta property="og:url" content="http://zzlve.win/2020/03/07/elastic-stack-shi-zhan-zhi-filebeat-chu-ti-yan/index.html">
+<meta property="og:title" content="Elastic Stack实战之MetricBeat初体验">
+<meta property="og:url" content="http://zzlve.win/2020/03/07/elastic-stack-shi-zhan-zhi-metricbeat-chu-ti-yan/index.html">
 <meta property="og:site_name" content="南国薏米">
-<meta property="og:description" content="【前面的话】前文介绍了Elastic Stack的Beats家族，今天我们就来体验其中的专门用于采集文件的Filebeat，走起。  壹、软件版本1234567Centos：CentOS-7-x86_64-Minimal-1908VM: 15.5.0 build-14665864Java: 1.8.0_211Elasticsearch: elasticsearch-7.6.0Logstash: l">
+<meta property="og:description" content="【前面的话】前面介绍了Elastic Stack的Beats家族，并且体验了Filebeat，接下来我们就继续来体验一下  壹、软件版本1234567Centos：CentOS-7-x86_64-Minimal-1908VM: 15.5.0 build-14665864Java: 1.8.0_211Elasticsearch: elasticsearch-7.6.0Logstash: logsta">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://eelve.com/upload/2020/3/animated-gif-logs-ui-optimized-7bf3c88845c84ee3a0564f7a608726b5.gif">
 <meta property="og:image" content="https://eelve.com/upload/2020/3/filebeat-modules-system-1fcfe648ed244a3eb6981805e48eb805.jpg">
@@ -76,13 +76,13 @@
 <meta property="og:image" content="https://eelve.com/upload/2020/3/2020030705-77c1f59279aa40d4b8319560da4a6ae5.png">
 <meta property="og:image" content="https://eelve.com/upload/2020/3/2020030706-9f858efbcaba4dd898b07e54c2f42a0d.png">
 <meta property="og:image" content="https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png">
-<meta property="og:updated_time" content="2020-03-07T10:51:08.346Z">
+<meta property="og:updated_time" content="2020-03-07T10:50:42.881Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Elastic Stack实战之FileBeat初体验">
-<meta name="twitter:description" content="【前面的话】前文介绍了Elastic Stack的Beats家族，今天我们就来体验其中的专门用于采集文件的Filebeat，走起。  壹、软件版本1234567Centos：CentOS-7-x86_64-Minimal-1908VM: 15.5.0 build-14665864Java: 1.8.0_211Elasticsearch: elasticsearch-7.6.0Logstash: l">
+<meta name="twitter:title" content="Elastic Stack实战之MetricBeat初体验">
+<meta name="twitter:description" content="【前面的话】前面介绍了Elastic Stack的Beats家族，并且体验了Filebeat，接下来我们就继续来体验一下  壹、软件版本1234567Centos：CentOS-7-x86_64-Minimal-1908VM: 15.5.0 build-14665864Java: 1.8.0_211Elasticsearch: elasticsearch-7.6.0Logstash: logsta">
 <meta name="twitter:image" content="https://eelve.com/upload/2020/3/animated-gif-logs-ui-optimized-7bf3c88845c84ee3a0564f7a608726b5.gif">
   <link rel="alternate" href="/atom.xml" title="南国薏米" type="application/atom+xml">
-  <link rel="canonical" href="http://zzlve.win/2020/03/07/elastic-stack-shi-zhan-zhi-filebeat-chu-ti-yan/">
+  <link rel="canonical" href="http://zzlve.win/2020/03/07/elastic-stack-shi-zhan-zhi-metricbeat-chu-ti-yan/">
 
 
 <script id="page-configurations">
@@ -96,7 +96,7 @@
   };
 </script>
 
-  <title>Elastic Stack实战之FileBeat初体验 | 南国薏米</title>
+  <title>Elastic Stack实战之MetricBeat初体验 | 南国薏米</title>
   
 
 
@@ -295,7 +295,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://zzlve.win/2020/03/07/elastic-stack-shi-zhan-zhi-filebeat-chu-ti-yan/">
+    <link itemprop="mainEntityOfPage" href="http://zzlve.win/2020/03/07/elastic-stack-shi-zhan-zhi-metricbeat-chu-ti-yan/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Chillo">
@@ -309,7 +309,7 @@
       <header class="post-header">
 
         
-          <h1 class="post-title" itemprop="name headline">Elastic Stack实战之FileBeat初体验
+          <h1 class="post-title" itemprop="name headline">Elastic Stack实战之MetricBeat初体验
 
             
           </h1>
@@ -326,7 +326,7 @@
                 
               
 
-              <time title="创建时间：2020-03-07 17:49:22 / 修改时间：18:51:08" itemprop="dateCreated datePublished" datetime="2020-03-07T17:49:22+08:00">2020-03-07</time>
+              <time title="创建时间：2020-03-07 21:36:20 / 修改时间：18:50:42" itemprop="dateCreated datePublished" datetime="2020-03-07T21:36:20+08:00">2020-03-07</time>
             </span>
           
             
@@ -366,11 +366,11 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>【<strong>前面的话</strong>】<a href="https://eelve.com/archives/beats" target="_blank" rel="noopener">前文</a>介绍了Elastic Stack的Beats家族，今天我们就来体验其中的专门用于采集文件的<a href="https://www.elastic.co/cn/beats/filebeat" target="_blank" rel="noopener">Filebeat</a>，走起。</p>
+        <p>【<strong>前面的话</strong>】<a href="https://eelve.com/archives/beats" target="_blank" rel="noopener">前面介绍了Elastic Stack的Beats家族</a>，并且<a href="https://eelve.com/archives/filebeat" target="_blank" rel="noopener">体验了Filebeat</a>，接下来我们就继续来体验一下</p>
 <hr>
-<h1 id="壹、软件版本"><a href="#壹、软件版本" class="headerlink" title="壹、软件版本"></a>壹、软件版本</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">Centos：CentOS-7-x86_64-Minimal-1908</span></span><br><span class="line"><span class="attr">VM:</span> <span class="number">15.5</span><span class="number">.0</span> <span class="string">build-14665864</span></span><br><span class="line"><span class="attr">Java:</span> <span class="number">1.8</span><span class="string">.0_211</span></span><br><span class="line"><span class="attr">Elasticsearch:</span> <span class="string">elasticsearch-7.6.0</span></span><br><span class="line"><span class="attr">Logstash:</span> <span class="string">logstash-7.6.0</span></span><br><span class="line"><span class="attr">Kibana:</span> <span class="string">kibana-7.6.0</span></span><br><span class="line"><span class="string">Filebeat：filebeat-7.6.0</span></span><br></pre></td></tr></table></figure>
+<h1 id="壹、软件版本"><a href="#壹、软件版本" class="headerlink" title="壹、软件版本"></a>壹、软件版本</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">Centos：CentOS-7-x86_64-Minimal-1908</span></span><br><span class="line"><span class="attr">VM:</span> <span class="number">15.5</span><span class="number">.0</span> <span class="string">build-14665864</span></span><br><span class="line"><span class="attr">Java:</span> <span class="number">1.8</span><span class="string">.0_211</span></span><br><span class="line"><span class="attr">Elasticsearch:</span> <span class="string">elasticsearch-7.6.0</span></span><br><span class="line"><span class="attr">Logstash:</span> <span class="string">logstash-7.6.0</span></span><br><span class="line"><span class="attr">Kibana:</span> <span class="string">kibana-7.6.0</span></span><br><span class="line"><span class="string">MetricBeat：filebeat-7.6.0</span></span><br></pre></td></tr></table></figure>
 
-<h1 id="贰、Filebeat介绍"><a href="#贰、Filebeat介绍" class="headerlink" title="贰、Filebeat介绍"></a>贰、Filebeat介绍</h1><p>Filebeat是一种轻量型日志采集器，具有以下特点</p>
+<h1 id="贰、MetricBeat介绍"><a href="#贰、MetricBeat介绍" class="headerlink" title="贰、MetricBeat介绍"></a>贰、MetricBeat介绍</h1><p>Filebeat是一种轻量型日志采集器，具有以下特点</p>
 <ul>
 <li>汇总、“tail -f”和搜索：启动 Filebeat 后，打开 Logs UI，直接在 Kibana 中观看对您的文件进行 tail 操作的过程。通过搜索栏按照服务、应用程序、主机、数据中心或者其他条件进行筛选，以跟踪您的全部汇总日志中的异常行为。</li>
 </ul>
@@ -408,8 +408,8 @@
 <li>输送至 Elasticsearch 或 Logstash。在 Kibana 中实现可视化。</li>
 </ul>
 <p>Filebeat 是 Elastic Stack 的一部分，因此能够与 Logstash、Elasticsearch 和 Kibana 无缝协作。无论您要使用 Logstash 转换或充实日志和文件，还是在 Elasticsearch 中随意处理一些数据分析，亦或在 Kibana 中构建和分享仪表板，Filebeat 都能轻松地将您的数据发送至最关键的地方。</p>
-<h1 id="叁-Filebeat安装"><a href="#叁-Filebeat安装" class="headerlink" title="叁 Filebeat安装"></a>叁 Filebeat安装</h1><h2 id="3-1-下载地址"><a href="#3-1-下载地址" class="headerlink" title="3.1 下载地址"></a>3.1 下载地址</h2><p><a href="https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.6.0-linux-x86_64.tar.gz" target="_blank" rel="noopener">filebeat-7.6.0-linux-x86_64</a></p>
-<h2 id="3-2-解压filebeat-7-6-0-linux-x86-64"><a href="#3-2-解压filebeat-7-6-0-linux-x86-64" class="headerlink" title="3.2 解压filebeat-7.6.0-linux-x86_64"></a>3.2 解压filebeat-7.6.0-linux-x86_64</h2><figure class="highlight shell"><figcaption><span>script</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -zvxf filebeat-7.6.0-linux-x86_64.tar.gz -C /usr/elastic</span><br></pre></td></tr></table></figure>
+<h1 id="叁-MetricBeat安装"><a href="#叁-MetricBeat安装" class="headerlink" title="叁 MetricBeat安装"></a>叁 MetricBeat安装</h1><h2 id="3-1-下载地址"><a href="#3-1-下载地址" class="headerlink" title="3.1 下载地址"></a>3.1 下载地址</h2><p><a href="https://artifacts.elastic.co/downloads/beats/filebeat/metricBeat-7.6.0-linux-x86_64.tar.gz" target="_blank" rel="noopener">metricBeat-7.6.0-linux-x86_64</a></p>
+<h2 id="3-2-解压metricBeat-7-6-0-linux-x86-64"><a href="#3-2-解压metricBeat-7-6-0-linux-x86-64" class="headerlink" title="3.2 解压metricBeat-7.6.0-linux-x86_64"></a>3.2 解压metricBeat-7.6.0-linux-x86_64</h2><figure class="highlight shell"><figcaption><span>script</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -zvxf metricBeat-7.6.0-linux-x86_64.tar.gz -C /usr/elastic</span><br></pre></td></tr></table></figure>
 
 <h2 id="3-3-filebeat配置"><a href="#3-3-filebeat配置" class="headerlink" title="3.3 filebeat配置"></a>3.3 filebeat配置</h2><p>我们可以针对不同的采集项自定义配置，同时方便测试和展示。</p>
 <h2 id="3-4-采集控制台日志"><a href="#3-4-采集控制台日志" class="headerlink" title="3.4 采集控制台日志"></a>3.4 采集控制台日志</h2><ul>
@@ -566,7 +566,7 @@
             
               <a href="/tags/Beats/" rel="tag"><i class="fa fa-tag"></i># Beats</a>
             
-              <a href="/tags/FileBeat/" rel="tag"><i class="fa fa-tag"></i># FileBeat</a>
+              <a href="/tags/MetricBeat/" rel="tag"><i class="fa fa-tag"></i># MetricBeat</a>
             
           </div>
         
@@ -576,8 +576,8 @@
           <div class="post-nav">
             <div class="post-nav-next post-nav-item">
               
-                <a href="/2020/03/05/elastic-stack-shi-zhan-zhi-beats-jia-zu-jie-shao/" rel="next" title="Elastic Stack实战之Beats家族介绍">
-                  <i class="fa fa-chevron-left"></i> Elastic Stack实战之Beats家族介绍
+                <a href="/2020/03/07/elastic-stack-shi-zhan-zhi-filebeat-chu-ti-yan/" rel="next" title="Elastic Stack实战之FileBeat初体验">
+                  <i class="fa fa-chevron-left"></i> Elastic Stack实战之FileBeat初体验
                 </a>
               
             </div>
@@ -585,10 +585,6 @@
             <span class="post-nav-divider"></span>
 
             <div class="post-nav-prev post-nav-item">
-              
-                <a href="/2020/03/07/elastic-stack-shi-zhan-zhi-metricbeat-chu-ti-yan/" rel="prev" title="Elastic Stack实战之MetricBeat初体验">
-                  Elastic Stack实战之MetricBeat初体验 <i class="fa fa-chevron-right"></i>
-                </a>
               
             </div>
           </div>
@@ -856,7 +852,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#壹、软件版本"><span class="nav-number">1.</span> <span class="nav-text">壹、软件版本</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#贰、Filebeat介绍"><span class="nav-number">2.</span> <span class="nav-text">贰、Filebeat介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#叁-Filebeat安装"><span class="nav-number">3.</span> <span class="nav-text">叁 Filebeat安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-下载地址"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 下载地址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-解压filebeat-7-6-0-linux-x86-64"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 解压filebeat-7.6.0-linux-x86_64</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-filebeat配置"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 filebeat配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-4-采集控制台日志"><span class="nav-number">3.4.</span> <span class="nav-text">3.4 采集控制台日志</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-5-采集nginx日志"><span class="nav-number">3.5.</span> <span class="nav-text">3.5 采集nginx日志</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-6-使用nginx-module采集nginx日志"><span class="nav-number">3.6.</span> <span class="nav-text">3.6 使用nginx module采集nginx日志</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-7-使用Kibana展示"><span class="nav-number">3.7.</span> <span class="nav-text">3.7 使用Kibana展示</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#肆、Filebeat工作原理"><span class="nav-number">4.</span> <span class="nav-text">肆、Filebeat工作原理</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#壹、软件版本"><span class="nav-number">1.</span> <span class="nav-text">壹、软件版本</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#贰、MetricBeat介绍"><span class="nav-number">2.</span> <span class="nav-text">贰、MetricBeat介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#叁-MetricBeat安装"><span class="nav-number">3.</span> <span class="nav-text">叁 MetricBeat安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-下载地址"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 下载地址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-解压metricBeat-7-6-0-linux-x86-64"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 解压metricBeat-7.6.0-linux-x86_64</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-filebeat配置"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 filebeat配置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-4-采集控制台日志"><span class="nav-number">3.4.</span> <span class="nav-text">3.4 采集控制台日志</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-5-采集nginx日志"><span class="nav-number">3.5.</span> <span class="nav-text">3.5 采集nginx日志</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-6-使用nginx-module采集nginx日志"><span class="nav-number">3.6.</span> <span class="nav-text">3.6 使用nginx module采集nginx日志</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-7-使用Kibana展示"><span class="nav-number">3.7.</span> <span class="nav-text">3.7 使用Kibana展示</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#肆、Filebeat工作原理"><span class="nav-number">4.</span> <span class="nav-text">肆、Filebeat工作原理</span></a></li></ol></div>
             
 
           </div>
