@@ -55,17 +55,26 @@
   };
 </script>
 
-  <meta name="keywords" content="ELK,Beats,FileBeat">
+  <meta name="description" content="壹、软件版本1234567Centos：CentOS-7-x86_64-Minimal-1908VM: 15.5.0 build-14665864Java: 1.8.0_211Elasticsearch: elasticsearch-7.6.0Logstash: logstash-7.6.0Kibana: kibana-7.6.0Filebeat：filebeat-7.6.0  贰、Filebea">
+<meta name="keywords" content="ELK,Beats,FileBeat">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Elastic Stack实战之FileBeat初体验">
 <meta property="og:url" content="http://zzlve.win/2020/02/29/elastic-stack-shi-zhan-zhi-filebeat-chu-ti-yan/index.html">
 <meta property="og:site_name" content="南国薏米">
+<meta property="og:description" content="壹、软件版本1234567Centos：CentOS-7-x86_64-Minimal-1908VM: 15.5.0 build-14665864Java: 1.8.0_211Elasticsearch: elasticsearch-7.6.0Logstash: logstash-7.6.0Kibana: kibana-7.6.0Filebeat：filebeat-7.6.0  贰、Filebea">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/animated-gif-logs-ui-optimized-7bf3c88845c84ee3a0564f7a608726b5.gif">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/filebeat-modules-system-1fcfe648ed244a3eb6981805e48eb805.jpg">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/filebeat-modules-nginx-60aafcc8bf6e416e8489e30b85e84446.jpg">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/filebeat-modules-mysql-532077e16cc3495291fbe4c7b15e7f36.jpg">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/filebeat-modules-auditd-593f8272484b4aa4ac01bc3fcd596d43.jpg">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/filebeat-diagram-71397eba004043f3a0593620b0139364.svg">
 <meta property="og:image" content="https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png">
-<meta property="og:updated_time" content="2020-03-06T15:20:46.299Z">
+<meta property="og:updated_time" content="2020-03-07T08:16:54.724Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Elastic Stack实战之FileBeat初体验">
-<meta name="twitter:image" content="https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png">
+<meta name="twitter:description" content="壹、软件版本1234567Centos：CentOS-7-x86_64-Minimal-1908VM: 15.5.0 build-14665864Java: 1.8.0_211Elasticsearch: elasticsearch-7.6.0Logstash: logstash-7.6.0Kibana: kibana-7.6.0Filebeat：filebeat-7.6.0  贰、Filebea">
+<meta name="twitter:image" content="https://eelve.com/upload/2020/3/animated-gif-logs-ui-optimized-7bf3c88845c84ee3a0564f7a608726b5.gif">
   <link rel="alternate" href="/atom.xml" title="南国薏米" type="application/atom+xml">
   <link rel="canonical" href="http://zzlve.win/2020/02/29/elastic-stack-shi-zhan-zhi-filebeat-chu-ti-yan/">
 
@@ -322,7 +331,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-06 23:20:46" itemprop="dateModified" datetime="2020-03-06T23:20:46+08:00">2020-03-06</time>
+                <time title="修改时间：2020-03-07 16:16:54" itemprop="dateModified" datetime="2020-03-07T16:16:54+08:00">2020-03-07</time>
               </span>
             
           
@@ -359,7 +368,50 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <hr>
+        <h1 id="壹、软件版本"><a href="#壹、软件版本" class="headerlink" title="壹、软件版本"></a>壹、软件版本</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">Centos：CentOS-7-x86_64-Minimal-1908</span></span><br><span class="line"><span class="attr">VM:</span> <span class="number">15.5</span><span class="number">.0</span> <span class="string">build-14665864</span></span><br><span class="line"><span class="attr">Java:</span> <span class="number">1.8</span><span class="string">.0_211</span></span><br><span class="line"><span class="attr">Elasticsearch:</span> <span class="string">elasticsearch-7.6.0</span></span><br><span class="line"><span class="attr">Logstash:</span> <span class="string">logstash-7.6.0</span></span><br><span class="line"><span class="attr">Kibana:</span> <span class="string">kibana-7.6.0</span></span><br><span class="line"><span class="string">Filebeat：filebeat-7.6.0</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="贰、Filebeat介绍"><a href="#贰、Filebeat介绍" class="headerlink" title="贰、Filebeat介绍"></a>贰、Filebeat介绍</h1><p>Filebeat是一种轻量型日志采集器，具有以下特点</p>
+<ul>
+<li>汇总、“tail -f”和搜索：启动 Filebeat 后，打开 Logs UI，直接在 Kibana 中观看对您的文件进行 tail 操作的过程。通过搜索栏按照服务、应用程序、主机、数据中心或者其他条件进行筛选，以跟踪您的全部汇总日志中的异常行为。</li>
+</ul>
+<p><img src="https://eelve.com/upload/2020/3/animated-gif-logs-ui-optimized-7bf3c88845c84ee3a0564f7a608726b5.gif" alt="animated-gif-logs-ui-optimized"></p>
+<ul>
+<li><p>性能稳健，不错过任何检测信号：无论在任何环境中，随时都潜伏着应用程序中断的风险。Filebeat 能够读取并转发日志行，如果出现中断，还会在一切恢复正常后，从中断前停止的位置继续开始。</p>
+</li>
+<li><p>Filebeat 让简单的事情简单化：Filebeat 内置有多种模块（Apache、Cisco ASA、Microsoft Azure、NGINX、MySQL 等等），可针对常见格式的日志大大简化收集、解析和可视化过程，只需一条命令即可。之所以能实现这一点，是因为它将自动默认路径（因操作系统而异）与 Elasticsearch 采集节点管道的定义和 Kibana 仪表板组合在一起。不仅如此，数个 Filebeat 模块还包括预配置的 Machine Learning 任务。 </p>
+<ul>
+<li>系统</li>
+</ul>
+<p><img src="https://eelve.com/upload/2020/3/filebeat-modules-system-1fcfe648ed244a3eb6981805e48eb805.jpg" alt="filebeat-modules-system"></p>
+<ul>
+<li>NGINX</li>
+</ul>
+<p><img src="https://eelve.com/upload/2020/3/filebeat-modules-nginx-60aafcc8bf6e416e8489e30b85e84446.jpg" alt="filebeat-modules-nginx"></p>
+<ul>
+<li>MySQL</li>
+</ul>
+<p><img src="https://eelve.com/upload/2020/3/filebeat-modules-mysql-532077e16cc3495291fbe4c7b15e7f36.jpg" alt="filebeat-modules-mysql"></p>
+<ul>
+<li>Auditd</li>
+</ul>
+<p><img src="https://eelve.com/upload/2020/3/filebeat-modules-auditd-593f8272484b4aa4ac01bc3fcd596d43.jpg" alt="filebeat-modules-auditd"></p>
+</li>
+</ul>
+<ul>
+<li><p>容器就绪和云端就绪：正在对所有内容进行容器化，或者正在云端环境中运行？通过 Elastic Stack，可以轻松地监测容器和云服务。在 Kubernetes、Docker 或云端部署中部署 Filebeat，即可获得所有的日志流：信息十分完整，包括日志流的 pod、容器、节点、VM、主机以及自动关联时用到的其他元数据。此外，Beats Autodiscover 功能可检测到新容器，并使用恰当的 Filebeat 模块对这些容器进行自适应监测。 </p>
+</li>
+<li><p>它不会导致您的管道过载：当将数据发送到 Logstash 或 Elasticsearch 时，Filebeat 使用背压敏感协议，以应对更多的数据量。如果 Logstash 正在忙于处理数据，则会告诉 Filebeat 减慢读取速度。一旦拥堵得到解决，Filebeat 就会恢复到原来的步伐并继续传输数据。 </p>
+</li>
+</ul>
+<p><img src="https://eelve.com/upload/2020/3/filebeat-diagram-71397eba004043f3a0593620b0139364.svg" alt="filebeat-diagram"></p>
+<ul>
+<li>输送至 Elasticsearch 或 Logstash。在 Kibana 中实现可视化。</li>
+</ul>
+<p>Filebeat 是 Elastic Stack 的一部分，因此能够与 Logstash、Elasticsearch 和 Kibana 无缝协作。无论您要使用 Logstash 转换或充实日志和文件，还是在 Elasticsearch 中随意处理一些数据分析，亦或在 Kibana 中构建和分享仪表板，Filebeat 都能轻松地将您的数据发送至最关键的地方。</p>
+<h1 id="叁-Filebeat安装"><a href="#叁-Filebeat安装" class="headerlink" title="叁 Filebeat安装"></a>叁 Filebeat安装</h1><h2 id="3-1-下载地址"><a href="#3-1-下载地址" class="headerlink" title="3.1 下载地址"></a>3.1 下载地址</h2><p><a href="https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.6.1-linux-x86_64.tar.gz" target="_blank" rel="noopener">filebeat-7.6.1-linux-x86_64</a></p>
+<h2 id="3-2-解压filebeat-7-6-1-linux-x86-64"><a href="#3-2-解压filebeat-7-6-1-linux-x86-64" class="headerlink" title="3.2 解压filebeat-7.6.1-linux-x86_64"></a>3.2 解压filebeat-7.6.1-linux-x86_64</h2><figure class="highlight shell"><figcaption><span>script</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -zvxf filebeat-7.6.1-linux-x86_64.tar.gz -C /usr/elastic</span><br></pre></td></tr></table></figure>
+
+<hr>
 <p><img src="https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png" alt="薏米笔记"></p>
 
     </div>
@@ -441,8 +493,17 @@
 
   <aside id="sidebar" class="sidebar">
     <div class="sidebar-inner">
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <div class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <div class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
 
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -651,6 +712,23 @@
 
         </div>
       </div>
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#壹、软件版本"><span class="nav-number">1.</span> <span class="nav-text">壹、软件版本</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#贰、Filebeat介绍"><span class="nav-number">2.</span> <span class="nav-text">贰、Filebeat介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#叁-Filebeat安装"><span class="nav-number">3.</span> <span class="nav-text">叁 Filebeat安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-下载地址"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 下载地址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-解压filebeat-7-6-1-linux-x86-64"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 解压filebeat-7.6.1-linux-x86_64</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
 
     </div>
   </aside>
@@ -670,7 +748,7 @@
 </div>
 <div class="theme-info">
 <div class="powered-by"></div>
-<span class="post-count">博客全站共47k字</span>
+<span class="post-count">博客全站共47.7k字</span>
 </div>
 
         
