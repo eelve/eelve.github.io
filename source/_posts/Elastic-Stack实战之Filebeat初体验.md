@@ -62,7 +62,7 @@ Filebeat是一种轻量型日志采集器，具有以下特点
 
 - 输送至 Elasticsearch 或 Logstash。在 Kibana 中实现可视化。
 
-Filebeat 是 Elastic Stack 的一部分，因此能够与 Logstash、Elasticsearch 和 Kibana 无缝协作。无论您要使用 Logstash 转换或充实日志和文件，还是在 Elasticsearch 中随意处理一些数据分析，亦或在 Kibana 中构建和分享仪表板，Filebeat 都能轻松地将您的数据发送至最关键的地方。
+  Filebeat 是 Elastic Stack 的一部分，因此能够与 Logstash、Elasticsearch 和 Kibana 无缝协作。无论您要使用 Logstash 转换或充实日志和文件，还是在 Elasticsearch 中随意处理一些数据分析，亦或在 Kibana 中构建和分享仪表板，Filebeat 都能轻松地将您的数据发送至最关键的地方。
 
 # 叁 Filebeat安装
 
@@ -545,7 +545,7 @@ Filebeat由两个主要组件组成：prospector 和 harvester。
 
 ---
 
-【**后面的话**】再本文中我们全面的体验了一下filebeat，还和Kibana结合应用了，我们可以看到filebeat和elk三大剑客整合的非常好，特别是Kibana提供了丰富的仪表盘，大大的方便了我们展示。后面还有再结合一下Logstash，使用以下过滤功能。
+【**后面的话**】在本文中我们全面的体验了一下filebeat，还和Kibana结合应用了，我们可以看到filebeat和elk三大剑客整合的非常好，特别是Kibana提供了丰富的仪表盘，大大的方便了我们展示。后面还有再结合一下Logstash，使用以下过滤功能。
 
 ---
 
