@@ -6,9 +6,6 @@ tags: [ELK,FileBeat,Beats]
 categories: Elastic Stack
 ---
 
----
-
-
 【**前面的话**】[前文](https://eelve.com/archives/beats)介绍了Elastic Stack的Beats家族，今天我们就来体验其中的专门用于采集文件的[Filebeat](https://www.elastic.co/cn/beats/filebeat)，走起。
 
 
