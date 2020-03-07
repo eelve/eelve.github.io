@@ -68,13 +68,13 @@ Filebeat 是 Elastic Stack 的一部分，因此能够与 Logstash、Elasticsear
 
 ## 3.1 下载地址
 
-[filebeat-7.6.1-linux-x86_64](https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.6.1-linux-x86_64.tar.gz)
+[filebeat-7.6.0-linux-x86_64](https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-7.6.0-linux-x86_64.tar.gz)
 
 
-## 3.2 解压filebeat-7.6.1-linux-x86_64
+## 3.2 解压filebeat-7.6.0-linux-x86_64
 
 ```shell script
-tar -zvxf filebeat-7.6.1-linux-x86_64.tar.gz -C /usr/elastic
+tar -zvxf filebeat-7.6.0-linux-x86_64.tar.gz -C /usr/elastic
 ```
 
 ## 3.3 filebeat配置
