@@ -55,13 +55,13 @@
   };
 </script>
 
-  <meta name="description" content="【前面的话】前文介绍了Elastic Stack的Beats家族，今天我们就来体验其中的专门用于采集文件的Filebeat，走起。  壹、软件版本1234567Centos：CentOS-7-x86_64-Minimal-1908VM: 15.5.0 build-14665864Java: 1.8.0_211Elasticsearch: elasticsearch-7.6.0Logstash:">
+  <meta name="description" content="【前面的话】前文介绍了Elastic Stack的Beats家族，今天我们就来体验其中的专门用于采集文件的Filebeat，走起。  壹、软件版本1234567Centos：CentOS-7-x86_64-Minimal-1908VM: 15.5.0 build-14665864Java: 1.8.0_211Elasticsearch: elasticsearch-7.6.0Logstash: l">
 <meta name="keywords" content="ELK,Beats,FileBeat">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Elastic Stack实战之FileBeat初体验">
 <meta property="og:url" content="http://zzlve.win/2020/03/07/elastic-stack-shi-zhan-zhi-filebeat-chu-ti-yan/index.html">
 <meta property="og:site_name" content="南国薏米">
-<meta property="og:description" content="【前面的话】前文介绍了Elastic Stack的Beats家族，今天我们就来体验其中的专门用于采集文件的Filebeat，走起。  壹、软件版本1234567Centos：CentOS-7-x86_64-Minimal-1908VM: 15.5.0 build-14665864Java: 1.8.0_211Elasticsearch: elasticsearch-7.6.0Logstash:">
+<meta property="og:description" content="【前面的话】前文介绍了Elastic Stack的Beats家族，今天我们就来体验其中的专门用于采集文件的Filebeat，走起。  壹、软件版本1234567Centos：CentOS-7-x86_64-Minimal-1908VM: 15.5.0 build-14665864Java: 1.8.0_211Elasticsearch: elasticsearch-7.6.0Logstash: l">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://eelve.com/upload/2020/3/animated-gif-logs-ui-optimized-7bf3c88845c84ee3a0564f7a608726b5.gif">
 <meta property="og:image" content="https://eelve.com/upload/2020/3/filebeat-modules-system-1fcfe648ed244a3eb6981805e48eb805.jpg">
@@ -76,10 +76,10 @@
 <meta property="og:image" content="https://eelve.com/upload/2020/3/2020030705-77c1f59279aa40d4b8319560da4a6ae5.png">
 <meta property="og:image" content="https://eelve.com/upload/2020/3/2020030706-9f858efbcaba4dd898b07e54c2f42a0d.png">
 <meta property="og:image" content="https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png">
-<meta property="og:updated_time" content="2020-03-07T10:32:50.163Z">
+<meta property="og:updated_time" content="2020-03-07T10:43:05.160Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Elastic Stack实战之FileBeat初体验">
-<meta name="twitter:description" content="【前面的话】前文介绍了Elastic Stack的Beats家族，今天我们就来体验其中的专门用于采集文件的Filebeat，走起。  壹、软件版本1234567Centos：CentOS-7-x86_64-Minimal-1908VM: 15.5.0 build-14665864Java: 1.8.0_211Elasticsearch: elasticsearch-7.6.0Logstash:">
+<meta name="twitter:description" content="【前面的话】前文介绍了Elastic Stack的Beats家族，今天我们就来体验其中的专门用于采集文件的Filebeat，走起。  壹、软件版本1234567Centos：CentOS-7-x86_64-Minimal-1908VM: 15.5.0 build-14665864Java: 1.8.0_211Elasticsearch: elasticsearch-7.6.0Logstash: l">
 <meta name="twitter:image" content="https://eelve.com/upload/2020/3/animated-gif-logs-ui-optimized-7bf3c88845c84ee3a0564f7a608726b5.gif">
   <link rel="alternate" href="/atom.xml" title="南国薏米" type="application/atom+xml">
   <link rel="canonical" href="http://zzlve.win/2020/03/07/elastic-stack-shi-zhan-zhi-filebeat-chu-ti-yan/">
@@ -326,7 +326,7 @@
                 
               
 
-              <time title="创建时间：2020-03-07 17:49:22 / 修改时间：18:32:50" itemprop="dateCreated datePublished" datetime="2020-03-07T17:49:22+08:00">2020-03-07</time>
+              <time title="创建时间：2020-03-07 17:49:22 / 修改时间：18:43:05" itemprop="dateCreated datePublished" datetime="2020-03-07T17:49:22+08:00">2020-03-07</time>
             </span>
           
             
@@ -366,8 +366,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <hr>
-<p>【<strong>前面的话</strong>】<a href="https://eelve.com/archives/beats" target="_blank" rel="noopener">前文</a>介绍了Elastic Stack的Beats家族，今天我们就来体验其中的专门用于采集文件的<a href="https://www.elastic.co/cn/beats/filebeat" target="_blank" rel="noopener">Filebeat</a>，走起。</p>
+        <p>【<strong>前面的话</strong>】<a href="https://eelve.com/archives/beats" target="_blank" rel="noopener">前文</a>介绍了Elastic Stack的Beats家族，今天我们就来体验其中的专门用于采集文件的<a href="https://www.elastic.co/cn/beats/filebeat" target="_blank" rel="noopener">Filebeat</a>，走起。</p>
 <hr>
 <h1 id="壹、软件版本"><a href="#壹、软件版本" class="headerlink" title="壹、软件版本"></a>壹、软件版本</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">Centos：CentOS-7-x86_64-Minimal-1908</span></span><br><span class="line"><span class="attr">VM:</span> <span class="number">15.5</span><span class="number">.0</span> <span class="string">build-14665864</span></span><br><span class="line"><span class="attr">Java:</span> <span class="number">1.8</span><span class="string">.0_211</span></span><br><span class="line"><span class="attr">Elasticsearch:</span> <span class="string">elasticsearch-7.6.0</span></span><br><span class="line"><span class="attr">Logstash:</span> <span class="string">logstash-7.6.0</span></span><br><span class="line"><span class="attr">Kibana:</span> <span class="string">kibana-7.6.0</span></span><br><span class="line"><span class="string">Filebeat：filebeat-7.6.0</span></span><br></pre></td></tr></table></figure>
 
