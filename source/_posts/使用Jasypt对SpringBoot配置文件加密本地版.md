@@ -1,8 +1,8 @@
 ---
 title: 使用Jasypt对SpringBoot配置文件加密
 date: 2019-08-09 17:14:23
-tags: [java,springboot,jasypt]
-categories: springboot
+tags: hide
+categories: hide
 ---
 # **前言**
 在日前安全形势越来越严重的情况下，让我意识到在项目中存在一个我们经常忽略的漏洞，那就是我们的项目的配置文件中配置信息的安全，尤其是数据库连接的用户名和密码的安全。所以这里我们就需要对数据库的用户名和密码进行加密，这也是本文的由来。本文采用Jasypt对Spring Boot配置文件加密的相关方法，其实呢，也还有其他方案，具体的会在后面的相关文章中说明。
@@ -97,7 +97,7 @@ private final StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryp
         this.encryptor.setAlgorithm("PBEWithMD5AndTripleDES");
     }
 ```
-![图片.png](https://image.eelve.com/eblog/springbootjasypydiagrams-3a7616cc841c4f7583fc7173e32aaab4.png)
+![图片.png](https://eelve.com/upload/2019/6/springbootjasypydiagrams-3a7616cc841c4f7583fc7173e32aaab4.png)
 # **3.部署时配置salt(盐)值**
 **1. 为了防止salt(盐)泄露,反解出密码.可以在项目部署的时候使用命令传入salt(盐)值**
 ```shell script
@@ -119,7 +119,7 @@ java -jar -Djasypt.encryptor.password=${JASYPT_PASSWORD} xxx.jar
 ```
 
 [下面是一个我自己的具体实现：https://github.com/eelve/jasypt，使用Jasypt对数据库用信息加密后，可以成功连接上数据库](https://github.com/eelve/jasypt)
-![图片.png](https://image.eelve.com/eblog/springbootjasypyresult-5f2ef70fe5124f5595a48b341807f2c3.png)
+![图片.png](https://eelve.com/upload/2019/6/springbootjasypyresult-5f2ef70fe5124f5595a48b341807f2c3.png)
 
 [官方地址：https://github.com/ulisesbocchio/jasypt-spring-boot](https://github.com/ulisesbocchio/jasypt-spring-boot)
 

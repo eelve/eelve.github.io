@@ -1,8 +1,8 @@
 ---
 title: 怎么优雅的使用hexo
 date: 2020-02-23 22:20:58
-tags: hexo
-categories: hexo
+tags: hide
+categories: hide
 ---
 【**前情提要**】在使用[hexo](https://hexo.io/zh-cn/)搭建自己的个人博客前，我一直使用[Halo](https://halo.run/)来搭建自己的博客。但是还是决定用hexo再搭建一个博客，主要是为了让自己在Github上留下自己的印记。
 
@@ -10,7 +10,7 @@ categories: hexo
 关于hexo的基础使用知识我在这里就不做过多的介绍了，如果是在是不知道可以看以下[官方文档](https://hexo.io/zh-cn/docs/)。我这里主要说一下怎么用Github保存博客源代码和生成的网站代码。
 
 * 1.新建一个分支用来保存博客源代码，并且设为默认分支，如下图所示
-![20200223011](https://image.eelve.com/eblog/20200223011-1816538384854e64bb090740d8ea0621.png)
+![20200223011](https://eelve.com/upload/2020/2/20200223011-1816538384854e64bb090740d8ea0621.png)
 * 2.执行hexo d -g上传博客内容
 * 3.使用git命令提交源代码到eblog分支
 **这样当你换电脑或者重新构建项目的时候就可以从github拉去代码就可以进行继续编写了，是不是很方便**

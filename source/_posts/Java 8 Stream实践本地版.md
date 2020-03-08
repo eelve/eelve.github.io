@@ -1,8 +1,8 @@
 ---
 title: Java 8 Stream实践
 date: 2019-06-29 14:54:24
-tags: [java,stream]
-categories: java
+tags: hide
+categories: hide
 ---
 【**前面的话**】Java中的Stream于1.8版本析出，平时项目中也有用到，今天就系统的来实践一下。下面借用重庆力帆队伍中我个人比较喜欢的球员来操作一波，队员的年龄为了便于展示某些api做了调整，请不要太认真哦。
 
@@ -71,7 +71,7 @@ public class User implements  Comparable<User>{
 ```
 然后在数据库中插入测试数据，见下图：
 
-![streamDataSource](https://image.eelve.com/eblog/streamDataSource-df15382b03b24526955b1b14636316dd.png)
+![streamDataSource](https://eelve.com/upload/2019/7/streamDataSource-df15382b03b24526955b1b14636316dd.png)
 
 ## 3.1过滤
 ### 1）filter 过滤(T-> boolean)
@@ -468,7 +468,7 @@ key= true and value= [User(id=6, name=克鲁伊夫, age=43)]
 
 【**写在后面的话**】留下stream的类实现的方法和依赖图，前面的实践也只是挑选了几个比较常用的Api。
 
-![stream](https://image.eelve.com/eblog/stream-d2e3fe9045e945ce9411d8db6043b32c.png)
+![stream](https://eelve.com/upload/2019/7/stream-d2e3fe9045e945ce9411d8db6043b32c.png)
 
 
 ---

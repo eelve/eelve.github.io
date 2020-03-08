@@ -1,8 +1,8 @@
 ---
 title: spring-boot-starter-quartz集群实践
 date: 2019-08-09 17:06:12
-tags: [java,springboot,quartz]
-categories: springboot
+tags: hide
+categories: hide
 ---
 【**前情提要**】由于项目需要，需要一个定时任务集群，故此有了这个spring-boot-starter-quartz集群的实践。springboot的版本为：2.1.6.RELEASE；quartz的版本为：2.3.1.假如这里一共有两个定时任务的节点，它们的代码完全一样。
 
@@ -376,8 +376,8 @@ public class QuartzService {
 
 # 柒、测试验证
 分别夏侯启动两个应用，然后观察任务执行，以及在运行过程中杀死某个服务，来观察定时任务的执行。
-![SpringbootquartzoneApplication](https://image.eelve.com/eblog/1-a8a710a578ad47a8afc8ace72f3cbd7c.png)
-![SpringbootquartztwoApplication](https://image.eelve.com/eblog/2-db731d38c3ed4b4b8123482c9b3ef28d.png)
+![SpringbootquartzoneApplication](https://eelve.com/upload/2019/8/1-a8a710a578ad47a8afc8ace72f3cbd7c.png)
+![SpringbootquartztwoApplication](https://eelve.com/upload/2019/8/2-db731d38c3ed4b4b8123482c9b3ef28d.png)
 
 【**写在后面的话**】下面给出的是所需要脚本的连接地址：[脚本下载地址](http://www.quartz-scheduler.org/downloads/)，另外这边又一个自己实现的[demo](https://github.com/eelve/springbootquartzs.git)
 

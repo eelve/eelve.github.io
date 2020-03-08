@@ -1,8 +1,8 @@
 ---
 title: hadoop安装解决之道
 date: 2019-08-09 17:12:58
-tags: hadoop
-categories: hadoop
+tags: hide
+categories: hide
 ---
 # 壹、故障现象
 ```shell script
@@ -27,13 +27,13 @@ C:\Users\Chirius>
 
 在Windows中安装jdk时，如果是安装在C:\Program Files\Java\jdk1.8.0_161路径下，如果需要在其他组件中配置java的环境时，因为C:\Program Files是Windows系统的系统盘，可能在某些场合下访问的时候，必须以Windows管理员的身份去访问，例如：我们在Windows中解压安装了hadoop，那么需要在$HADOOP_HOME/etc/hadoop/hadoop-env.cmd文件中手动修改java的安装路径，即：set JAVA_HOME=C:\Program Files\Java\jdk1.8.0_161
 
-![hadop01](https://image.eelve.com/eblog/hadop01-636e38ae52254d1aacef36d96b72de8c.png)
+![hadop01](https://eelve.com/upload/2019/7/hadop01-636e38ae52254d1aacef36d96b72de8c.png)
 
 而我们的jdk安装在jdk的默认安装路径下，所以该文件路径有可能需要管理员访问权限才可以访问，所以如果像上图中这样配置会导致hadoop安装失败，失败的原因则是未检测到jdk环境，才会报**Error: JAVA_HOME is incorrectly set.**
 
 # 叁、解决方法
 将$HADOOP_HOME/etc/hadoop/hadoop-env.cmd文件中的 set JAVA_HOME=C:\Program Files\Java\jdk1.8.0_161 修改为 set JAVA_HOME=C:\PROGRA~1\Java\jdk1.8.0_161 保存，然后重新在cmd窗口输入 hadoop version 命令，即可成功！
-![hadoop02](https://image.eelve.com/eblog/hadoop02-67b5b5e127a046e69b18eab65b062949.png)
+![hadoop02](https://eelve.com/upload/2019/7/hadoop02-67b5b5e127a046e69b18eab65b062949.png)
 
 注意：在$HADOOP_HOME/etc/hadoop/hadoop-env.cmd文件中的这一行 set JAVA_HOME=C:\PROGRA~1\Java\jdk1.8.0_161 中不能有空格！
 

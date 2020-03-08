@@ -1,8 +1,8 @@
 ---
 title: Spring Boot Admin 的使用
 date: 2019-08-09 17:07:34
-tags: [java,springboot,springboot-admin]
-categories: springboot
+tags: hide
+categories: hide
 ---
 【**前情提要**】Spring Boot Actuator 提供了对单个 Spring Boot 应用的监控，信息包含应用状态、内存、线程、堆栈等，比较全面的监控了 Spring Boot 应用的整个生命周期。但是这样监控也有一些问题：第一，所有的监控都需要调用固定的接口来查看，如果全面查看应用状态需要调用很多接口，并且接口返回的 JSON 信息不方便运营人员理解；第二，如果 Spring Boot 应用集群非常大，每个应用都需要调用不同的接口来查看监控信息，操作非常繁琐低效。在这样的背景下，就诞生了另外一个开源软件：**Spring Boot Admin**。
 
@@ -65,7 +65,7 @@ public class AdminServerApplication {
 
 ~~~
 完成上面三步之后，启动服务端，访问网址 http://localhost:8000 可以看到以下界面：
-![监控页面](https://image.eelve.com/eblog/81-1f39bf9d2ba5497a8bdfa151df35bbd8.png)
+![监控页面](https://eelve.com/upload/2019/8/81-1f39bf9d2ba5497a8bdfa151df35bbd8.png)
 因为刚启动没有应用，因此显示：No applications registered.，同时根据上图也可以看出 applications 页面会展示项目的应用数、实例数和状态三个信息。
 
 接下来我们构建一个客户端，并注册到服务端。
@@ -108,15 +108,15 @@ public class AdminClientApplication {
 ~~~
 
 配置完成之后，启动 Client 端，Admin 服务端会自动检查到客户端的变化，并展示其应用：
-![结果](https://image.eelve.com/eblog/82-1b588fee05794b2d94a2f578ba805fbb.png)
+![结果](https://eelve.com/upload/2019/8/82-1b588fee05794b2d94a2f578ba805fbb.png)
 页面会展示被监控的服务列表，点击项目名称会进入此应用的详细监控信息：
-![详情](https://image.eelve.com/eblog/83-d685df514a0e44b1bd45e5b6bd1a9e64.png)
+![详情](https://eelve.com/upload/2019/8/83-d685df514a0e44b1bd45e5b6bd1a9e64.png)
 通过上图可以看出，Spring Boot Admin 以图形化的形式展示了应用的各项信息，这些信息大多都来自于 **Spring Boot Actuator** 提供的接口。利用图形化的形式很容易看到应用的各项参数变化，甚至有些页面还可以进行一些操作，比如改变打印日志的级别等。
 
 ### 点击 journal 页面可以看到应用状态变化的历史过程：
-![journal](https://image.eelve.com/eblog/84-fa96d9eee75d47d599f55e27533664e4.png)
+![journal](https://eelve.com/upload/2019/8/84-fa96d9eee75d47d599f55e27533664e4.png)
 ### 点击第一个菜单 wallboard 可以以更形象的方式查看应用数量启动的时间等。
-![wallboard ](https://image.eelve.com/eblog/85-c42df15785a14110b7532b20afee8ca1.png)
+![wallboard ](https://eelve.com/upload/2019/8/85-c42df15785a14110b7532b20afee8ca1.png)
 
 # 叁、监控微服务
 
@@ -247,7 +247,7 @@ spring.security.user.name=admin
 spring.security.user.password=admin
 ~~~
 配置完成之后重启 Admin Server 端，访问网址 http://localhost:8000 就会发现需要一个登录的用户名和密码了。
-![Admin Server](https://image.eelve.com/eblog/86-dc4b6d05194a4c9786383189c6378f26.png)
+![Admin Server](https://eelve.com/upload/2019/8/86-dc4b6d05194a4c9786383189c6378f26.png)
 使用刚才设置的用户名和密码登录之后，发现注册到 Server 端的服务数成为 0 了，这是客户端统一也需要配置帐户名和密码信息。
 
 ~~~propert

@@ -1,8 +1,8 @@
 ---
 title: 用命令将本地jar包导入到本地maven仓库
 date: 2019-08-09 17:15:04
-tags: maven
-categories: java
+tags: hide
+categories: hide
 ---
 【**前情提要**】在日常开发过程中，我们总是不可避免的需要依赖某些不在中央仓库，同时也不在本地仓库中的jar包，这是我们就需要使用命令行将需要导入本地仓库中的jar包导入本地仓库，使得项目依赖本地仓库中的代码。
 
@@ -35,7 +35,7 @@ mvn install:install-file -Dfile=D:\link\lib\todo-1.0.jar  -DgroupId=com.eelve -D
 
 ----
 结果示例
-![导入jar包结果](https://image.eelve.com/eblog/导入jar包结果-859bee2db9f14a2a8079b449d38e061c.png)
+![导入jar包结果](https://eelve.com/upload/2019/6/导入jar包结果-859bee2db9f14a2a8079b449d38e061c.png)
 
 ---
 【小贴士】maven的仓库分类

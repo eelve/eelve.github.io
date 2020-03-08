@@ -1,15 +1,15 @@
 ---
 title: springboot+jsp打jar问题
 date: 2019-08-09 17:11:29
-tags: [java,springboot,jsp,jar]
-categories: springboot
+tags: hide
+categories: hide
 ---
 【**前情提要**】最近做了一个项目，项目是springboot+jsp结构的，但是在发布生产环境的时候又需要用maven打成jar包，但是一开始的默认配置都不成功。下面的文章就是具体的解决过程。
 
 -----
 # 壹、项目结构
 
-![项目结构](https://image.eelve.com/eblog/O$VVNDUD1GCU8FT%5DQH5Z@TM-23f04197a92d4a5db24b6e3fb656b7c1.png)
+![项目结构](https://eelve.com/upload/2019/7/O$VVNDUD1GCU8FT%5DQH5Z@TM-23f04197a92d4a5db24b6e3fb656b7c1.png)
 
 # 贰、异常现象
 使用的JDK为1.8，springboot版本为：
@@ -28,7 +28,7 @@ categories: springboot
 </properties>
 ```
 打成的jar只包含class文件，没有见资源文件引入。
-![没有包含resourse的编译结果](https://image.eelve.com/eblog/20190713-90f9d3c88e4940de8c8faaa0b2d4ec7c.png)
+![没有包含resourse的编译结果](https://eelve.com/upload/2019/7/20190713-90f9d3c88e4940de8c8faaa0b2d4ec7c.png)
 # 叁、解决办法
 ## 1. 添加资源路径的映射
 ```xml
@@ -133,7 +133,7 @@ spring.mvc.view.suffix=.jsp
 
 下面就是修改编译配置之后的结果
 
-![正确的结果](https://image.eelve.com/eblog/201907192-13a348f78e4c4d1cb0b6485cf535dfbe.png)
+![正确的结果](https://eelve.com/upload/2019/7/201907192-13a348f78e4c4d1cb0b6485cf535dfbe.png)
 
 ----
 
@@ -145,19 +145,19 @@ spring.mvc.view.suffix=.jsp
 ## 1.点开项目结构管理，点击IDEA右上角的Project Structure
 
 
-![Project Structure](https://image.eelve.com/eblog/201907193-7d050c6d01c1449f999bb49a5c11fda8.png)
+![Project Structure](https://eelve.com/upload/2019/7/201907193-7d050c6d01c1449f999bb49a5c11fda8.png)
 
 ## 2.先点击下图中的+号，再点击Web
 
-![2019071904](https://image.eelve.com/eblog/2019071904-f795ae6044024bafbd02136c86fbfbda.png)
+![2019071904](https://eelve.com/upload/2019/7/2019071904-f795ae6044024bafbd02136c86fbfbda.png)
 
 ## 3.修改配置
 下图是修改配置前的默认配置
-![修改前的配置](https://image.eelve.com/eblog/20190705-bb62a58b15d24b098aa2db949d18de32.png)
+![修改前的配置](https://eelve.com/upload/2019/7/20190705-bb62a58b15d24b098aa2db949d18de32.png)
 下面将webapp配置到传统的main目录下
-![修改后的配置](https://image.eelve.com/eblog/2019071906-d580c788cbd94ff7ba7cb43d70fb5ebb.png)
-![配置Artifacts](https://image.eelve.com/eblog/2019071906-4c565cc7039a4ed7b0dff2044d3e1bae.png)
-![最后的配置成功的结果](https://image.eelve.com/eblog/2019071907-1a3c18ec66514327b6f5b635dfde0f67.png)
+![修改后的配置](https://eelve.com/upload/2019/7/2019071906-d580c788cbd94ff7ba7cb43d70fb5ebb.png)
+![配置Artifacts](https://eelve.com/upload/2019/7/2019071906-4c565cc7039a4ed7b0dff2044d3e1bae.png)
+![最后的配置成功的结果](https://eelve.com/upload/2019/7/2019071907-1a3c18ec66514327b6f5b635dfde0f67.png)
 
 
 ---

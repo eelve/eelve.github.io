@@ -1,8 +1,8 @@
 ---
 title: SpringBoot配置web访问H2
 date: 2019-08-09 17:13:41
-tags: [java,springboot,h2]
-categories: springboot
+tags: hide
+categories: hide
 ---
 【**前情提要**】最近开始搭建博客，在本地调试的时候使用的数据库是h2，但是调试的时候需要查看数据库，本文也由此而来。
 
@@ -10,9 +10,9 @@ categories: springboot
 ---
 下面是我用到的方法：
 1. 使用IDEA的Database连接工具，具体操作方法就是按照要求配置连接url，用户名和密码即可。具体操作见下图：
-![h2ideadatabase配置](https://image.eelve.com/eblog/h2databasecollection-bffb24f29c9947b8871454427c88a9a3.png)
+![h2ideadatabase配置](https://eelve.com/upload/2019/6/h2databasecollection-bffb24f29c9947b8871454427c88a9a3.png)
 查询结果：
-![h2ideadatabase查询结果](https://image.eelve.com/eblog/h2databaseselect-5f10495470e446f98af7b8aff0228ef2.png)
+![h2ideadatabase查询结果](https://eelve.com/upload/2019/6/h2databaseselect-5f10495470e446f98af7b8aff0228ef2.png)
 但是但是这个时候启动**项目会报错**：
 ```shell script
 org.h2.jdbc.JdbcSQLException: Database may be already in use: null. Possible solutions: close all other connection(s); use the server mode [90020-197]
@@ -204,7 +204,7 @@ h2:
       enabled: false
 ```
 即可，启动项目，然后在项目访问路径后面加上配置的path**/h2-console**就可以查看具体结果了：
-![通过H2 Console查看的结果](https://image.eelve.com/eblog/12344-e3c905ae1b794528af9706227afa9b38.png)
+![通过H2 Console查看的结果](https://eelve.com/upload/2019/6/12344-e3c905ae1b794528af9706227afa9b38.png)
 
 
 
