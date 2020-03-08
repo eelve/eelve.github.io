@@ -63,14 +63,14 @@
 <meta property="og:site_name" content="南国薏米">
 <meta property="og:description" content="【前情提要】由于项目需要，需要一个定时任务集群，故此有了这个spring-boot-starter-quartz集群的实践。springboot的版本为：2.1.6.RELEASE；quartz的版本为：2.3.1.假如这里一共有两个定时任务的节点，它们的代码完全一样。  壹.jar包依赖1234567891011121314151617181920212223242526272829303132">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://eelve.com/upload/2019/8/1-a8a710a578ad47a8afc8ace72f3cbd7c.png">
-<meta property="og:image" content="https://eelve.com/upload/2019/8/2-db731d38c3ed4b4b8123482c9b3ef28d.png">
+<meta property="og:image" content="https://image.eelve.com/eblog/1-a8a710a578ad47a8afc8ace72f3cbd7c.png">
+<meta property="og:image" content="https://image.eelve.com/eblog/2-db731d38c3ed4b4b8123482c9b3ef28d.png">
 <meta property="og:image" content="https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png">
-<meta property="og:updated_time" content="2020-03-06T15:52:54.344Z">
+<meta property="og:updated_time" content="2020-03-08T05:14:35.871Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="spring-boot-starter-quartz集群实践">
 <meta name="twitter:description" content="【前情提要】由于项目需要，需要一个定时任务集群，故此有了这个spring-boot-starter-quartz集群的实践。springboot的版本为：2.1.6.RELEASE；quartz的版本为：2.3.1.假如这里一共有两个定时任务的节点，它们的代码完全一样。  壹.jar包依赖1234567891011121314151617181920212223242526272829303132">
-<meta name="twitter:image" content="https://eelve.com/upload/2019/8/1-a8a710a578ad47a8afc8ace72f3cbd7c.png">
+<meta name="twitter:image" content="https://image.eelve.com/eblog/1-a8a710a578ad47a8afc8ace72f3cbd7c.png">
   <link rel="alternate" href="/atom.xml" title="南国薏米" type="application/atom+xml">
   <link rel="canonical" href="http://zzlve.win/2019/08/09/spring-boot-starter-quartz-ji-qun-shi-jian/">
 
@@ -327,7 +327,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-06 23:52:54" itemprop="dateModified" datetime="2020-03-06T23:52:54+08:00">2020-03-06</time>
+                <time title="修改时间：2020-03-08 13:14:35" itemprop="dateModified" datetime="2020-03-08T13:14:35+08:00">2020-03-08</time>
               </span>
             
           
@@ -380,7 +380,7 @@
 <h1 id="陆、初始化任务"><a href="#陆、初始化任务" class="headerlink" title="陆、初始化任务"></a>陆、初始化任务</h1><p>这里不准备给用户用web界面来配置定时任务，故此采用<strong>CommandLineRunner</strong>来子啊应用初始化的时候来初始化任务。只需要实现CommandLineRunner的run()方法即可。</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">(String... args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        HashMap&lt;String,Object&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        map.put(<span class="string">"name"</span>,<span class="number">1</span>);</span><br><span class="line">        quartzService.deleteJob(<span class="string">"job"</span>, <span class="string">"test"</span>);</span><br><span class="line">        quartzService.addJob(Job.class, "job", "test", "0 * * * * ?", map);</span><br><span class="line"></span><br><span class="line">        map.put(<span class="string">"name"</span>,<span class="number">2</span>);</span><br><span class="line">        quartzService.deleteJob(<span class="string">"job2"</span>, <span class="string">"test"</span>);</span><br><span class="line">        quartzService.addJob(Job.class, "job2", "test", "10 * * * * ?", map);</span><br><span class="line"></span><br><span class="line">        map.put(<span class="string">"name"</span>,<span class="number">3</span>);</span><br><span class="line">        quartzService.deleteJob(<span class="string">"job3"</span>, <span class="string">"test2"</span>);</span><br><span class="line">        quartzService.addJob(Job.class, "job3", "test2", "15 * * * * ?", map);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 
-<h1 id="柒、测试验证"><a href="#柒、测试验证" class="headerlink" title="柒、测试验证"></a>柒、测试验证</h1><p>分别夏侯启动两个应用，然后观察任务执行，以及在运行过程中杀死某个服务，来观察定时任务的执行。<br><img src="https://eelve.com/upload/2019/8/1-a8a710a578ad47a8afc8ace72f3cbd7c.png" alt="SpringbootquartzoneApplication"><br><img src="https://eelve.com/upload/2019/8/2-db731d38c3ed4b4b8123482c9b3ef28d.png" alt="SpringbootquartztwoApplication"></p>
+<h1 id="柒、测试验证"><a href="#柒、测试验证" class="headerlink" title="柒、测试验证"></a>柒、测试验证</h1><p>分别夏侯启动两个应用，然后观察任务执行，以及在运行过程中杀死某个服务，来观察定时任务的执行。<br><img src="https://image.eelve.com/eblog/1-a8a710a578ad47a8afc8ace72f3cbd7c.png" alt="SpringbootquartzoneApplication"><br><img src="https://image.eelve.com/eblog/2-db731d38c3ed4b4b8123482c9b3ef28d.png" alt="SpringbootquartztwoApplication"></p>
 <p>【<strong>写在后面的话</strong>】下面给出的是所需要脚本的连接地址：<a href="http://www.quartz-scheduler.org/downloads/" target="_blank" rel="noopener">脚本下载地址</a>，另外这边又一个自己实现的<a href="https://github.com/eelve/springbootquartzs.git" target="_blank" rel="noopener">demo</a></p>
 <hr>
 <p><img src="https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png" alt="薏米笔记"></p>
@@ -423,8 +423,8 @@
 
             <div class="post-nav-prev post-nav-item">
               
-                <a href="/2019/08/09/springboot-admin-de-shi-yong/" rel="prev" title="Spring Boot Admin 的使用">
-                  Spring Boot Admin 的使用 <i class="fa fa-chevron-right"></i>
+                <a href="/2019/08/09/spring-boot-starter-quartz-ji-qun-shi-jian-ben-di-ban/" rel="prev" title="spring-boot-starter-quartz集群实践">
+                  spring-boot-starter-quartz集群实践 <i class="fa fa-chevron-right"></i>
                 </a>
               
             </div>
@@ -489,7 +489,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">43</span>
+          <span class="site-state-item-count">52</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -723,7 +723,7 @@
 </div>
 <div class="theme-info">
 <div class="powered-by"></div>
-<span class="post-count">博客全站共66.7k字</span>
+<span class="post-count">博客全站共81.8k字</span>
 </div>
 
         
