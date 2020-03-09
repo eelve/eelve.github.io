@@ -66,7 +66,7 @@
 <meta property="og:image" content="https://eelve.com/upload/2019/6/springbootjasypydiagrams-3a7616cc841c4f7583fc7173e32aaab4.png">
 <meta property="og:image" content="https://eelve.com/upload/2019/6/springbootjasypyresult-5f2ef70fe5124f5595a48b341807f2c3.png">
 <meta property="og:image" content="https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png">
-<meta property="og:updated_time" content="2020-03-08T05:28:00.061Z">
+<meta property="og:updated_time" content="2020-03-08T08:18:34.751Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="使用Jasypt对SpringBoot配置文件加密">
 <meta name="twitter:description" content="前言在日前安全形势越来越严重的情况下，让我意识到在项目中存在一个我们经常忽略的漏洞，那就是我们的项目的配置文件中配置信息的安全，尤其是数据库连接的用户名和密码的安全。所以这里我们就需要对数据库的用户名和密码进行加密，这也是本文的由来。本文采用Jasypt对Spring Boot配置文件加密的相关方法，其实呢，也还有其他方案，具体的会在后面的相关文章中说明。 引入jasypt12345&amp;lt;dep">
@@ -327,7 +327,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-08 13:28:00" itemprop="dateModified" datetime="2020-03-08T13:28:00+08:00">2020-03-08</time>
+                <time title="修改时间：2020-03-08 16:18:34" itemprop="dateModified" datetime="2020-03-08T16:18:34+08:00">2020-03-08</time>
               </span>
             
           
@@ -379,7 +379,7 @@
 
 <p>拷贝-OUTPUT-下的结果即可</p>
 <h1 id="2-配置properties文件"><a href="#2-配置properties文件" class="headerlink" title="2.配置properties文件"></a><strong>2.配置properties文件</strong></h1><p>将生成的加密串配置ENC(加密串)到application.properties中</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">8080</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">datasource:</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">jdbc:mysql://localhost:3306/test?serverTimezone=UTC&amp;useUnicode=true&amp;characterEncoding=utf-8&amp;useSSL=true</span></span><br><span class="line">    <span class="attr">username:</span> <span class="string">ENC(GHK23XVFNHoQQ97vIW523Q==)</span></span><br><span class="line">    <span class="attr">password:</span> <span class="string">ENC(aTKef0XcG05Cfzao92EqqQ==)</span></span><br><span class="line">    <span class="attr">data-username:</span> <span class="string">com.mysql.cj.jdbc.Driver</span></span><br><span class="line">  <span class="attr">jpa:</span></span><br><span class="line">    <span class="attr">show-sql:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">database-platform:</span> <span class="string">org.hibernate.dialect.MySQL5InnoDBDialect</span></span><br><span class="line">    <span class="attr">database:</span> <span class="string">MYSQL</span></span><br><span class="line">    <span class="attr">hibernate:</span></span><br><span class="line">      <span class="attr">ddl-auto:</span> <span class="string">update</span></span><br><span class="line"><span class="attr">jasypt:</span></span><br><span class="line">  <span class="attr">encryptor:</span></span><br><span class="line">    <span class="attr">password:</span> <span class="string">1Qaz0oKm</span> <span class="comment">#加密所需的salt(盐)</span></span><br><span class="line">    <span class="comment">#algorithm: PBEWithMD5AndDES   # 默认加密方式PBEWithMD5AndDES,可以更改为PBEWithMD5AndTripleDES</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line"><span class="attr">  port:</span> <span class="number">8080</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line"><span class="attr">  datasource:</span></span><br><span class="line"><span class="attr">    url:</span> <span class="attr">jdbc:mysql://localhost:3306/test?serverTimezone=UTC&amp;useUnicode=true&amp;characterEncoding=utf-8&amp;useSSL=true</span></span><br><span class="line"><span class="attr">    username:</span> <span class="string">ENC(GHK23XVFNHoQQ97vIW523Q==)</span></span><br><span class="line"><span class="attr">    password:</span> <span class="string">ENC(aTKef0XcG05Cfzao92EqqQ==)</span></span><br><span class="line"><span class="attr">    data-username:</span> <span class="string">com.mysql.cj.jdbc.Driver</span></span><br><span class="line"><span class="attr">  jpa:</span></span><br><span class="line"><span class="attr">    show-sql:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">    database-platform:</span> <span class="string">org.hibernate.dialect.MySQL5InnoDBDialect</span></span><br><span class="line"><span class="attr">    database:</span> <span class="string">MYSQL</span></span><br><span class="line"><span class="attr">    hibernate:</span></span><br><span class="line"><span class="attr">      ddl-auto:</span> <span class="string">update</span></span><br><span class="line"><span class="attr">jasypt:</span></span><br><span class="line"><span class="attr">  encryptor:</span></span><br><span class="line"><span class="attr">    password:</span> <span class="number">1</span><span class="string">Qaz0oKm</span> <span class="comment">#加密所需的salt(盐)</span></span><br><span class="line">    <span class="comment">#algorithm: PBEWithMD5AndDES   # 默认加密方式PBEWithMD5AndDES,可以更改为PBEWithMD5AndTripleDES</span></span><br></pre></td></tr></table></figure>
 
 <p><strong>加密方式对应的类为BasicTextEncryptor和StrongTextEncryptor</strong></p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> StandardPBEStringEncryptor encryptor = <span class="keyword">new</span> StandardPBEStringEncryptor();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">BasicTextEncryptor</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.encryptor.setAlgorithm(<span class="string">"PBEWithMD5AndDES"</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
@@ -422,8 +422,8 @@
           <div class="post-nav">
             <div class="post-nav-next post-nav-item">
               
-                <a href="/2019/08/09/shi-yong-jasypt-dui-springboot-pei-zhi-wen-jian-jia-mi/" rel="next" title="使用Jasypt对SpringBoot配置文件加密">
-                  <i class="fa fa-chevron-left"></i> 使用Jasypt对SpringBoot配置文件加密
+                <a href="/2019/08/09/springboot-pei-zhi-web-fang-wen-h2/" rel="next" title="SpringBoot配置web访问H2">
+                  <i class="fa fa-chevron-left"></i> SpringBoot配置web访问H2
                 </a>
               
             </div>
@@ -432,8 +432,8 @@
 
             <div class="post-nav-prev post-nav-item">
               
-                <a href="/2019/08/09/yong-ming-ling-jiang-ben-di-jar-bao-dao-ru-dao-ben-di-maven-cang-ku-ben-di-ban/" rel="prev" title="用命令将本地jar包导入到本地maven仓库">
-                  用命令将本地jar包导入到本地maven仓库 <i class="fa fa-chevron-right"></i>
+                <a href="/2019/08/09/shi-yong-jasypt-dui-springboot-pei-zhi-wen-jian-jia-mi/" rel="prev" title="使用Jasypt对SpringBoot配置文件加密">
+                  使用Jasypt对SpringBoot配置文件加密 <i class="fa fa-chevron-right"></i>
                 </a>
               
             </div>
