@@ -2,8 +2,8 @@
 layout: elastic
 title: Elastic Stack实战之应用日志监控
 date: 2020-03-14 21:49:22
-tags: [ELK]
-categories: Elastic Stack
+tags: hide
+categories: hide
 ---
 
 【**前面的话**】在前面我们已经介绍了[Elasticsearch](https://eelve.com/archives/elasticsearchinstall)、[Logstash](https://eelve.com/archives/logstash)、[Kibana](https://eelve.com/archives/kibana)和[Beats](https://eelve.com/archives/beats)，并且都对各个组件进行了初步体验。今天我们就来模拟一把日常使用，来收集一个我们自己的应用的日志，并使用Kibana展示。
@@ -105,7 +105,7 @@ Process finished with exit code -1
 
 我们这里模拟了用户的操作，并记录到/iio/logs/app.log文件中。主要的业务流程为：APP->filebeat->logstash->elasticsearch->kibanan->User
 
-![2020031400](https://image.eelve.com/eblog/2020031400-c4c762ac3d134548bea4fb19e64088a6.png)
+![2020031400](https://eelve.com/upload/2020/3/2020031400-c4c762ac3d134548bea4fb19e64088a6.png)
 
 # 叁、准备过程
 
@@ -193,16 +193,16 @@ output {
 
 ## 3.8 查看采集的数据
 
-![2020031401](https://image.eelve.com/eblog/2020031401-66d588f9d78f4bf4b34b3d9d0f82001d.png)
+![2020031401](https://eelve.com/upload/2020/3/2020031401-66d588f9d78f4bf4b34b3d9d0f82001d.png)
 
 ## 3.9 开始制作大屏
 
-![2020031402](https://image.eelve.com/eblog/2020031402-28114b868ca3470497782f558737d25e.png)
-![2020031403](https://image.eelve.com/eblog/2020031403-7b2ffa7f424b478781543ffb2b1b4207.png)
-![2020031404](https://image.eelve.com/eblog/2020031404-41d668eff3e247e7aa942d850e7775fa.png)
-![2020031405](https://image.eelve.com/eblog/2020031405-2aba46902b5f4495bfae81991385b60d.png)
-![2020031406](https://image.eelve.com/eblog/2020031406-8dbfc5fc883e46298da14ceb8e14348c.png)
-![2020031407](https://image.eelve.com/eblog/2020031407-cd57f9cb79b64ca6acaa2ba604e78511.png)
+![2020031402](https://eelve.com/upload/2020/3/2020031402-28114b868ca3470497782f558737d25e.png)
+![2020031403](https://eelve.com/upload/2020/3/2020031403-7b2ffa7f424b478781543ffb2b1b4207.png)
+![2020031404](https://eelve.com/upload/2020/3/2020031404-41d668eff3e247e7aa942d850e7775fa.png)
+![2020031405](https://eelve.com/upload/2020/3/2020031405-2aba46902b5f4495bfae81991385b60d.png)
+![2020031406](https://eelve.com/upload/2020/3/2020031406-8dbfc5fc883e46298da14ceb8e14348c.png)
+![2020031407](https://eelve.com/upload/2020/3/2020031407-cd57f9cb79b64ca6acaa2ba604e78511.png)
 
 到这里我们可以看到就已经完成了对我们自定义数据的监控，然后还利用了Kibana做了图表化展示。
 
