@@ -26,6 +26,8 @@ Filebeat：filebeat-7.6.0
 我们这里来模拟一个现在购物网站的使用，主要代码如下
 
 - 核心代码
+
+
 ```java
 package com.eelve.elk.dashboardgenerate;
 
@@ -67,7 +69,9 @@ public class DashboardGenerateApplication {
 
 ```
 
+
 - 日志配置文件
+
 
 ```properties
 log4j.rootLogger=DEBUG,A1,A2
