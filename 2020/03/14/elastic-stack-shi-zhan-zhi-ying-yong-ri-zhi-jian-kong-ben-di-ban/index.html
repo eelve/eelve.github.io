@@ -72,7 +72,7 @@
 <meta property="og:image" content="https://eelve.com/upload/2020/3/2020031406-8dbfc5fc883e46298da14ceb8e14348c.png">
 <meta property="og:image" content="https://eelve.com/upload/2020/3/2020031407-cd57f9cb79b64ca6acaa2ba604e78511.png">
 <meta property="og:image" content="https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png">
-<meta property="og:updated_time" content="2020-03-14T14:55:16.377Z">
+<meta property="og:updated_time" content="2020-03-14T16:44:35.719Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Elastic Stack实战之应用日志监控">
 <meta name="twitter:description" content="【前面的话】在前面我们已经介绍了Elasticsearch、Logstash、Kibana和Beats，并且都对各个组件进行了初步体验。今天我们就来模拟一把日常使用，来收集一个我们自己的应用的日志，并使用Kibana展示。  壹、软件版本1234567Centos：CentOS-7-x86_64-Minimal-1908VM: 15.5.0 build-14665864Java: 1.8.0_21">
@@ -322,11 +322,19 @@
                 
               
 
-              <time title="创建时间：2020-03-14 21:49:22 / 修改时间：22:55:16" itemprop="dateCreated datePublished" datetime="2020-03-14T21:49:22+08:00">2020-03-14</time>
+              <time title="创建时间：2020-03-14 21:49:22" itemprop="dateCreated datePublished" datetime="2020-03-14T21:49:22+08:00">2020-03-14</time>
             </span>
           
             
 
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-15 00:44:35" itemprop="dateModified" datetime="2020-03-15T00:44:35+08:00">2020-03-15</time>
+              </span>
             
           
             <span class="post-meta-item">
@@ -368,11 +376,12 @@
 
 <h1 id="贰、自定义采集应用"><a href="#贰、自定义采集应用" class="headerlink" title="贰、自定义采集应用"></a>贰、自定义采集应用</h1><p>我们这里来模拟一个现在购物网站的使用，主要代码如下</p>
 <ul>
-<li><p>核心代码</p>
+<li>核心代码</li>
+</ul>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.eelve.elk.dashboardgenerate;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.apache.commons.lang3.RandomUtils;</span><br><span class="line"><span class="keyword">import</span> org.joda.time.DateTime;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.Logger;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.LoggerFactory;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.autoconfigure.SpringBootApplication;</span><br><span class="line"></span><br><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DashboardGenerateApplication</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger LOGGER = LoggerFactory.getLogger(DashboardGenerateApplication.class);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String[] VISIT = <span class="keyword">new</span> String[]&#123;<span class="string">"浏览页面"</span>, <span class="string">"评论商品"</span>, <span class="string">"加入收藏"</span>, <span class="string">"加入购物车"</span>, <span class="string">"提交订单"</span>, <span class="string">"使用优惠券"</span>, <span class="string">"领取优惠券"</span>, <span class="string">"搜索"</span>, <span class="string">"查看订单"</span>&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="keyword">while</span>(<span class="keyword">true</span>)&#123;</span><br><span class="line">            Long sleep = RandomUtils.nextLong(<span class="number">200</span>, <span class="number">1000</span> * <span class="number">5</span>);</span><br><span class="line">            Thread.sleep(sleep);</span><br><span class="line">            Long maxUserId = <span class="number">9999L</span>;</span><br><span class="line">            Long userId = RandomUtils.nextLong(<span class="number">1</span>, maxUserId);</span><br><span class="line">            String visit = VISIT[RandomUtils.nextInt(<span class="number">0</span>, VISIT.length)];</span><br><span class="line">            DateTime now = <span class="keyword">new</span> DateTime();</span><br><span class="line">            <span class="keyword">int</span> maxHour = now.getHourOfDay();</span><br><span class="line">            <span class="keyword">int</span> maxMillis = now.getMinuteOfHour();</span><br><span class="line">            <span class="keyword">int</span> maxSeconds = now.getSecondOfMinute();</span><br><span class="line">            String date = now.plusHours(-(RandomUtils.nextInt(<span class="number">0</span>, maxHour)))</span><br><span class="line">                    .plusMinutes(-(RandomUtils.nextInt(<span class="number">0</span>, maxMillis)))</span><br><span class="line">                    .plusSeconds(-(RandomUtils.nextInt(<span class="number">0</span>, maxSeconds)))</span><br><span class="line">                    .toString(<span class="string">"yyyy-MM-dd HH:mm:ss"</span>);</span><br><span class="line"></span><br><span class="line">            String result = <span class="string">"IIO|"</span> + userId + <span class="string">"|"</span> + visit + <span class="string">"|"</span> + date;</span><br><span class="line">            LOGGER.info(result);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>日志配置文件</p>
-</li>
+
+<ul>
+<li>日志配置文件</li>
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">log4j.rootLogger=DEBUG,A1,A2</span><br><span class="line"></span><br><span class="line">log4j.appender.A1=org.apache.log4j.ConsoleAppender</span><br><span class="line">log4j.appender.A1.layout=org.apache.log4j.PatternLayout</span><br><span class="line">log4j.appender.A1.layout.ConversionPattern=[%p] %-d&#123;yyyy-MM-dd HH:mm:ss&#125; [%c] - %m%n</span><br><span class="line"></span><br><span class="line">log4j.appender.A2 = org.apache.log4j.DailyRollingFileAppender</span><br><span class="line">log4j.appender.A2.File = /iio/logs/app.log</span><br><span class="line">log4j.appender.A2.Append = true</span><br><span class="line">log4j.appender.A2.Threshold = INFO</span><br><span class="line">log4j.appender.A2.layout = org.apache.log4j.PatternLayout</span><br><span class="line">log4j.appender.A2.layout.ConversionPattern =[%p] %-d&#123;yyyy-MM-dd HH:mm:ss&#125; [%c] - %m%n</span><br></pre></td></tr></table></figure>
 
