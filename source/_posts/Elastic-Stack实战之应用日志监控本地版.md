@@ -118,8 +118,6 @@ filebeat.inputs:
   enabled: true
   paths:
     - /iio/logs/*.log
-setup.template.settings:
-  index.number_of_shards: 2
 output.logstash:
   hosts: ["192.168.237.11:5044"]
 
