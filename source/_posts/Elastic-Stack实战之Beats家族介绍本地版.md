@@ -62,7 +62,7 @@ categories: hide
 
 ---
 
-【**后面的话**】本文只是Beasts家族的一个介绍，后面还有相关文章进行体验。Beats采集数据之后可以直接给Elasticsearch，也可以经过Logstash过滤处理之后再由Logstash存入Elasticsearch。在后面的文章会做相应的演示的。
+【**后面的话**】本文只是Beats家族的一个介绍，后面还有相关文章进行体验。Beats采集数据之后可以直接给Elasticsearch，也可以经过Logstash过滤处理之后再由Logstash存入Elasticsearch。在后面的文章会做相应的演示的。
 
 
 ---
