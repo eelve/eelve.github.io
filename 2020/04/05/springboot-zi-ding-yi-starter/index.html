@@ -64,7 +64,7 @@
 <meta property="og:description" content="【前面的话】在使用SpringBoot的日常开发过程中，我们不可避免的要封装一些自己的组件，今天这篇文章就来讨论一下怎么自定义一个Starter，本文会封装一个短信发送能力的Starter,使用云之讯的SDK。  壹、命名规范官方的约定主要有一个命名的约定：在maven中，groupId代表着姓氏，artifactId代表着名字。Spring Boot也是有一个命名的建议的。groupId不要用官">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png">
-<meta property="og:updated_time" content="2020-04-05T09:09:59.078Z">
+<meta property="og:updated_time" content="2020-04-05T09:14:32.094Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="SpringBoot自定义Starter">
 <meta name="twitter:description" content="【前面的话】在使用SpringBoot的日常开发过程中，我们不可避免的要封装一些自己的组件，今天这篇文章就来讨论一下怎么自定义一个Starter，本文会封装一个短信发送能力的Starter,使用云之讯的SDK。  壹、命名规范官方的约定主要有一个命名的约定：在maven中，groupId代表着姓氏，artifactId代表着名字。Spring Boot也是有一个命名的建议的。groupId不要用官">
@@ -314,7 +314,7 @@
                 
               
 
-              <time title="创建时间：2020-04-05 12:01:17 / 修改时间：17:09:59" itemprop="dateCreated datePublished" datetime="2020-04-05T12:01:17+08:00">2020-04-05</time>
+              <time title="创建时间：2020-04-05 12:01:17 / 修改时间：17:14:32" itemprop="dateCreated datePublished" datetime="2020-04-05T12:01:17+08:00">2020-04-05</time>
             </span>
           
             
@@ -395,7 +395,7 @@
 <p>第二种:是可以单独使用@ComponentScan注解扫描第三方包,但是这里一定要注意@SpringBootApplication注解等价于默认属性使用@Configuration+@EnableAutoConfiguration+@ComponentScan,如果@SpringBootApplication和@ComponentScan注解同时存在，那么@SpringBootApplication注解中@ComponentScan的扫描范围会被覆盖,所以单独使用@ComponentScan的话,必须在该注解上配置项目需要扫描的包的所有范围,即项目包路径+依赖包路径.</p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">/**</span></span><br><span class="line"> <span class="string">*</span> <span class="string">@ComponentScan注解扫描多个包下示例</span></span><br><span class="line"> <span class="string">*/</span></span><br><span class="line"><span class="string">@ComponentScan(&#123;"com.test","sms.test"&#125;)</span></span><br></pre></td></tr></table></figure>
 
-
+<p>另外具体实现可以参考我的项目：<a href="https://github.com/eelve/ucpaas-spring-boot-starter" target="_blank" rel="noopener">ucpaas-spring-boot-starter</a></p>
 <hr>
 <p><img src="https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png" alt="薏米笔记"></p>
 
@@ -739,7 +739,7 @@
 </div>
 <div class="theme-info">
 <div class="powered-by"></div>
-<span class="post-count">博客全站共87.1k字</span>
+<span class="post-count">博客全站共87.2k字</span>
 </div>
 
         
