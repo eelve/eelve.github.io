@@ -259,6 +259,8 @@ public class TestController {
  */
 @ComponentScan({"com.test","sms.test"})
 ~~~
+
+另外具体实现可以参考我的项目：[ucpaas-spring-boot-starter](https://github.com/eelve/ucpaas-spring-boot-starter)
       
 ---
 
