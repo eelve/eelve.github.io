@@ -236,7 +236,7 @@ public class TestController {
 }
 ~~~
 
-然后运行，访问http://localhost:8080/sms/sendsmsTest,就可以收到发送的短信了
+然后运行，访问[http://localhost:8080/sms/sendsmsTest](http://localhost:8080/sms/sendsmsTest),就可以收到发送的短信了
 
 
     【蔚然山庄】尊敬的用户，敬请关注我们的后续活动。
