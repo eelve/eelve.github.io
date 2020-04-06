@@ -1,5 +1,5 @@
 ---
-title: 博客拯救计划
+title: Hexo拯救计划
 date: 2020-04-06 14:37:42
 tags: lifeme
 categories: lifeme
