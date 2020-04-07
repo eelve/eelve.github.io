@@ -9,8 +9,7 @@ categories: lifeme
 
 # 壹、第三方博客
 
-本人在有[Github Pages生成的博客](https://zzlve.win)之外，我还有拥有[Halo](https://halo.run/)搭建的博客。[Halo](https://halo.run/)一个优秀的开源博客发布应用。
-
+本人在有[Github Pages生成的博客](https://zzlve.win)之外，我还有拥有[Halo搭建的博客](https://eelve.com)。[Halo](https://halo.run/)一个优秀的开源博客发布应用。
 # 贰、CloudFlare
 
 我们可以利用CloudFlare，在Hexo外层套一层证书，进而不使用Github Pages的证书，来避免这个问题。目前我的博客就是使用的CloudFlare，其访问速度和Gihub Pages的Fastly Anycast节点速度差不多，都是比较慢。
