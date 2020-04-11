@@ -421,7 +421,7 @@
 <h2 id="3-3-使用Kibana展示Metricbeat系统指标"><a href="#3-3-使用Kibana展示Metricbeat系统指标" class="headerlink" title="3.3 使用Kibana展示Metricbeat系统指标"></a>3.3 使用Kibana展示Metricbeat系统指标</h2><ul>
 <li>修改Metricbeat配置</li>
 </ul>
-<figure class="highlight shell"><figcaption><span>script</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">output.elasticsearch:</span><br><span class="line"><span class="meta">  #</span><span class="bash"> Array of hosts to connect to.</span></span><br><span class="line">  hosts: ["http://192.168.237.11:9200"]</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><figcaption><span>script</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">output.elasticsearch:</span><br><span class="line"><span class="meta">  #</span> Array of hosts to connect to.</span><br><span class="line">  hosts: ["http://192.168.237.11:9200"]</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>启动</li>
@@ -450,7 +450,7 @@
 <h2 id="3-4-使用Kibana展示Metricbeat采集nginx指标"><a href="#3-4-使用Kibana展示Metricbeat采集nginx指标" class="headerlink" title="3.4 使用Kibana展示Metricbeat采集nginx指标"></a>3.4 使用Kibana展示Metricbeat采集nginx指标</h2><ul>
 <li><p>开启nginx的状态查询</p>
 <p>在nginx中，需要开启状态查询，才能查询到指标数据。</p>
-<figure class="highlight shell"><figcaption><span>script</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">重新编译nginx</span></span><br><span class="line">./configure --prefix=/usr/local/nginx --with-http_stub_status_module</span><br><span class="line">make</span><br><span class="line">make install</span><br><span class="line"></span><br><span class="line">./nginx -V #查询版本信息</span><br><span class="line">nginx version: nginx/1.12.0</span><br><span class="line">built by gcc 4.8.5 20150623 (Red Hat 4.8.5-39) (GCC) </span><br><span class="line">configure arguments: --prefix=/usr/local/nginx/ --with-http_stub_status_module</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">配置nginx</span></span><br><span class="line">vi nginx.conf</span><br><span class="line">location /nginx-status &#123;</span><br><span class="line">    stub_status on;</span><br><span class="line">    access_log off;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><figcaption><span>script</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span>重新编译nginx</span><br><span class="line">./configure --prefix=/usr/local/nginx --with-http_stub_status_module</span><br><span class="line">make</span><br><span class="line">make install</span><br><span class="line"></span><br><span class="line">./nginx -V #查询版本信息</span><br><span class="line">nginx version: nginx/1.12.0</span><br><span class="line">built by gcc 4.8.5 20150623 (Red Hat 4.8.5-39) (GCC) </span><br><span class="line">configure arguments: --prefix=/usr/local/nginx/ --with-http_stub_status_module</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span>配置nginx</span><br><span class="line">vi nginx.conf</span><br><span class="line">location /nginx-status &#123;</span><br><span class="line">    stub_status on;</span><br><span class="line">    access_log off;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 
 </li>
@@ -478,7 +478,7 @@
 </ul>
 <ul>
 <li><p>修改nginx modules的配置</p>
-<figure class="highlight shell"><figcaption><span>script</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">[iio@192 modules.d]$ vi nginx.yml </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> Module: nginx</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Docs: https://www.elastic.co/guide/en/beats/metricbeat/7.6/metricbeat-module-nginx.html</span></span><br><span class="line"></span><br><span class="line">- module: nginx</span><br><span class="line"><span class="meta">  #</span><span class="bash">metricsets:</span></span><br><span class="line"><span class="meta">  #</span><span class="bash">  - stubstatus</span></span><br><span class="line">  period: 10s</span><br><span class="line"></span><br><span class="line"><span class="meta">  #</span><span class="bash"> Nginx hosts</span></span><br><span class="line">  hosts: ["http://192.168.237.11"]</span><br><span class="line"></span><br><span class="line"><span class="meta">  #</span><span class="bash"> Path to server status. Default server-status</span></span><br><span class="line">  server_status_path: "nginx-status" #配置的nginx状态访问地址</span><br><span class="line"></span><br><span class="line"><span class="meta">  #</span><span class="bash">username: <span class="string">"user"</span></span></span><br><span class="line"><span class="meta">  #</span><span class="bash">password: <span class="string">"secret"</span></span></span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><figcaption><span>script</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">[iio@192 modules.d]$ vi nginx.yml </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span> Module: nginx</span><br><span class="line"><span class="meta">#</span> Docs: https://www.elastic.co/guide/en/beats/metricbeat/7.6/metricbeat-module-nginx.html</span><br><span class="line"></span><br><span class="line">- module: nginx</span><br><span class="line"><span class="meta">  #</span>metricsets:</span><br><span class="line"><span class="meta">  #</span>  - stubstatus</span><br><span class="line">  period: 10s</span><br><span class="line"></span><br><span class="line"><span class="meta">  #</span> Nginx hosts</span><br><span class="line">  hosts: ["http://192.168.237.11"]</span><br><span class="line"></span><br><span class="line"><span class="meta">  #</span> Path to server status. Default server-status</span><br><span class="line">  server_status_path: "nginx-status" #配置的nginx状态访问地址</span><br><span class="line"></span><br><span class="line"><span class="meta">  #</span>username: "user"</span><br><span class="line"><span class="meta">  #</span>password: "secret"</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>启动测试</p>
 </li>
@@ -523,7 +523,7 @@
           <div class="post-nav">
             <div class="post-nav-next post-nav-item">
               
-                <a href="/2020/03/07/elastic-stack-shi-zhan-zhi-filebeat-chu-ti-yan/" rel="next" title="Elastic Stack实战之Filebeat初体验">
+                <a href="/2020/03/07/elastic-stack-shi-zhan-zhi-filebeat-chu-ti-yan-ben-di-ban/" rel="next" title="Elastic Stack实战之Filebeat初体验">
                   <i class="fa fa-chevron-left"></i> Elastic Stack实战之Filebeat初体验
                 </a>
               
@@ -599,7 +599,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">56</span>
+          <span class="site-state-item-count">57</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -638,7 +638,9 @@
         
           
         
-        <span class="site-state-item-count">12</span>
+          
+        
+        <span class="site-state-item-count">13</span>
         <span class="site-state-item-name">分类</span>
         </a>
       </div>
@@ -731,7 +733,9 @@
         
           
         
-        <span class="site-state-item-count">39</span>
+          
+        
+        <span class="site-state-item-count">40</span>
         <span class="site-state-item-name">标签</span>
         </a>
       </div>
@@ -847,7 +851,7 @@
 </div>
 <div class="theme-info">
 <div class="powered-by"></div>
-<span class="post-count">博客全站共89.1k字</span>
+<span class="post-count">博客全站共89.7k字</span>
 </div>
 
         
