@@ -376,7 +376,7 @@
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">OLD_EMAIL</span></span><br><span class="line"><span class="string">CORRECT_NAME</span></span><br><span class="line"><span class="string">CORRECT_EMAIL</span></span><br></pre></td></tr></table></figure>
 
 <p>脚本：</p>
-<figure class="highlight shell"><figcaption><span>script</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span>!/bin/sh</span><br><span class="line"></span><br><span class="line">git filter-branch --env-filter '</span><br><span class="line"></span><br><span class="line">OLD_EMAIL="your-old-email@example.com"</span><br><span class="line">CORRECT_NAME="Your Correct Name"</span><br><span class="line">CORRECT_EMAIL="your-correct-email@example.com"</span><br><span class="line"></span><br><span class="line">if [ "$GIT_COMMITTER_EMAIL" = "$OLD_EMAIL" ]</span><br><span class="line">then</span><br><span class="line">    export GIT_COMMITTER_NAME="$CORRECT_NAME"</span><br><span class="line">    export GIT_COMMITTER_EMAIL="$CORRECT_EMAIL"</span><br><span class="line">fi</span><br><span class="line">if [ "$GIT_AUTHOR_EMAIL" = "$OLD_EMAIL" ]</span><br><span class="line">then</span><br><span class="line">    export GIT_AUTHOR_NAME="$CORRECT_NAME"</span><br><span class="line">    export GIT_AUTHOR_EMAIL="$CORRECT_EMAIL"</span><br><span class="line">fi</span><br><span class="line">' --tag-name-filter cat -- --branches --tags</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><figcaption><span>script</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/sh</span></span><br><span class="line"></span><br><span class="line">git filter-branch --env-filter '</span><br><span class="line"></span><br><span class="line">OLD_EMAIL="your-old-email@example.com"</span><br><span class="line">CORRECT_NAME="Your Correct Name"</span><br><span class="line">CORRECT_EMAIL="your-correct-email@example.com"</span><br><span class="line"></span><br><span class="line">if [ "$GIT_COMMITTER_EMAIL" = "$OLD_EMAIL" ]</span><br><span class="line">then</span><br><span class="line">    export GIT_COMMITTER_NAME="$CORRECT_NAME"</span><br><span class="line">    export GIT_COMMITTER_EMAIL="$CORRECT_EMAIL"</span><br><span class="line">fi</span><br><span class="line">if [ "$GIT_AUTHOR_EMAIL" = "$OLD_EMAIL" ]</span><br><span class="line">then</span><br><span class="line">    export GIT_AUTHOR_NAME="$CORRECT_NAME"</span><br><span class="line">    export GIT_AUTHOR_EMAIL="$CORRECT_EMAIL"</span><br><span class="line">fi</span><br><span class="line">' --tag-name-filter cat -- --branches --tags</span><br></pre></td></tr></table></figure>
 
 <p>4.按 Enter 执行脚本。</p>
 <p>5.查看新 Git 历史有没有错误。</p>
@@ -486,7 +486,7 @@
         
           <a href="/archives/">
         
-          <span class="site-state-item-count">55</span>
+          <span class="site-state-item-count">56</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -523,7 +523,9 @@
         
           
         
-        <span class="site-state-item-count">11</span>
+          
+        
+        <span class="site-state-item-count">12</span>
         <span class="site-state-item-name">分类</span>
         </a>
       </div>
@@ -612,7 +614,11 @@
         
           
         
-        <span class="site-state-item-count">37</span>
+          
+        
+          
+        
+        <span class="site-state-item-count">39</span>
         <span class="site-state-item-name">标签</span>
         </a>
       </div>
@@ -711,7 +717,7 @@
 </div>
 <div class="theme-info">
 <div class="powered-by"></div>
-<span class="post-count">博客全站共88.3k字</span>
+<span class="post-count">博客全站共89.1k字</span>
 </div>
 
         
