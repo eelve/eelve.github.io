@@ -91,6 +91,34 @@ C:\Users\Chirius>netsh int ipv4 show dynamicport tcp
 端口数          : 16383
 ```
 
+```bash
+Microsoft Windows [版本 10.0.18363.752]
+(c) 2019 Microsoft Corporation。保留所有权利。
+
+C:\Users\Chirius>netsh interface ipv4 show excludedportrange protocol=tcp
+
+协议 tcp 端口排除范围
+
+开始端口    结束端口
+----------    --------
+      5357        5357
+     49702       49801
+     49802       49901
+     49902       50001
+     50051       50051     *
+     50052       50151
+     50152       50251
+     50252       50351
+     50352       50451
+     50465       50564
+     50911       51010
+
+* - 管理的端口排除。
+
+
+C:\Users\Chirius>
+```
+
 ## 3.3 开启Hyper-V
 
 ```bash
