@@ -5,7 +5,7 @@ tags: WSL，Windows
 categories: WSL
 ---
 
-【**前面的话**】WSl是Windows Subsystem for Linux的缩写，今天就来体验一把。
+【**前面的话**】WSL是Windows Subsystem for Linux的缩写，今天就来体验一把。
 
 ---
 
