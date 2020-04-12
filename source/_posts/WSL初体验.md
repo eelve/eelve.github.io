@@ -112,6 +112,32 @@ cc@Chirius:/mnt$ pwd
 
 ![2020041106](https://image.eelve.com/eblog/2020041106-564ce889eb8843fe8687d63a2f81fece.png)
 
+
+# 肆、添加root密码
+
+由于默认进入子系统之后是你添加的用户，当你需要root权限是可以通过`sudo`加上相应的命令解决。那还有另外一种方法：设置一个root用户的密码，然后切换到root用户去执行相应的命令。下面就说一下在子系统中设置root用户密码：
+
+首先需要Windows管理员身份运行`cmd`或者`PowerShell`，然后执行下面命令
+
+```bash
+Windows PowerShell
+版权所有 (C) Microsoft Corporation。保留所有权利。
+
+尝试新的跨平台 PowerShell https://aka.ms/pscore6
+
+PS C:\Users\Chirius> wsl
+cc@Chirius:/mnt/c/Users/Chirius$ sudo passwd root
+[sudo] password for cc:
+Enter new UNIX password:
+Retype new UNIX password:
+passwd: password updated successfully
+cc@Chirius:/mnt/c/Users/Chirius$ su root
+Password:
+root@Chirius:/mnt/c/Users/Chirius#
+```
+
+我们可以看到就已经可以切换到root用户了。
+
 【**后面的话**】在Windows2004版本中会发布WSL2，后面再来继续体验。
 
 ---
