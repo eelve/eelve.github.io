@@ -71,7 +71,7 @@
 <meta property="og:image" content="https://image.eelve.com/eblog/2020041105-c34cdd30c9b24c6e879114f45880091b.png">
 <meta property="og:image" content="https://image.eelve.com/eblog/2020041106-564ce889eb8843fe8687d63a2f81fece.png">
 <meta property="og:image" content="https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png">
-<meta property="og:updated_time" content="2020-04-11T12:42:58.416Z">
+<meta property="og:updated_time" content="2020-04-12T03:10:45.626Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="WSL初体验">
 <meta name="twitter:description" content="【前面的话】WSL是Windows Subsystem for Linux的缩写，今天就来体验一把。  壹、安装WSL1.1 启用或关闭Windows功能在搜索栏中搜索并打开“启用或关闭Windows功能”，勾选“适用于Linux的Windows子系统”项。只有开启这项设置才能正常安装WSL。然后按照提示稍后重启。 1.2 安装子系统在微软应用商店搜索 Linux，可以看到一系列 Linux 发行">
@@ -322,11 +322,19 @@
                 
               
 
-              <time title="创建时间：2020-04-11 13:29:55 / 修改时间：20:42:58" itemprop="dateCreated datePublished" datetime="2020-04-11T13:29:55+08:00">2020-04-11</time>
+              <time title="创建时间：2020-04-11 13:29:55" itemprop="dateCreated datePublished" datetime="2020-04-11T13:29:55+08:00">2020-04-11</time>
             </span>
           
             
 
+            
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-12 11:10:45" itemprop="dateModified" datetime="2020-04-12T11:10:45+08:00">2020-04-12</time>
+              </span>
             
           
             <span class="post-meta-item">
@@ -391,6 +399,11 @@
 <p><img src="https://image.eelve.com/eblog/2020041105-c34cdd30c9b24c6e879114f45880091b.png" alt="2020041105"></p>
 <p>然后我们还可以添加网络位置</p>
 <p><img src="https://image.eelve.com/eblog/2020041106-564ce889eb8843fe8687d63a2f81fece.png" alt="2020041106"></p>
+<h1 id="肆、添加root密码"><a href="#肆、添加root密码" class="headerlink" title="肆、添加root密码"></a>肆、添加root密码</h1><p>由于默认进入子系统之后是你添加的用户，当你需要root权限是可以通过<code>sudo</code>加上相应的命令解决。那还有另外一种方法：设置一个root用户的密码，然后切换到root用户去执行相应的命令。下面就说一下在子系统中设置root用户密码：</p>
+<p>首先需要Windows管理员身份运行<code>cmd</code>或者<code>PowerShell</code>，然后执行下面命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Windows PowerShell</span><br><span class="line">版权所有 (C) Microsoft Corporation。保留所有权利。</span><br><span class="line"></span><br><span class="line">尝试新的跨平台 PowerShell https://aka.ms/pscore6</span><br><span class="line"></span><br><span class="line">PS C:\Users\Chirius&gt; wsl</span><br><span class="line">cc@Chirius:/mnt/c/Users/Chirius$ sudo passwd root</span><br><span class="line">[sudo] password <span class="keyword">for</span> cc:</span><br><span class="line">Enter new UNIX password:</span><br><span class="line">Retype new UNIX password:</span><br><span class="line">passwd: password updated successfully</span><br><span class="line">cc@Chirius:/mnt/c/Users/Chirius$ su root</span><br><span class="line">Password:</span><br><span class="line">root@Chirius:/mnt/c/Users/Chirius<span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<p>我们可以看到就已经可以切换到root用户了。</p>
 <p>【<strong>后面的话</strong>】在Windows2004版本中会发布WSL2，后面再来继续体验。</p>
 <hr>
 <p><img src="https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png" alt="薏米笔记"></p>
@@ -717,7 +730,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#壹、安装WSL"><span class="nav-number">1.</span> <span class="nav-text">壹、安装WSL</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-启用或关闭Windows功能"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 启用或关闭Windows功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-安装子系统"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 安装子系统</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#贰、使用技巧"><span class="nav-number">2.</span> <span class="nav-text">贰、使用技巧</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1使用其他命令行工具"><span class="nav-number">2.1.</span> <span class="nav-text">2.1使用其他命令行工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-更改源"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 更改源</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-1-首先复制源文件备份，便于以后恢复"><span class="nav-number">2.2.1.</span> <span class="nav-text">2.2.1 首先复制源文件备份，便于以后恢复</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-2-查看版本信息"><span class="nav-number">2.2.2.</span> <span class="nav-text">2.2.2 查看版本信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-3-编辑源文件"><span class="nav-number">2.2.3.</span> <span class="nav-text">2.2.3 编辑源文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-4-根据-Ubuntu-版本号，添加相应内容："><span class="nav-number">2.2.4.</span> <span class="nav-text">2.2.4 根据 Ubuntu 版本号，添加相应内容：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-5-升级系统"><span class="nav-number">2.2.5.</span> <span class="nav-text">2.2.5 升级系统</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#叁、WSL-文件位置"><span class="nav-number">3.</span> <span class="nav-text">叁、WSL 文件位置</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#壹、安装WSL"><span class="nav-number">1.</span> <span class="nav-text">壹、安装WSL</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-启用或关闭Windows功能"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 启用或关闭Windows功能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-安装子系统"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 安装子系统</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#贰、使用技巧"><span class="nav-number">2.</span> <span class="nav-text">贰、使用技巧</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1使用其他命令行工具"><span class="nav-number">2.1.</span> <span class="nav-text">2.1使用其他命令行工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-更改源"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 更改源</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-1-首先复制源文件备份，便于以后恢复"><span class="nav-number">2.2.1.</span> <span class="nav-text">2.2.1 首先复制源文件备份，便于以后恢复</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-2-查看版本信息"><span class="nav-number">2.2.2.</span> <span class="nav-text">2.2.2 查看版本信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-3-编辑源文件"><span class="nav-number">2.2.3.</span> <span class="nav-text">2.2.3 编辑源文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-4-根据-Ubuntu-版本号，添加相应内容："><span class="nav-number">2.2.4.</span> <span class="nav-text">2.2.4 根据 Ubuntu 版本号，添加相应内容：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-5-升级系统"><span class="nav-number">2.2.5.</span> <span class="nav-text">2.2.5 升级系统</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#叁、WSL-文件位置"><span class="nav-number">3.</span> <span class="nav-text">叁、WSL 文件位置</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#肆、添加root密码"><span class="nav-number">4.</span> <span class="nav-text">肆、添加root密码</span></a></li></ol></div>
             
 
           </div>
@@ -743,7 +756,7 @@
 </div>
 <div class="theme-info">
 <div class="powered-by"></div>
-<span class="post-count">博客全站共89.8k字</span>
+<span class="post-count">博客全站共90k字</span>
 </div>
 
         
