@@ -1,6 +1,4 @@
-/* global NexT, CONFIG, Velocity */
-
-if (window.$ && window.$.Velocity) window.Velocity = window.$.Velocity;
+/* global NexT, CONFIG */
 
 NexT.motion = {};
 
@@ -12,14 +10,14 @@ NexT.motion.integrator = {
     this.cursor = -1;
     return this;
   },
-  add: function(fn) {
+  add   : function(fn) {
     this.queue.push(fn);
     return this;
   },
   next: function() {
     this.cursor++;
     var fn = this.queue[this.cursor];
-    typeof fn === 'function' && fn(NexT.motion.integrator);
+    $.isFunction(fn) && fn(NexT.motion.integrator);
   },
   bootstrap: function() {
     this.next();
@@ -29,23 +27,35 @@ NexT.motion.integrator = {
 NexT.motion.middleWares = {
   logo: function(integrator) {
     var sequence = [];
-    var brand = document.querySelector('.brand');
-    var image = document.querySelector('.custom-logo-image');
-    var title = document.querySelector('.site-title');
-    var subtitle = document.querySelector('.site-subtitle');
-    var logoLineTop = document.querySelector('.logo-line-before i');
-    var logoLineBottom = document.querySelector('.logo-line-after i');
+    var $brand = $('.brand');
+    var $image = $('.custom-logo-image');
+    var $title = $('.site-title');
+    var $subtitle = $('.site-subtitle');
+    var $logoLineTop = $('.logo-line-before i');
+    var $logoLineBottom = $('.logo-line-after i');
 
-    brand && sequence.push({
-      e: brand,
+    $brand.length > 0 && sequence.push({
+      e: $brand,
       p: {opacity: 1},
       o: {duration: 200}
     });
 
+    /**
+     * Check if $elements exist.
+     * @param {jQuery|Array} $elements
+     * @returns {boolean}
+     */
+    function hasElement($elements) {
+      $elements = Array.isArray($elements) ? $elements : [$elements];
+      return $elements.every(function($element) {
+        return $element.length > 0;
+      });
+    }
+
     function getMistLineSettings(element, translateX) {
       return {
-        e: element,
-        p: {translateX},
+        e: $(element),
+        p: {translateX: translateX},
         o: {
           duration     : 500,
           sequenceQueue: false
@@ -55,39 +65,41 @@ NexT.motion.middleWares = {
 
     function pushImageToSequence() {
       sequence.push({
-        e: image,
+        e: $image,
         p: {opacity: 1, top: 0},
         o: {duration: 200}
       });
     }
 
-    CONFIG.scheme === 'Mist' && logoLineTop && logoLineBottom
+    NexT.utils.isMist() && hasElement([$logoLineTop, $logoLineBottom])
     && sequence.push(
-      getMistLineSettings(logoLineTop, '100%'),
-      getMistLineSettings(logoLineBottom, '-100%')
+      getMistLineSettings($logoLineTop, '100%'),
+      getMistLineSettings($logoLineBottom, '-100%')
     );
 
-    CONFIG.scheme === 'Muse' && image && pushImageToSequence();
+    NexT.utils.isMuse() && hasElement($image) && pushImageToSequence();
 
-    title && sequence.push({
-      e: title,
+    hasElement($title) && sequence.push({
+      e: $title,
       p: {opacity: 1, top: 0},
       o: {duration: 200}
     });
 
-    subtitle && sequence.push({
-      e: subtitle,
+    hasElement($subtitle) && sequence.push({
+      e: $subtitle,
       p: {opacity: 1, top: 0},
       o: {duration: 200}
     });
 
-    (CONFIG.scheme === 'Pisces' || CONFIG.scheme === 'Gemini') && image && pushImageToSequence();
+    (NexT.utils.isPisces() || NexT.utils.isGemini()) && hasElement($image) && pushImageToSequence();
 
     if (sequence.length > 0) {
       sequence[sequence.length - 1].o.complete = function() {
         integrator.next();
       };
-      Velocity.RunSequence(sequence);
+      /* eslint-disable */
+      $.Velocity.RunSequence(sequence);
+      /* eslint-enable */
     } else {
       integrator.next();
     }
@@ -98,7 +110,8 @@ NexT.motion.middleWares = {
   },
 
   menu: function(integrator) {
-    Velocity(document.querySelectorAll('.menu-item'), 'transition.slideDownIn', {
+
+    $('.menu-item').velocity('transition.slideDownIn', {
       display : null,
       duration: 200,
       complete: function() {
@@ -111,27 +124,19 @@ NexT.motion.middleWares = {
     }
   },
 
-  subMenu: function(integrator) {
-    var subMenuItem = document.querySelectorAll('.sub-menu .menu-item');
-    if (subMenuItem.length > 0) {
-      subMenuItem.forEach(element => {
-        element.style.opacity = 1;
-      });
-    }
-    integrator.next();
-  },
-
   postList: function(integrator) {
-    var postBlock = document.querySelectorAll('.post-block, .pagination, .comments');
-    var postBlockTransition = CONFIG.motion.transition.post_block;
-    var postHeader = document.querySelectorAll('.post-header');
-    var postHeaderTransition = CONFIG.motion.transition.post_header;
-    var postBody = document.querySelectorAll('.post-body');
-    var postBodyTransition = CONFIG.motion.transition.post_body;
-    var collHeader = document.querySelectorAll('.collection-header');
-    var collHeaderTransition = CONFIG.motion.transition.coll_header;
 
-    if (postBlock.length > 0) {
+    var $postBlock = $('.post-block, .pagination, .comments');
+    var $postBlockTransition = CONFIG.motion.transition.post_block;
+    var $postHeader = $('.post-header');
+    var $postHeaderTransition = CONFIG.motion.transition.post_header;
+    var $postBody = $('.post-body');
+    var $postBodyTransition = CONFIG.motion.transition.post_body;
+    var $collHeader = $('.collection-title, .archive-year');
+    var $collHeaderTransition = CONFIG.motion.transition.coll_header;
+    var hasPost = $postBlock.length > 0;
+
+    if (hasPost) {
       var postMotionOptions = window.postMotionOptions || {
         stagger : 100,
         drag    : true,
@@ -141,34 +146,35 @@ NexT.motion.middleWares = {
       };
 
       if (CONFIG.motion.transition.post_block) {
-        Velocity(postBlock, 'transition.' + postBlockTransition, postMotionOptions);
+        $postBlock.velocity('transition.' + $postBlockTransition, postMotionOptions);
       }
       if (CONFIG.motion.transition.post_header) {
-        Velocity(postHeader, 'transition.' + postHeaderTransition, postMotionOptions);
+        $postHeader.velocity('transition.' + $postHeaderTransition, postMotionOptions);
       }
       if (CONFIG.motion.transition.post_body) {
-        Velocity(postBody, 'transition.' + postBodyTransition, postMotionOptions);
+        $postBody.velocity('transition.' + $postBodyTransition, postMotionOptions);
       }
       if (CONFIG.motion.transition.coll_header) {
-        Velocity(collHeader, 'transition.' + collHeaderTransition, postMotionOptions);
+        $collHeader.velocity('transition.' + $collHeaderTransition, postMotionOptions);
       }
     }
-    if (CONFIG.scheme === 'Pisces' || CONFIG.scheme === 'Gemini') {
+    if (NexT.utils.isPisces() || NexT.utils.isGemini()) {
       integrator.next();
     }
   },
 
   sidebar: function(integrator) {
-    var sidebarAffix = document.querySelector('.sidebar-inner');
-    var sidebarAffixTransition = CONFIG.motion.transition.sidebar;
+    NexT.utils.updateSidebarPosition();
+    var $sidebarAffix = $('.sidebar-inner');
+    var $sidebarAffixTransition = CONFIG.motion.transition.sidebar;
     // Only for Pisces | Gemini.
-    if (sidebarAffixTransition && (CONFIG.scheme === 'Pisces' || CONFIG.scheme === 'Gemini')) {
-      Velocity(sidebarAffix, 'transition.' + sidebarAffixTransition, {
+    if (CONFIG.motion.transition.sidebar && (NexT.utils.isPisces() || NexT.utils.isGemini())) {
+      $sidebarAffix.velocity('transition.' + $sidebarAffixTransition, {
         display : null,
         duration: 200,
         complete: function() {
           // After motion complete need to remove transform from sidebar to let affix work on Pisces | Gemini.
-          sidebarAffix.style.transform = 'initial';
+          $sidebarAffix.css({ 'transform': 'initial' });
         }
       });
     }
