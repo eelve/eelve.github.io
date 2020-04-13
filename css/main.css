@@ -1746,7 +1746,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #aa3e1a;
+  background: #f6e51f;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -2509,12 +2509,6 @@ ul.breadcrumb li+li:last-child {
   padding-right: 260px;
 }
 @media screen and (min-width: 1200px) {
-  body {
-    background-image: url("/images/background.jpg");
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    background-position: 50% 50%;
-  }
   #footer a {
     color: #eee;
   }
@@ -2806,4 +2800,18 @@ ul.breadcrumb li+li:last-child {
   padding: 0 5px;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+@media screen and (min-width: 1200px) {
+  body {
+    background-image: url("https://image.eelve.com/eblog/background.jpg");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: 50% 50%;
+    background-size: cover;
+    -webkit-background-size: cover;
+    -o-background-size: cover;
+    -moz-background-size: cover;
+    -ms-background-size: cover;
+    opacity: 0.6;
+  }
 }
