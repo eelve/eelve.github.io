@@ -57,24 +57,22 @@
   };
 </script>
 
-  <meta name="description" content="前言在日前安全形势越来越严重的情况下，让我意识到在项目中存在一个我们经常忽略的漏洞，那就是我们的项目的配置文件中配置信息的安全，尤其是数据库连接的用户名和密码的安全。所以这里我们就需要对数据库的用户名和密码进行加密，这也是本文的由来。本文采用Jasypt对Spring Boot配置文件加密的相关方法，其实呢，也还有其他方案，具体的会在后面的相关文章中说明。 引入jasypt12345&amp;lt;dep">
-<meta name="keywords" content="java,springboot,jasypt">
+  <meta name="description" content="【前情提要】最近做了一个Springboot项目，但是最后需要打成WAR包在容器中部署，下面就简单记录一下。  壹、修改pom文件12345678910111213141516171819202122232425262728293031323334353637383940&amp;lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot; xmlns:xsi=">
+<meta name="keywords" content="java,springboot,jar">
 <meta property="og:type" content="article">
-<meta property="og:title" content="使用Jasypt对SpringBoot配置文件加密">
-<meta property="og:url" content="http://zzlve.win/2019/08/09/shi-yong-jasypt-dui-springboot-pei-zhi-wen-jian-jia-mi/index.html">
+<meta property="og:title" content="SpringBoot打可执行war包">
+<meta property="og:url" content="http://zzlve.win/2020/04/29/springboot-war/index.html">
 <meta property="og:site_name" content="南国薏米">
-<meta property="og:description" content="前言在日前安全形势越来越严重的情况下，让我意识到在项目中存在一个我们经常忽略的漏洞，那就是我们的项目的配置文件中配置信息的安全，尤其是数据库连接的用户名和密码的安全。所以这里我们就需要对数据库的用户名和密码进行加密，这也是本文的由来。本文采用Jasypt对Spring Boot配置文件加密的相关方法，其实呢，也还有其他方案，具体的会在后面的相关文章中说明。 引入jasypt12345&amp;lt;dep">
+<meta property="og:description" content="【前情提要】最近做了一个Springboot项目，但是最后需要打成WAR包在容器中部署，下面就简单记录一下。  壹、修改pom文件12345678910111213141516171819202122232425262728293031323334353637383940&amp;lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot; xmlns:xsi=">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://image.eelve.com/eblog/springbootjasypydiagrams-3a7616cc841c4f7583fc7173e32aaab4.png">
-<meta property="og:image" content="https://image.eelve.com/eblog/springbootjasypyresult-5f2ef70fe5124f5595a48b341807f2c3.png">
 <meta property="og:image" content="https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png">
-<meta property="og:updated_time" content="2020-04-12T08:57:52.112Z">
+<meta property="og:updated_time" content="2020-04-29T06:36:35.934Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="使用Jasypt对SpringBoot配置文件加密">
-<meta name="twitter:description" content="前言在日前安全形势越来越严重的情况下，让我意识到在项目中存在一个我们经常忽略的漏洞，那就是我们的项目的配置文件中配置信息的安全，尤其是数据库连接的用户名和密码的安全。所以这里我们就需要对数据库的用户名和密码进行加密，这也是本文的由来。本文采用Jasypt对Spring Boot配置文件加密的相关方法，其实呢，也还有其他方案，具体的会在后面的相关文章中说明。 引入jasypt12345&amp;lt;dep">
-<meta name="twitter:image" content="https://image.eelve.com/eblog/springbootjasypydiagrams-3a7616cc841c4f7583fc7173e32aaab4.png">
+<meta name="twitter:title" content="SpringBoot打可执行war包">
+<meta name="twitter:description" content="【前情提要】最近做了一个Springboot项目，但是最后需要打成WAR包在容器中部署，下面就简单记录一下。  壹、修改pom文件12345678910111213141516171819202122232425262728293031323334353637383940&amp;lt;project xmlns=&quot;http://maven.apache.org/POM/4.0.0&quot; xmlns:xsi=">
+<meta name="twitter:image" content="https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png">
   <link rel="alternate" href="/atom.xml" title="南国薏米" type="application/atom+xml">
-  <link rel="canonical" href="http://zzlve.win/2019/08/09/shi-yong-jasypt-dui-springboot-pei-zhi-wen-jian-jia-mi/">
+  <link rel="canonical" href="http://zzlve.win/2020/04/29/springboot-war/">
 
 
 <script id="page-configurations">
@@ -88,7 +86,7 @@
   };
 </script>
 
-  <title>使用Jasypt对SpringBoot配置文件加密 | 南国薏米</title>
+  <title>SpringBoot打可执行war包 | 南国薏米</title>
   
 
 
@@ -288,7 +286,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://zzlve.win/2019/08/09/shi-yong-jasypt-dui-springboot-pei-zhi-wen-jian-jia-mi/">
+    <link itemprop="mainEntityOfPage" href="http://zzlve.win/2020/04/29/springboot-war/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Chillo">
@@ -302,7 +300,7 @@
       <header class="post-header">
 
         
-          <h1 class="post-title" itemprop="name headline">使用Jasypt对SpringBoot配置文件加密
+          <h1 class="post-title" itemprop="name headline">SpringBoot打可执行war包
 
             
           </h1>
@@ -319,19 +317,11 @@
                 
               
 
-              <time title="创建时间：2019-08-09 17:14:23" itemprop="dateCreated datePublished" datetime="2019-08-09T17:14:23+08:00">2019-08-09</time>
+              <time title="创建时间：2020-04-29 14:23:21 / 修改时间：14:36:35" itemprop="dateCreated datePublished" datetime="2020-04-29T14:23:21+08:00">2020-04-29</time>
             </span>
           
             
 
-            
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-12 16:57:52" itemprop="dateModified" datetime="2020-04-12T16:57:52+08:00">2020-04-12</time>
-              </span>
             
           
             <span class="post-meta-item">
@@ -365,7 +355,7 @@
               
                 <span class="post-meta-item-text">本文字数：</span>
               
-              <span>3.3k</span>
+              <span>2.3k</span>
             </span>
           
             <span class="post-meta-item" title="阅读时长">
@@ -375,7 +365,7 @@
               
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
               
-              <span>3 分钟</span>
+              <span>2 分钟</span>
             </span>
           
 
@@ -388,37 +378,14 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a><strong>前言</strong></h1><p>在日前安全形势越来越严重的情况下，让我意识到在项目中存在一个我们经常忽略的漏洞，那就是我们的项目的配置文件中配置信息的安全，尤其是数据库连接的用户名和密码的安全。所以这里我们就需要对数据库的用户名和密码进行加密，这也是本文的由来。本文采用Jasypt对Spring Boot配置文件加密的相关方法，其实呢，也还有其他方案，具体的会在后面的相关文章中说明。</p>
-<h1 id="引入jasypt"><a href="#引入jasypt" class="headerlink" title="引入jasypt"></a><strong>引入jasypt</strong></h1><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.github.ulisesbocchio<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jasypt-spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.0.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+        <p>【<strong>前情提要</strong>】最近做了一个Springboot项目，但是最后需要打成WAR包在容器中部署，下面就简单记录一下。</p>
+<hr>
+<h1 id="壹、修改pom文件"><a href="#壹、修改pom文件" class="headerlink" title="壹、修改pom文件"></a>壹、修改pom文件</h1><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">project</span> <span class="attr">xmlns</span>=<span class="string">"http://maven.apache.org/POM/4.0.0"</span> <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span> <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">modelVersion</span>&gt;</span>4.0.0<span class="tag">&lt;/<span class="name">modelVersion</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.eelve<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>springboot-war<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">version</span>&gt;</span>0.0.1-SNAPSHOT<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">  </span><br><span class="line">  <span class="comment">&lt;!-- 打包方式 --&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">packaging</span>&gt;</span>war<span class="tag">&lt;/<span class="name">packaging</span>&gt;</span></span><br><span class="line">  </span><br><span class="line">	<span class="tag">&lt;<span class="name">parent</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-parent<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">version</span>&gt;</span>2.2.6.RELEASE<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">relativePath</span>/&gt;</span> <span class="comment">&lt;!-- lookup parent from repository --&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">parent</span>&gt;</span></span><br><span class="line">	</span><br><span class="line">	<span class="tag">&lt;<span class="name">dependencies</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">		</span><br><span class="line">		<span class="comment">&lt;!-- 嵌入式tomcat相关jar将被放入到WEB-INF\lib-provided下 --&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-tomcat<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">scope</span>&gt;</span>provided<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">dependencies</span>&gt;</span></span><br><span class="line">	</span><br><span class="line">	<span class="tag">&lt;<span class="name">build</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">plugins</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!-- 打包插件 --&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-maven-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">build</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">project</span>&gt;</span></span><br></pre></td></tr></table></figure>
 
-<h1 id="1-生成要加密的字符串"><a href="#1-生成要加密的字符串" class="headerlink" title="1.生成要加密的字符串"></a><strong>1.生成要加密的字符串</strong></h1><h2 id="1-1-将数据库的用户名和密码进行加密"><a href="#1-1-将数据库的用户名和密码进行加密" class="headerlink" title="1.1 将数据库的用户名和密码进行加密"></a>1.1 将数据库的用户名和密码进行加密</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">contextLoads</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        BasicTextEncryptor textEncryptor = <span class="keyword">new</span> BasicTextEncryptor();</span><br><span class="line">        <span class="comment">//加密所需的salt(盐)</span></span><br><span class="line">        textEncryptor.setPassword(<span class="string">"1Qaz0oKm"</span>);</span><br><span class="line">        <span class="comment">//要加密的数据（数据库的用户名或密码）</span></span><br><span class="line">        String username = textEncryptor.encrypt(<span class="string">"root"</span>);</span><br><span class="line">        String password = textEncryptor.encrypt(<span class="string">"root"</span>);</span><br><span class="line">        System.out.println(<span class="string">"username:"</span>+username);</span><br><span class="line">        System.out.println(<span class="string">"password:"</span>+password);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h1 id="贰、修改启动类"><a href="#贰、修改启动类" class="headerlink" title="贰、修改启动类"></a>贰、修改启动类</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.eelve.springboot.war;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.SpringApplication;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.autoconfigure.SpringBootApplication;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.builder.SpringApplicationBuilder;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.web.support.SpringBootServletInitializer;</span><br><span class="line"></span><br><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SpringbootWarApplication</span> <span class="keyword">extends</span> <span class="title">SpringBootServletInitializer</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">protected</span> SpringApplicationBuilder <span class="title">configure</span><span class="params">(SpringApplicationBuilder application)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> application.sources(SpringbootWarApplication.class);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		SpringApplication.run(SpringbootWarApplication.class, args);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<p><strong>输出信息</strong></p>
-<figure class="highlight shell"><figcaption><span>script</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">username:NZmLHOOHX0SEjc285iG9YQ==</span><br><span class="line">password:1JByM5wu5o+9H1Ba2o++Pg==</span><br><span class="line">2019-06-14 14:55:49.863  INFO 8904 --- [       Thread-3] o.s.s.concurrent.ThreadPoolTaskExecutor  : Shutting down ExecutorService 'applicationTaskExecutor'</span><br><span class="line">2019-06-14 14:55:49.863  INFO 8904 --- [       Thread-3] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'</span><br><span class="line">2019-06-14 14:55:49.863  INFO 8904 --- [       Thread-3] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...</span><br><span class="line">2019-06-14 14:55:49.878  INFO 8904 --- [       Thread-3] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.</span><br></pre></td></tr></table></figure>
-
-<h2 id="1-2-或者使用Maven下载好的jar包加密-Maven-org-jasypt-jasypt-2-0-0-jasypt-2-0-0-jar"><a href="#1-2-或者使用Maven下载好的jar包加密-Maven-org-jasypt-jasypt-2-0-0-jasypt-2-0-0-jar" class="headerlink" title="1.2. 或者使用Maven下载好的jar包加密\Maven\org\jasypt\jasypt\2.0.0\jasypt-2.0.0.jar"></a>1.2. 或者使用Maven下载好的jar包加密\Maven\org\jasypt\jasypt\2.0.0\jasypt-2.0.0.jar</h2><figure class="highlight shell"><figcaption><span>script</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -cp jasypt-1.9.2.jar org.jasypt.intf.cli.JasyptPBEStringEncryptionCLI password=1Qaz0oKm algorithm=PBEWithMD5AndDES input=root</span><br></pre></td></tr></table></figure>
-
-<p><strong>输出信息</strong></p>
-<figure class="highlight shell"><figcaption><span>script</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">----ENVIRONMENT-----------------</span><br><span class="line">Runtime: Oracle Corporation Java HotSpot(TM) 64-Bit Server VM 25.171-b11</span><br><span class="line"></span><br><span class="line">----ARGUMENTS-------------------</span><br><span class="line">input: root</span><br><span class="line">algorithm: PBEWithMD5AndDES</span><br><span class="line">password: 1Qaz0oKm </span><br><span class="line"></span><br><span class="line">----OUTPUT----------------------</span><br><span class="line">NZmLHOOHX0SEjc285iG9YQ==</span><br></pre></td></tr></table></figure>
-
-<p>拷贝-OUTPUT-下的结果即可</p>
-<h1 id="2-配置properties文件"><a href="#2-配置properties文件" class="headerlink" title="2.配置properties文件"></a><strong>2.配置properties文件</strong></h1><p>将生成的加密串配置ENC(加密串)到application.properties中</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line"><span class="attr">  port:</span> <span class="number">8080</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line"><span class="attr">  datasource:</span></span><br><span class="line"><span class="attr">    url:</span> <span class="attr">jdbc:mysql://localhost:3306/test?serverTimezone=UTC&amp;useUnicode=true&amp;characterEncoding=utf-8&amp;useSSL=true</span></span><br><span class="line"><span class="attr">    username:</span> <span class="string">ENC(GHK23XVFNHoQQ97vIW523Q==)</span></span><br><span class="line"><span class="attr">    password:</span> <span class="string">ENC(aTKef0XcG05Cfzao92EqqQ==)</span></span><br><span class="line"><span class="attr">    data-username:</span> <span class="string">com.mysql.cj.jdbc.Driver</span></span><br><span class="line"><span class="attr">  jpa:</span></span><br><span class="line"><span class="attr">    show-sql:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">    database-platform:</span> <span class="string">org.hibernate.dialect.MySQL5InnoDBDialect</span></span><br><span class="line"><span class="attr">    database:</span> <span class="string">MYSQL</span></span><br><span class="line"><span class="attr">    hibernate:</span></span><br><span class="line"><span class="attr">      ddl-auto:</span> <span class="string">update</span></span><br><span class="line"><span class="attr">jasypt:</span></span><br><span class="line"><span class="attr">  encryptor:</span></span><br><span class="line"><span class="attr">    password:</span> <span class="number">1</span><span class="string">Qaz0oKm</span> <span class="comment">#加密所需的salt(盐)</span></span><br><span class="line">    <span class="comment">#algorithm: PBEWithMD5AndDES   # 默认加密方式PBEWithMD5AndDES,可以更改为PBEWithMD5AndTripleDES</span></span><br></pre></td></tr></table></figure>
-
-<p><strong>加密方式对应的类为BasicTextEncryptor和StrongTextEncryptor</strong></p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> StandardPBEStringEncryptor encryptor = <span class="keyword">new</span> StandardPBEStringEncryptor();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">BasicTextEncryptor</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.encryptor.setAlgorithm(<span class="string">"PBEWithMD5AndDES"</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> StandardPBEStringEncryptor encryptor = <span class="keyword">new</span> StandardPBEStringEncryptor();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">StrongTextEncryptor</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.encryptor.setAlgorithm(<span class="string">"PBEWithMD5AndTripleDES"</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://image.eelve.com/eblog/springbootjasypydiagrams-3a7616cc841c4f7583fc7173e32aaab4.png" alt="图片.png"></p>
-<h1 id="3-部署时配置salt-盐-值"><a href="#3-部署时配置salt-盐-值" class="headerlink" title="3.部署时配置salt(盐)值"></a><strong>3.部署时配置salt(盐)值</strong></h1><p><strong>1. 为了防止salt(盐)泄露,反解出密码.可以在项目部署的时候使用命令传入salt(盐)值</strong></p>
-<figure class="highlight shell"><figcaption><span>script</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">java -jar -Djasypt.encryptor.password=1Qaz0oKm xxx.jar</span><br></pre></td></tr></table></figure>
-
-<p><strong>2. 或者在服务器的环境变量里配置,进一步提高安全性</strong></p>
-<figure class="highlight shell"><figcaption><span>script</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">打开/etc/profile文件</span><br><span class="line">vim /etc/profile</span><br><span class="line"></span><br><span class="line">文件末尾插入</span><br><span class="line">export JASYPT_PASSWORD = G0CvDz7oJn6</span><br><span class="line"></span><br><span class="line">编译 </span><br><span class="line">source /etc/profile</span><br><span class="line"></span><br><span class="line">运行 </span><br><span class="line">java -jar -Djasypt.encryptor.password=$&#123;JASYPT_PASSWORD&#125; xxx.jar</span><br></pre></td></tr></table></figure>
-
-<p><a href="https://github.com/eelve/jasypt" target="_blank" rel="noopener">下面是一个我自己的具体实现：https://github.com/eelve/jasypt，使用Jasypt对数据库用信息加密后，可以成功连接上数据库</a><br><img src="https://image.eelve.com/eblog/springbootjasypyresult-5f2ef70fe5124f5595a48b341807f2c3.png" alt="图片.png"></p>
-<p><a href="https://github.com/ulisesbocchio/jasypt-spring-boot" target="_blank" rel="noopener">官方地址：https://github.com/ulisesbocchio/jasypt-spring-boot</a></p>
+<hr>
+<p>【<strong>后面的话</strong>】使用maven打包(clean package)，生成的war包可以用于传统的部署方式（外部tomcat），也可以直接使用java -jar 的方式运行。</p>
 <hr>
 <p><img src="https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png" alt="薏米笔记"></p>
 
@@ -440,7 +407,7 @@
             
               <a href="/tags/springboot/" rel="tag"><i class="fa fa-tag"></i># springboot</a>
             
-              <a href="/tags/jasypt/" rel="tag"><i class="fa fa-tag"></i># jasypt</a>
+              <a href="/tags/jar/" rel="tag"><i class="fa fa-tag"></i># jar</a>
             
           </div>
         
@@ -450,8 +417,8 @@
           <div class="post-nav">
             <div class="post-nav-next post-nav-item">
               
-                <a href="/2019/08/09/shi-yong-jasypt-dui-springboot-pei-zhi-wen-jian-jia-mi-ben-di-ban/" rel="next" title="使用Jasypt对SpringBoot配置文件加密">
-                  <i class="fa fa-chevron-left"></i> 使用Jasypt对SpringBoot配置文件加密
+                <a href="/2020/04/11/wsl-chu-ti-yan/" rel="next" title="WSL初体验">
+                  <i class="fa fa-chevron-left"></i> WSL初体验
                 </a>
               
             </div>
@@ -459,10 +426,6 @@
             <span class="post-nav-divider"></span>
 
             <div class="post-nav-prev post-nav-item">
-              
-                <a href="/2019/08/09/yong-ming-ling-jiang-ben-di-jar-bao-dao-ru-dao-ben-di-maven-cang-ku/" rel="prev" title="用命令将本地jar包导入到本地maven仓库">
-                  用命令将本地jar包导入到本地maven仓库 <i class="fa fa-chevron-right"></i>
-                </a>
               
             </div>
           </div>
@@ -752,7 +715,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#前言"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#引入jasypt"><span class="nav-number">2.</span> <span class="nav-text">引入jasypt</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#1-生成要加密的字符串"><span class="nav-number">3.</span> <span class="nav-text">1.生成要加密的字符串</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-1-将数据库的用户名和密码进行加密"><span class="nav-number">3.1.</span> <span class="nav-text">1.1 将数据库的用户名和密码进行加密</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-2-或者使用Maven下载好的jar包加密-Maven-org-jasypt-jasypt-2-0-0-jasypt-2-0-0-jar"><span class="nav-number">3.2.</span> <span class="nav-text">1.2. 或者使用Maven下载好的jar包加密\Maven\org\jasypt\jasypt\2.0.0\jasypt-2.0.0.jar</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-配置properties文件"><span class="nav-number">4.</span> <span class="nav-text">2.配置properties文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-部署时配置salt-盐-值"><span class="nav-number">5.</span> <span class="nav-text">3.部署时配置salt(盐)值</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#壹、修改pom文件"><span class="nav-number">1.</span> <span class="nav-text">壹、修改pom文件</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#贰、修改启动类"><span class="nav-number">2.</span> <span class="nav-text">贰、修改启动类</span></a></li></ol></div>
             
 
           </div>
