@@ -83,10 +83,25 @@ $ sudo /etc/init.d/xrdp start
 
 
 
-【**后面的话**】如果在日常使用中遇到WSL异常，一般为网络端口占用问题导致，一般可以通过重置网络修复，使用管理员身份运行cmd，重置端口，然后重启：`netsh winsock reset`。
+【**后面的话**】如果在日常使用中遇到WSL异常，一般为网络端口占用问题导致，一般可以通过重置网络修复，使用管理员身份运行cmd，重置端口，然后重启：`netsh winsock reset`
+
+~~~bash
+参考的对象类型不支持尝试的操作。
+
+[已退出进程，代码为 4294967295]
+~~~
 
 ```bash
-C:\Users\Chirius>netsh winsock reset
+Microsoft Windows [版本 10.0.19041.388]
+(c) 2020 Microsoft Corporation. 保留所有权利。
+
+C:\WINDOWS\system32>netsh winsock reset
+
+成功地重置 Winsock 目录。
+你必须重新启动计算机才能完成重置。
+
+
+C:\WINDOWS\system32>
 ```
 
 ---
