@@ -3521,8 +3521,10 @@ Active/Active traffic management</code></pre><h1 id="贰、准备工作"><a href
 <pre><code>注意这里的端口号应当与上面修改配置中一致</code></pre><p><img src="https://image.eelve.com/eblog/2020071901-6f2b76d2c58f4213950f820ef05f85d8.png" alt="2020071901"><br><img src="https://image.eelve.com/eblog/2020071902-c42b474dc5374bda9f576619a491b1ed.png" alt="2020071902"></p>
 <p>输入linux系统的用户名和密码，就可以登陆成功了</p>
 <p><img src="https://image.eelve.com/eblog/2020071903-b7632286a2c648bdac1d0a92585612a3.png" alt="2020071903"></p>
-<p>【<strong>后面的话</strong>】如果在日常使用中遇到WSL异常，一般为网络端口占用问题导致，一般可以通过重置网络修复，使用管理员身份运行cmd，重置端口，然后重启：<code>netsh winsock reset</code>。</p>
-<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">C:\Users\Chirius&gt;netsh winsock reset</span><br></pre></td></tr></table></figure>
+<p>【<strong>后面的话</strong>】如果在日常使用中遇到WSL异常，一般为网络端口占用问题导致，一般可以通过重置网络修复，使用管理员身份运行cmd，重置端口，然后重启：<code>netsh winsock reset</code></p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">参考的对象类型不支持尝试的操作。</span><br><span class="line"></span><br><span class="line">[已退出进程，代码为 4294967295]</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">Microsoft Windows [版本 10.0.19041.388]</span><br><span class="line">(c) 2020 Microsoft Corporation. 保留所有权利。</span><br><span class="line"></span><br><span class="line">C:\WINDOWS\system32&gt;netsh winsock reset</span><br><span class="line"></span><br><span class="line">成功地重置 Winsock 目录。</span><br><span class="line">你必须重新启动计算机才能完成重置。</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">C:\WINDOWS\system32&gt;</span><br></pre></td></tr></table></figure>
 
 <hr>
 <p><img src="https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png" alt="薏米笔记"></p>
