@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://zzlve.win/"/>
-  <updated>2020-09-30T14:25:09.316Z</updated>
+  <updated>2020-10-01T12:53:23.418Z</updated>
   <id>http://zzlve.win/</id>
   
   <author>
@@ -21,18 +21,16 @@
     <link href="http://zzlve.win/2020/09/30/jiu-yue-mian-shi-zong-jie/"/>
     <id>http://zzlve.win/2020/09/30/jiu-yue-mian-shi-zong-jie/</id>
     <published>2020-09-30T14:04:57.000Z</published>
-    <updated>2020-09-30T14:25:09.316Z</updated>
+    <updated>2020-10-01T12:53:23.418Z</updated>
     
-    <content type="html"><![CDATA[<hr><p>【<strong>前情提要</strong>】最近参加了几次面试，面试的感受是简历上写的东西一定是都烂熟于心，另外知识要成体系，引导面试官跟着你走，而不是呗面试官牵着走。下面简单记录一下面试真题。</p><hr><h1 id="Question-List"><a href="#Question-List" class="headerlink" title="Question List"></a>Question List</h1><ul><li>1.ArrayList和LinkedList区别</li><li>2.Object主要方法</li><li>3.实现线程的方法</li><li>4.线程池核心参数和模型</li><li>5.JUC</li><li>6.HashMap为啥不安全</li><li>7.CurrentHashMap怎么保证安全</li><li>8.为什么会有线程不安全问题，有那些保证线程同步的方法</li><li>9.说一说synchronized</li><li>10.说一说Java内存模型</li><li>11.volatile作用那些</li><li>12.@Autowired 和@Resource区别</li><li>13.springboot是怎么启动的</li><li>14.怎么解决循环依赖</li><li>15.什么是Aop，有那些方式实现</li><li>16.动态代理有那些，分别怎么实现</li><li>17.怎么自定义注解</li><li>18.什么是双亲委派</li><li>19.类加载机制</li><li>20.辣鸡回收算法，以及有那些回收器</li><li>21.B树和B+树，为啥MySQL用</li><li>22.怎么优化慢SQL</li><li>23.MySQL事物隔离级别，和MVVC怎么保障幻读和脏读</li><li>24.项目为什么用MQ，怎么解决使用MQ产生的问题</li><li>25.Redis持久化机制</li><li>26.redis淘汰策略</li><li>27.redis怎么保障双写一致</li><li>28.怎么保障分布式事物</li><li>29.为什么是三次握手四次挥手</li><li>30.Https是怎么保障安全的</li><li>31.还有些算法的</li><li>32.穿插项目问</li><li>33.String源码考察，intern方法</li><li>34.Object源码考察</li><li>35.Thread源码考察，线程顺序执行等等</li><li>36.ThreadLocal内存泄露问题考察</li><li>37.类初始化考察，new，克隆，反序列化</li><li>38.Spring MVC设计模式</li><li>39.JVM调优策略</li></ul><hr><p><img src="https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png" alt="薏米笔记"></p>]]></content>
+    <content type="html"><![CDATA[<hr><p>【<strong>前情提要</strong>】最近参加了几次面试，面试的感受是简历上写的东西一定是都烂熟于心，另外知识要成体系，引导面试官跟着你走，而不是被面试官牵着走。另外hr最常问的一个问题是：你为什么从上一份工作离职。下面简单记录一下我碰到的面试题。</p><hr><h1 id="Question-List"><a href="#Question-List" class="headerlink" title="Question List"></a>Question List</h1><ul><li>1.ArrayList和LinkedList区别</li><li>2.Object主要方法</li><li>3.实现线程的方法</li><li>4.线程池核心参数和模型</li><li>5.JUC</li><li>6.HashMap为啥不安全</li><li>7.CurrentHashMap怎么保证安全</li><li>8.为什么会有线程不安全问题，有那些保证线程同步的方法</li><li>9.说一说synchronized</li><li>10.说一说Java内存模型</li><li>11.volatile作用那些</li><li>12.@Autowired 和@Resource区别</li><li>13.springboot是怎么启动的</li><li>14.怎么解决循环依赖</li><li>15.什么是Aop，有那些方式实现</li><li>16.动态代理有那些，分别怎么实现</li><li>17.怎么自定义注解</li><li>18.什么是双亲委派</li><li>19.类加载机制</li><li>20.辣鸡回收算法，以及有那些回收器</li><li>21.B树和B+树，为啥MySQL用</li><li>22.怎么优化慢SQL</li><li>23.MySQL事物隔离级别，和MVVC怎么保障幻读和脏读</li><li>24.项目为什么用MQ，怎么解决使用MQ产生的问题</li><li>25.Redis持久化机制</li><li>26.redis淘汰策略</li><li>27.redis怎么保障双写一致</li><li>28.怎么保障分布式事物</li><li>29.为什么是三次握手四次挥手</li><li>30.Https是怎么保障安全的</li><li>31.还有些算法的</li><li>32.穿插项目问</li><li>33.String源码考察，intern方法</li><li>34.Object源码考察</li><li>35.Thread源码考察，线程顺序执行等等</li><li>36.ThreadLocal内存泄露问题考察</li><li>37.类初始化考察，new，克隆，反序列化</li><li>38.Spring MVC设计模式</li><li>39.JVM调优策略</li></ul><hr><p><img src="https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png" alt="薏米笔记"></p>]]></content>
     
     <summary type="html">
     
       
       
         &lt;hr&gt;
-&lt;p&gt;【&lt;strong&gt;前情提要&lt;/strong&gt;】最近参加了几次面试，面试的感受是简历上写的东西一定是都烂熟于心，另外知识要成体系，引导面试官跟着你走，而不是呗面试官牵着走。下面简单记录一下面试真题。&lt;/p&gt;
-&lt;hr&gt;
-&lt;h1 id=&quot;Question-List&quot;&gt;&lt;
+&lt;p&gt;【&lt;strong&gt;前情提要&lt;/strong&gt;】最近参加了几次面试，面试的感受是简历上写的东西一定是都烂熟于心，另外知识要成体系，引导面试官跟着你走，而不是被面试官牵着走。另外hr最常问的一个问题是：你为什么从上一份工作离职。下面简单记录一下我碰到的面试题。&lt;/p&gt;
       
     
     </summary>
