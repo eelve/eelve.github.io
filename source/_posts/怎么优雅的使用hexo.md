@@ -3,6 +3,7 @@ title: 怎么优雅的使用hexo
 date: 2020-02-23 22:20:58
 tags: hexo
 categories: hexo
+description: 在使用hexo搭建自己的个人博客前，我一直使用Halo来搭建自己的博客。但是还是决定用hexo再搭建一个博客，主要是为了让自己在Github上留下自己的印记。
 ---
 【**前情提要**】在使用[hexo](https://hexo.io/zh-cn/)搭建自己的个人博客前，我一直使用[Halo](https://halo.run/)来搭建自己的博客。但是还是决定用hexo再搭建一个博客，主要是为了让自己在Github上留下自己的印记。
 

@@ -3,6 +3,8 @@ title: SpringCloud之Ribbon
 date: 2019-08-23 19:42:20
 tags: Ribbon
 categories: SpringCloud
+description: 书接上文，本文的某些知识依赖我的上一篇文章：SpringCloud之Eureka，如果没有看过可以先移步去看一下。另外在微服务架构中，业务都会被拆分成一个个独立的服务，服务与服务的通讯是基于http restful的。Spring cloud有两种服务调用方式，一种是ribbon+restTemplate，另一种是feign。在这一篇文章首先讲解下基于ribbon+rest。
+
 ---
 
 【**前面的话**】书接上文，本文的某些知识依赖我的上一篇文章：[SpringCloud之Eureka](https://eelve.com/archives/SpringCloudEureka)，如果没有看过可以先移步去看一下。另外在微服务架构中，业务都会被拆分成一个个独立的服务，服务与服务的通讯是基于http restful的。Spring cloud有两种服务调用方式，一种是ribbon+restTemplate，另一种是feign。在这一篇文章首先讲解下基于ribbon+rest。

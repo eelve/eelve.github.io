@@ -4,9 +4,10 @@ title: Elastic Stack实战之Logstash初体验
 date: 2020-03-02 21:49:22
 tags: [ELK,Logstash]
 categories: Elastic Stack
+description: 在前面已经安装好了Elasticsearch，今天就来对[Logstash 进行一下初步体验。
 ---
 
-【**前面的话**】在前面已经安装好了Elasticsearch，今天就来对[Logstash](https://www.elastic.co/cn/logstash)进行一下初步体验。
+【**前面的话**】在前面已经安装好了Elasticsearch，今天就来对 Logstash](https://www.elastic.co/cn/logstash)进行一下初步体验。
 
 
 ---

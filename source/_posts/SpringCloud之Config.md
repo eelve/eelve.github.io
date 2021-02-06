@@ -3,6 +3,7 @@ title: SpringCloud之Config
 date: 2019-08-31 14:34:12
 tags: Config
 categories: SpringCloud
+description: 本文的某些知识依赖我的微服务系列文章，如果没有看过可以先移步去看一下。在前面的应用当中，我们所有的配置都是写在yaml配置文件当中的，这样就会造成几个问题：安全、统一管理等等。而SpringCloud也是考虑到这一点，给出的方案就是Spring Cloud Config。
 ---
 【**前面的话**】本文的某些知识依赖我的[微服务系列文章](https://eelve.com/tags/springcloud#blog)，如果没有看过可以先移步去看一下。在前面的应用当中，我们所有的配置都是写在**yaml**配置文件当中的，这样就会造成几个问题：安全、统一管理等等。而SpringCloud也是考虑到这一点，给出的方案就是**Spring Cloud Config**。
 

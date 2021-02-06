@@ -3,6 +3,7 @@ title: WSL2中体验Redis的布隆过滤器
 date: 2020-08-15 11:39:40
 tags: WSL，Redis 
 categories: WSL
+description: 前面已经安装了WSL2 ，最近准备研究一下Redis的布隆过滤器，现在就先搭建一下环境。
 ---
 
 

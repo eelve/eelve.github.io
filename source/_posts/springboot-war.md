@@ -3,6 +3,7 @@ title: SpringBoot打可执行war包
 date: 2020-04-29 14:23:21
 tags: [java,springboot,jar]
 categories: springboot
+description: 最近做了一个Springboot项目，但是最后需要打成WAR包在容器中部署，下面就简单记录一下。
 ---
 
 【**前情提要**】最近做了一个Springboot项目，但是最后需要打成WAR包在容器中部署，下面就简单记录一下。

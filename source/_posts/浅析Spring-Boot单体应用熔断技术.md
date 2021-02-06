@@ -3,6 +3,7 @@ title: 浅析Spring Boot单体应用熔断技术
 date: 2021-01-20 20:20:20
 tags: [java,springboot]
 categories: springboot
+description: 最近在看服务熔断的相关技术，下面就来总结一下。
 ---
 
 【**前面的话**】最近在看服务熔断的相关技术，下面就来总结一下。

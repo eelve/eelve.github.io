@@ -3,6 +3,7 @@ title: Tomcat中URI不支持特殊字符解决方案
 date: 2020-06-30 12:17:57
 tags: [tomcat,springboot,java]
 categories: java
+description: 最近开发过程中遇到一个Tomcat中IllegalArgumentException的报错，所以在这里记录一下。
 ---
 【**前情提要**】最近开发过程中遇到一个`Tomcat`中`IllegalArgumentException`的报错，所以在这里记录一下。
 

@@ -4,6 +4,7 @@ title: Elastic Stack实战之Beats家族介绍
 date: 2020-03-05 20:30:10
 tags: hide
 categories: hide
+description: 前面我们已经体验过了Elasticsearch、Logstash和Kibanan，也是就是ELK三大剑客。记得在前文 Elastic Stack实战之Logstash初体验 中提到过Elastic Stack大家族中增加了一个新的高效率的采集组件，那就是Beats家族，那今天就来了解一下。
 ---
 
 【**前面的话**】前面我们已经体验过了Elasticsearch、Logstash和Kibanan，也是就是ELK三大剑客。记得在前文[Elastic Stack实战之Logstash初体验](https://eelve.com/archives/logstash)中提到过Elastic Stack大家族中增加了一个新的高效率的采集组件，那就是Beats家族，那今天就来了解一下。

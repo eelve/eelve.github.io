@@ -3,6 +3,7 @@ title: SpringBoot自定义Starter
 date: 2020-04-05 12:01:17
 tags: [java,springboot,]
 categories: SpringBoot
+description: 在使用SpringBoot的日常开发过程中，我们不可避免的要封装一些自己的Starter，今天这篇文章就来讨论一下怎么自定义一个Starter，本文会封装一个短信发送能力的Starter,使用 云之讯 的SDK。
 ---
 
 【**前面的话**】在使用SpringBoot的日常开发过程中，我们不可避免的要封装一些自己的Starter，今天这篇文章就来讨论一下怎么自定义一个Starter，本文会封装一个短信发送能力的Starter,使用[云之讯](https://office.ucpaas.com/about/index.html)的SDK。

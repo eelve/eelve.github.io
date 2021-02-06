@@ -3,6 +3,7 @@ title: Hexo拯救计划
 date: 2020-04-06 14:37:42
 tags: lifeme
 categories: lifeme
+description: 就在上个月底，Github遭受了中间人攻击，导致Github Pages的证书被篡改失效，而基于此的一众利用Github Pages生成博客全部都不能访问。鉴于“不能把鸡蛋放在同一个篮子里”的优秀理念，我决定给我的博客找一个新家。
 ---
 
 【**前面的话**】就在上个月底，Github遭受了中间人攻击，导致Github Pages的证书被篡改失效，而基于此的一众利用Github Pages生成博客全部都不能访问。鉴于“不能把鸡蛋放在同一个篮子里”的优秀理念，我决定给我的博客找一个新家。
