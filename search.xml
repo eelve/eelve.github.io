@@ -3704,7 +3704,7 @@ management.endpoints.web.exposure.include=* 打开客户端 Actuator 的监控
   <entry>
     <title>Sentinel入门指北</title>
     <url>/2021/02/01/sentinel-ru-men-zhi-bei/</url>
-    <content><![CDATA[<p>【<strong>前面的话</strong>】在前文 <a href="https://eelve.com/archives/springbootcircuitbreaker">浅析Spring Boot单体应用熔断技术</a> 中对比了以下几种常见的接口熔断的技术。这里就具体使用 <code>Sentinel</code> 来记录以下。</p>
+    <content><![CDATA[<p>【<strong>前面的话</strong>】在前文 <a href="https://eelve.com/archives/springbootcircuitbreaker">浅析Spring Boot单体应用熔断技术</a> 中对比了一下几种常见的接口熔断的技术。这里就具体使用 <code>Sentinel</code> 来记录以下。</p>
 <hr>
 <h1 id="壹、sentinel介绍"><a href="#壹、sentinel介绍" class="headerlink" title="壹、sentinel介绍"></a>壹、sentinel介绍</h1><p>随着微服务的流行，服务和服务之间的稳定性变得越来越重要。<code>Sentinel</code> 是面向分布式服务架构的流量控制组件，主要以流量为切入点，从流量控制、熔断降级、系统自适应保护等多个维度来帮助您保障微服务的稳定性。</p>
 <h2 id="Sentinel的基本概念基本概念包括"><a href="#Sentinel的基本概念基本概念包括" class="headerlink" title="Sentinel的基本概念基本概念包括:"></a>Sentinel的基本概念基本概念包括:</h2><h3 id="资源"><a href="#资源" class="headerlink" title="资源"></a>资源</h3><p>资源是 <code>Sentinel</code> 的关键概念。它可以是 <code>Java</code> 应用程序中的任何内容，例如，由应用程序提供的服务，或由应用程序调用的其它应用提供的服务，甚至可以是一段代码。只要通过 <code>Sentinel API</code> 定义的代码，就是资源，能够被 <code>Sentinel</code> 保护起来。大部分情况下，可以使用方法签名，URL，甚至服务名称作为资源名来标示资源。</p>
