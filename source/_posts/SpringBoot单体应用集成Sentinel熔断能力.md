@@ -45,7 +45,7 @@ public static void loadRules(List<DegradeRule> rules) {
 
 # 贰、实现细节 
 
-## 2.1、pop依赖
+## 2.1、pom依赖
 
 > `sentinel-annotation-aspectj` 提供注解支持功能，并且其中包含了 `sentinel-core` 所以就不需要单独再引入了。 
 
