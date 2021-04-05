@@ -37,7 +37,7 @@ dependency>
 
 # 叁、拦截器方式实现
 
-## 3.2、 定义接口
+## 3.1、 定义接口
 
 ~~~java
 @RequestMapping("/get")
