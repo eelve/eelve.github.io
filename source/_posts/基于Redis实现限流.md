@@ -9,7 +9,7 @@ description: 前面说过目前几种比较常见的限流的中间件，Sentine
 
 # 壹、Redis实现限流介绍
 
-前面说过基于Guava的限流的解决方案，但是这个方案只适用于单体应用，所以这边我们就可用借助第三方中间件来实现，这里就使用Redis来实现，进一步实现集群限流的功能。
+前面说过基于Guava的限流的解决方案，但是这个方案只适用于单体应用，所以这边我们就可用借助第三方中间件来实现，这里就使用Redis来实现，进一步实现集群限流的功能。主要参考Redis官方的伪代码：[https://redis.io/commands/incr](https://redis.io/commands/incr)
 
 
 # 贰、基于Redis的setnx的操作
