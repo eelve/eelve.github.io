@@ -294,6 +294,27 @@ public class MyRateLimiterAspect {
 
 ~~~
 
+## 4.3、使用
+
+~~~java
+/**
+ * 开启限流
+ * @return
+ */
+@MyRateLimiter(qps = 2.0, timeout = 1)
+@GetMapping("/rateLimiter")
+public JsonResult rateLimiter(HttpServletRequest request, HttpServletResponse response, @RequestParam Integer num) {
+    log.info("param----->" + num);
+    try {
+        Thread.sleep(num);
+    } catch (InterruptedException e) {
+        e.printStackTrace();
+    }
+    log.info("【rateLimiter】被执行了。。。。。");
+    return JsonResult.ok("你不能总是看到我，快速刷新我看一下！");
+}
+~~~
+
 > 通过上面的代码我们就实现了零活的通过注解的方式实现了限流功能，并且我们还可以在`Around`通知的时候灵活实现。包括过滤某些异常等等。
 
 ---
