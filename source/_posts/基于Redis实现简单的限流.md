@@ -1,5 +1,5 @@
 ---
-title: 基于Redis实现限流
+title: 基于Redis实现简单的限流
 date: 2021-04-03 22:58:13
 tags: limiting
 categories: limiting
