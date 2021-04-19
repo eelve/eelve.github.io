@@ -109,7 +109,7 @@ permalink_pinyin:
   separator: '-' # default: '-'
 
 # index2 generator是否包含官方的hexo-generator-index，默认true（包含）
-index2_include_index: true
+index2_include_index: false
 index2_generator:
   per_page: 8
   order_by: -date # 按发布时间排序
