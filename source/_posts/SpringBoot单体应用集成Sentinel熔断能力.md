@@ -13,6 +13,7 @@ description: 前面对Sentinel的入门知识有了一定了解之后，这里�
 ---
 
 # 壹、总体设计
+
 `Sentinel`在官方提供了`API`用于动态修改熔断的规则，针对每种规则都有独有的`loadRules`方法：
 
 ~~~java
@@ -701,6 +702,33 @@ public class SentinelResourceController {
         return JsonResult.ok().put(SentinelResourcetHolder.getSentinelResource());
     }
 }
+~~~
+
+> 只有Controller层和Service层的直接第一层方法才能通过注解触发，如果是方法再调用普通方法需要勇SphO或者SphU原生写法
+
+~~~java
+private void extractedSphO(Integer num) {
+        if (SphO.entry("extractedSphO")){
+            try {
+                //需要保护的逻辑
+            }finally {
+                //需要和SphO.entry成对出现
+                SphO.exit();
+            }
+        }else {
+            //熔断之后执行的方法
+            log.info("something bad with blockException");
+        }
+    }
+
+    private void extractedSphU(Integer num) {
+        try (Entry entry = SphU.entry("extractedSphU")) {
+            //需要保护的逻辑
+        } catch (BlockException ex) {
+            //熔断之后执行的方法
+            log.info("something bad with blockException");
+        }
+    }
 ~~~
 
 ---
