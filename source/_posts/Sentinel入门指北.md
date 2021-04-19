@@ -1,9 +1,13 @@
 ---
 title: Sentinel入门指北
-date: 2021-02-01 20:30:57
-tags: [java,springboot,sentinel]
+tags:
+  - java
+  - springboot
+  - sentinel
 categories: sentinel
 description: 在前文 浅析Spring Boot单体应用熔断技术 中对比了一下几种常见的接口熔断的技术。这里就具体使用 Sentinel 来记录以下。
+abbrlink: d2ca763d
+date: 2021-02-01 20:30:57
 ---
 
 【**前面的话**】在前文 [浅析Spring Boot单体应用熔断技术](https://eelve.com/archives/springbootcircuitbreaker) 中对比了一下几种常见的接口熔断的技术。这里就具体使用 `Sentinel` 来记录以下。

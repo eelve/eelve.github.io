@@ -1,9 +1,11 @@
 ---
 title: SpringCloud之Zuul
-date: 2019-08-31 13:36:49
 tags: Zuul
 categories: SpringCloud
-description: 书接上文，前面已经讲过了SpringCloud的注册中心Eureka、Ribbon和Feign等等，如果有不清楚的也可以去看看我的微服务系列文章。这篇文章我要说的是微服务中的网关。
+description: >-
+  书接上文，前面已经讲过了SpringCloud的注册中心Eureka、Ribbon和Feign等等，如果有不清楚的也可以去看看我的微服务系列文章。这篇文章我要说的是微服务中的网关。
+abbrlink: 1adb8023
+date: 2019-08-31 13:36:49
 ---
 
 【**前面的话**】书接上文，前面已经讲过了SpringCloud的注册中心Eureka、Ribbon和Feign等等，如果有不清楚的也可以去看看我的[微服务系列文章](https://eelve.com/tags/springcloud#blog)。这篇文章我要说的是微服务中的网关。

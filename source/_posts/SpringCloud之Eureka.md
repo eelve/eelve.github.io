@@ -1,9 +1,12 @@
 ---
 title: SpringCloud之Eureka
-date: 2019-08-22 20:22:21
 tags: Eureka
 categories: SpringCloud
-description: SpringCloud为开发人员提供了快速构建分布式系统的一些工具，包括配置管理、服务发现、断路器、路由、微代理、事件总线、全局锁、决策竞选、分布式会话等等。它配置简单，上手快，而且生态成熟，便于应用。但是它对SpringBoot有很强的依赖，需要有一定基础，但是SpringBoot俩小时就可以入门。另外对于“微服务架构” 不了解的话，可以通过搜索引擎搜索“微服务架构”了解下。另外这是SpringCloud的版本为Greenwich.SR2，JDK版本为1.8，SpringBoot的版本为2.1.7.RELEASE。
+description: >-
+  SpringCloud为开发人员提供了快速构建分布式系统的一些工具，包括配置管理、服务发现、断路器、路由、微代理、事件总线、全局锁、决策竞选、分布式会话等等。它配置简单，上手快，而且生态成熟，便于应用。但是它对SpringBoot有很强的依赖，需要有一定基础，但是SpringBoot俩小时就可以入门。另外对于“微服务架构”
+  不了解的话，可以通过搜索引擎搜索“微服务架构”了解下。另外这是SpringCloud的版本为Greenwich.SR2，JDK版本为1.8，SpringBoot的版本为2.1.7.RELEASE。
+abbrlink: cef2acbf
+date: 2019-08-22 20:22:21
 ---
 
 【**前面的话**】SpringCloud为开发人员提供了快速构建分布式系统的一些工具，包括配置管理、服务发现、断路器、路由、微代理、事件总线、全局锁、决策竞选、分布式会话等等。它配置简单，上手快，而且生态成熟，便于应用。但是它对SpringBoot有很强的依赖，需要有一定基础，但是SpringBoot俩小时就可以入门。另外对于“微服务架构” 不了解的话，可以通过搜索引擎搜索“微服务架构”了解下。另外这是SpringCloud的版本为**Greenwich.SR2**，JDK版本为**1.8**，SpringBoot的版本为**2.1.7.RELEASE**。

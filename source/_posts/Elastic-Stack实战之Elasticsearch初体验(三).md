@@ -1,11 +1,11 @@
 ---
-layout: elastic
 title: Elastic Stack实战之Elasticsearch初体验(三)
-date: 2020-03-01 19:49:22
 tags: hide
 categories: hide
 notshow: true
-description: 
+abbrlink: 46949ae6
+date: 2020-03-01 19:49:22
+description:
 ---
 
 【**前面的话**】书接上文[Elastic Stack实践之Elasticsearch使用(一)](https://eelve.com/archives/elasticsearch01)。

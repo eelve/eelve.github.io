@@ -1,9 +1,13 @@
 ---
 title: Hyper-V和IDEA运行端口占用问题
-date: 2020-04-11 12:56:30
-tags: [yper-V,IDEA]
+tags:
+  - yper-V
+  - IDEA
 categories: Hyper-V
-description: 因为安装Windows版本的Docker环境，开启了Hyper-V。其结果是导致了IDEA在运行Tomcat的时候提示1099端口占用，经过探索之后成功找到了解决方案。
+description: >-
+  因为安装Windows版本的Docker环境，开启了Hyper-V。其结果是导致了IDEA在运行Tomcat的时候提示1099端口占用，经过探索之后成功找到了解决方案。
+abbrlink: ba44fc9d
+date: 2020-04-11 12:56:30
 ---
 
 【**前面的话**】因为安装Windows版本的Docker环境，开启了Hyper-V。其结果是导致了IDEA在运行Tomcat的时候提示1099端口占用，经过探索之后成功找到了解决方案。

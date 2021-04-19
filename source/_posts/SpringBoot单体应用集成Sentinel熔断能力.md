@@ -1,10 +1,13 @@
 ---
-layout: spring
 title: Spring Boot单体应用集成Sentinel熔断能力
-date: 2021-02-13 11:52:54
-tags: [java,springboot,sentinel]
+tags:
+  - java
+  - springboot
+  - sentinel
 categories: sentinel
 description: 前面对Sentinel的入门知识有了一定了解之后，这里就来介绍在生产中简单的应用。
+abbrlink: 1523c2c1
+date: 2021-02-13 11:52:54
 ---
 
 

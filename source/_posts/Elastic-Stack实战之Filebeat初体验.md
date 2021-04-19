@@ -1,10 +1,13 @@
 ---
-layout: elastic
 title: Elastic Stack实战之Filebeat初体验
-date: 2020-03-07 17:49:22
-tags: [ELK,FileBeat,Beats]
+tags:
+  - ELK
+  - FileBeat
+  - Beats
 categories: Elastic Stack
 description: 前文介绍了Elastic Stack的Beats家族，今天我们就来体验其中的专门用于采集文件的 Filebeat，走起。
+abbrlink: 1d8b943d
+date: 2020-03-07 17:49:22
 ---
 
 【**前面的话**】[前文](https://eelve.com/archives/beats)介绍了Elastic Stack的Beats家族，今天我们就来体验其中的专门用于采集文件的[Filebeat](https://www.elastic.co/cn/beats/filebeat)，走起。

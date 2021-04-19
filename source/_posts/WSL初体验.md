@@ -1,9 +1,10 @@
 ---
 title: WSL初体验
-date: 2020-04-11 13:29:55
 tags: WSL，Windows
 categories: WSL
 description: WSL是Windows Subsystem for Linux的缩写，今天就来体验一把。
+abbrlink: f42ecfec
+date: 2020-04-11 13:29:55
 ---
 
 【**前面的话**】WSL是Windows Subsystem for Linux的缩写，今天就来体验一把。

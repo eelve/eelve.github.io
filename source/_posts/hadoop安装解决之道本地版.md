@@ -1,9 +1,10 @@
 ---
 title: hadoop安装解决之道
-date: 2019-08-09 17:12:58
 tags: hide
 categories: hide
 description: 前面在安装hadoop的时候碰到了问题，下面就简单记录一下安装解决之道。
+abbrlink: fd78ed5d
+date: 2019-08-09 17:12:58
 ---
 # 壹、故障现象
 ```shell script

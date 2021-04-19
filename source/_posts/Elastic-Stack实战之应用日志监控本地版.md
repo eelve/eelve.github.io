@@ -1,10 +1,11 @@
 ---
-layout: elastic
 title: Elastic Stack实战之应用日志监控
-date: 2020-03-14 21:49:22
 tags: hide
 categories: hide
-description: 在前面我们已经介绍了Elasticsearch、Logstash、Kibana和Beats，并且都对各个组件进行了初步体验。今天我们就来模拟一把日常使用，来收集一个我们自己的应用的日志，并使用Kibana展示。
+description: >-
+  在前面我们已经介绍了Elasticsearch、Logstash、Kibana和Beats，并且都对各个组件进行了初步体验。今天我们就来模拟一把日常使用，来收集一个我们自己的应用的日志，并使用Kibana展示。
+abbrlink: 2266c12c
+date: 2020-03-14 21:49:22
 ---
 
 【**前面的话**】在前面我们已经介绍了[Elasticsearch](https://eelve.com/archives/elasticsearchinstall)、[Logstash](https://eelve.com/archives/logstash)、[Kibana](https://eelve.com/archives/kibana)和[Beats](https://eelve.com/archives/beats)，并且都对各个组件进行了初步体验。今天我们就来模拟一把日常使用，来收集一个我们自己的应用的日志，并使用Kibana展示。

@@ -1,9 +1,10 @@
 ---
 title: WSL2初体验
-date: 2020-07-19 20:33:01
 tags: WSL，Windows
 categories: WSL
 description: 前面已经对WSL初体验 ，今天就将升级为WSL2，并且前面已经对WSL有了初体验 ，今天就将升级为WSL2，并且在WSL2使用xrdp实现图形桌面。
+abbrlink: 22fec071
+date: 2020-07-19 20:33:01
 ---
 
 

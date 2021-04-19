@@ -1,10 +1,12 @@
 ---
-layout: elastic
 title: Elastic Stack实战之Kibana初体验
-date: 2020-03-03 19:49:22
-tags: [ELK,Kibana]
+tags:
+  - ELK
+  - Kibana
 categories: Elastic Stack
 description: 在前面已经安装好了Elasticsearch和Logstash，今天就来Kibana进行一下初步体验。
+abbrlink: b84d7094
+date: 2020-03-03 19:49:22
 ---
 
 

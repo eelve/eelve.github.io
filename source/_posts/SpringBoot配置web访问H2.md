@@ -1,9 +1,13 @@
 ---
 title: SpringBoot配置web访问H2
-date: 2019-08-09 17:13:41
-tags: [java,springboot,h2]
+tags:
+  - java
+  - springboot
+  - h2
 categories: springboot
 description: 最近开始搭建博客，在本地调试的时候使用的数据库是h2，但是调试的时候需要查看数据库，本文也由此而来。
+abbrlink: a7d97376
+date: 2019-08-09 17:13:41
 ---
 【**前情提要**】最近开始搭建博客，在本地调试的时候使用的数据库是h2，但是调试的时候需要查看数据库，本文也由此而来。
 

@@ -1,9 +1,12 @@
 ---
 title: No PostCSS Config found in ...报错解决
-date: 2019-08-09 17:10:14
-tags: [node,github]
+tags:
+  - node
+  - github
 categories: node
-description: 日前本人将本地项目上传GitHub之后，然后再clone到本地，运行时报错,下面就简单记录一下解决方法。
+description: '日前本人将本地项目上传GitHub之后，然后再clone到本地，运行时报错,下面就简单记录一下解决方法。'
+abbrlink: 46db808f
+date: 2019-08-09 17:10:14
 ---
 【**前情提要**】日前本人将本地项目上传GitHub之后，然后再clone到本地，运行时报错：Error: No PostCSS Config found in...
 

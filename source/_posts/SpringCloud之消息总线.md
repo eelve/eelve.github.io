@@ -1,9 +1,12 @@
 ---
 title: SpringCloud之消息总线
-date: 2019-08-31 14:34:42
 tags: Bus
 categories: SpringCloud
-description: 书接上文SpringCloud之Config，如果没有看过可以先移步去看一下。在上一篇文章中提到了配置刷新的问题，如果需要刷新配置就需要客户端执行refresh，我们可以利用webhook的机制每次提交代码发送请求来刷新客户端，当客户端越来越多的时候，需要每个客户端都执行一遍，这种方案就不太适合了。使用Spring Cloud Bus可以完美解决这一问题。
+description: >-
+  书接上文SpringCloud之Config，如果没有看过可以先移步去看一下。在上一篇文章中提到了配置刷新的问题，如果需要刷新配置就需要客户端执行refresh，我们可以利用webhook的机制每次提交代码发送请求来刷新客户端，当客户端越来越多的时候，需要每个客户端都执行一遍，这种方案就不太适合了。使用Spring
+  Cloud Bus可以完美解决这一问题。
+abbrlink: eba16952
+date: 2019-08-31 14:34:42
 ---
 【**前面的话**】书接上文[SpringCloud之Config](https://eelve.com/archives/SpringCloudConfig)，如果没有看过可以先移步去看一下。在上一篇文章中提到了配置刷新的问题，如果需要刷新配置就需要客户端执行**refresh**，我们可以利用**webhook**的机制每次提交代码发送请求来刷新客户端，当客户端越来越多的时候，需要每个客户端都执行一遍，这种方案就不太适合了。使用Spring Cloud Bus可以完美解决这一问题。
 

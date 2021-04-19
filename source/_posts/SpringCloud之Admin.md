@@ -1,9 +1,10 @@
 ---
 title: SpringCloud之Admin
-date: 2019-08-31 15:26:41
 tags: hide
 categories: hide
 notshow: true
+abbrlink: 4aa299c4
+date: 2019-08-31 15:26:41
 description:
 ---
 

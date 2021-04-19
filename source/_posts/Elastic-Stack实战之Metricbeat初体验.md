@@ -1,10 +1,13 @@
 ---
-layout: elastic
 title: Elastic Stack实战之Metricbeat初体验
-date: 2020-03-07 21:36:20
-tags: [ELK,MetricBeat,Beats]
+tags:
+  - ELK
+  - MetricBeat
+  - Beats
 categories: Elastic Stack
 description: 前面介绍了Elastic Stack的Beats家族，并且 体验了Filebeat，接下来我们就继续来体验一下
+abbrlink: ea2474f9
+date: 2020-03-07 21:36:20
 ---
 
 

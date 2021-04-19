@@ -1,10 +1,12 @@
 ---
-layout: elastic
 title: Elastic Stack实战之Elasticsearch初体验(一)
-date: 2020-03-01 12:34:22
-tags: [ELK,Elasticsearch]
+tags:
+  - ELK
+  - Elasticsearch
 categories: Elastic Stack
 description: 前面已经准备好了服务器环境，今天就来开始安装 Elasticsearch 然后体验。
+abbrlink: 975621af
+date: 2020-03-01 12:34:22
 ---
 
 【**前面的话**】前面已经准备好了服务器环境，今天就来开始安装[Elasticsearch](https://www.elastic.co/cn/elasticsearch)然后体验。
