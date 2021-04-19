@@ -1,9 +1,9 @@
 ---
-title: Elastic Stack实战之Elasticsearch初体验(一)
+title: Elastic Stack实战之Elasticsearch初体验(一)本地版
 tags: hide
 categories: hide
 description: 前面已经准备好了服务器环境，今天就来开始安装 Elasticsearch 然后体验。
-abbrlink: 975621af
+abbrlink: f324c167
 date: 2020-03-01 12:34:22
 ---
 

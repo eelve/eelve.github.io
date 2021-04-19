@@ -1,9 +1,9 @@
 ---
-title: Elastic Stack实战之Metricbeat初体验
+title: Elastic Stack实战之Metricbeat初体验本地版
 tags: hide
 categories: hide
 description: 前面介绍了Elastic Stack的Beats家族，并且 体验了Filebeat，接下来我们就继续来体验一下
-abbrlink: ea2474f9
+abbrlink: 23e1db24
 date: 2020-03-07 21:36:20
 ---
 

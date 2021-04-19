@@ -1,11 +1,11 @@
 ---
-title: Elastic Stack实战之环境准备
+title: Elastic Stack实战之环境准备本地版
 tags: hide
 categories: hide
 description: >-
   首先还是是简单说一下Elastic Stack技术栈吧。ELK = Elasticsearch, Logstash, Kibana
   是一套实时数据收集，存储，索引，检索，统计分析及可视化的解决方案。最新版本已经改名为Elastic Stack，并新增了Beats项目。
-abbrlink: cdfa1d48
+abbrlink: 520ff9fc
 date: 2020-02-29 16:29:26
 ---
 

@@ -1,10 +1,10 @@
 ---
-title: spring-boot-starter-quartz集群实践
+title: spring-boot-starter-quartz集群实践本地版
 tags: hide
 categories: hide
 description: >-
   由于项目需要，需要一个定时任务集群，故此有了这个spring-boot-starter-quartz集群的实践。springboot的版本为：2.1.6.RELEASE；quartz的版本为：2.3.1.假如这里一共有两个定时任务的节点，它们的代码完全一样。
-abbrlink: d8e19a44
+abbrlink: db07dd37
 date: 2019-08-09 17:06:12
 ---
 【**前情提要**】由于项目需要，需要一个定时任务集群，故此有了这个spring-boot-starter-quartz集群的实践。springboot的版本为：2.1.6.RELEASE；quartz的版本为：2.3.1.假如这里一共有两个定时任务的节点，它们的代码完全一样。

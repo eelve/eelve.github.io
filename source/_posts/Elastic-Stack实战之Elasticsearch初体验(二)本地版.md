@@ -1,9 +1,9 @@
 ---
-title: Elastic Stack实战之Elasticsearch初体验(二)
+title: Elastic Stack实战之Elasticsearch初体验(二)本地版
 tags: hide
 categories: hide
 description: 前面我们已经安装好了Elasticsearch，现在我们就来尝试简单的使用。
-abbrlink: 3867bacd
+abbrlink: 1505cd3f
 date: 2020-03-01 19:49:22
 ---
 

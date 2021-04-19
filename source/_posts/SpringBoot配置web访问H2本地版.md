@@ -1,9 +1,9 @@
 ---
-title: SpringBoot配置web访问H2
+title: SpringBoot配置web访问H2本地版
 tags: hide
 categories: hide
 description: 最近开始搭建博客，在本地调试的时候使用的数据库是h2，但是调试的时候需要查看数据库，本文也由此而来。
-abbrlink: a7d97376
+abbrlink: 26a75f08
 date: 2019-08-09 17:13:41
 ---
 【**前情提要**】最近开始搭建博客，在本地调试的时候使用的数据库是h2，但是调试的时候需要查看数据库，本文也由此而来。

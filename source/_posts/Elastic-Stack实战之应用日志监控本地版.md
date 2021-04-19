@@ -1,10 +1,10 @@
 ---
-title: Elastic Stack实战之应用日志监控
+title: Elastic Stack实战之应用日志监控本地版
 tags: hide
 categories: hide
 description: >-
   在前面我们已经介绍了Elasticsearch、Logstash、Kibana和Beats，并且都对各个组件进行了初步体验。今天我们就来模拟一把日常使用，来收集一个我们自己的应用的日志，并使用Kibana展示。
-abbrlink: 2266c12c
+abbrlink: cd48ff18
 date: 2020-03-14 21:49:22
 ---
 

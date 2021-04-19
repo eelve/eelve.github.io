@@ -1,10 +1,10 @@
 ---
-title: springboot+jsp打jar问题
+title: springboot+jsp打jar问题本地版
 tags: hide
 categories: hide
 description: >-
   最近做了一个项目，项目是springboot+jsp结构的，但是在发布生产环境的时候又需要用maven打成jar包，但是一开始的默认配置都不成功。下面的文章就是具体的解决过程。
-abbrlink: 15728d5a
+abbrlink: ba2d1d2d
 date: 2019-08-09 17:11:29
 ---
 【**前情提要**】最近做了一个项目，项目是springboot+jsp结构的，但是在发布生产环境的时候又需要用maven打成jar包，但是一开始的默认配置都不成功。下面的文章就是具体的解决过程。

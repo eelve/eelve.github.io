@@ -1,9 +1,9 @@
 ---
-title: Elastic Stack实战之Kibana初体验
+title: Elastic Stack实战之Kibana初体验本地版
 tags: hide
 categories: hide
 description: 在前面已经安装好了Elasticsearch和Logstash，今天就来Kibana进行一下初步体验。
-abbrlink: b84d7094
+abbrlink: 55ef13e7
 date: 2020-03-03 19:49:22
 ---
 

@@ -1,11 +1,11 @@
 ---
-title: Elastic Stack实战之Logstash初体验
+title: Elastic Stack实战之Logstash初体验本地版
 tags: hide
 categories: hide
 description: >-
   在前面已经安装好了Elasticsearch，今天就来对
   Logstash](https://www.elastic.co/cn/logstash)进行一下初步体验。
-abbrlink: e05eadb0
+abbrlink: a101af4c
 date: 2020-03-02 21:49:22
 ---
 

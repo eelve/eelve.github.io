@@ -1,9 +1,9 @@
 ---
-title: Elastic Stack实战之Filebeat初体验
+title: Elastic Stack实战之Filebeat初体验本地版
 tags: hide
 categories: hide
 description: 前文介绍了Elastic Stack的Beats家族，今天我们就来体验其中的专门用于采集文件的 Filebeat，走起。
-abbrlink: 1d8b943d
+abbrlink: fc6e2627
 date: 2020-03-07 17:49:22
 ---
 

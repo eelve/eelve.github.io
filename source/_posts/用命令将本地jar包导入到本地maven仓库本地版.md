@@ -1,5 +1,5 @@
 ---
-title: 用命令将本地jar包导入到本地maven仓库
+title: 用命令将本地jar包导入到本地maven仓库本地版
 tags: hide
 categories: hide
 description: >-

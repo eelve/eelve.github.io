@@ -1,5 +1,5 @@
 ---
-title: Spring Boot Admin 的使用
+title: Spring Boot Admin 的使用本地版
 tags: hide
 categories: hide
 description: >-
@@ -8,7 +8,7 @@ description: >-
   应用的整个生命周期。但是这样监控也有一些问题：第一，所有的监控都需要调用固定的接口来查看，如果全面查看应用状态需要调用很多接口，并且接口返回的 JSON
   信息不方便运营人员理解；第二，如果 Spring Boot
   应用集群非常大，每个应用都需要调用不同的接口来查看监控信息，操作非常繁琐低效。在这样的背景下，就诞生了另外一个开源软件：Spring Boot Admin。
-abbrlink: ea40c175
+abbrlink: 426f984a
 date: 2019-08-09 17:07:34
 ---
 【**前情提要**】Spring Boot Actuator 提供了对单个 Spring Boot 应用的监控，信息包含应用状态、内存、线程、堆栈等，比较全面的监控了 Spring Boot 应用的整个生命周期。但是这样监控也有一些问题：第一，所有的监控都需要调用固定的接口来查看，如果全面查看应用状态需要调用很多接口，并且接口返回的 JSON 信息不方便运营人员理解；第二，如果 Spring Boot 应用集群非常大，每个应用都需要调用不同的接口来查看监控信息，操作非常繁琐低效。在这样的背景下，就诞生了另外一个开源软件：**Spring Boot Admin**。
