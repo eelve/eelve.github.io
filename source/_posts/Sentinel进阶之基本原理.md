@@ -2,9 +2,9 @@
 title: Sentinel进阶之基本原理
 tags: sentinel
 categories: sentinel
-abbrlink: 2c2378a
-date: 2021-05-30 13:01:11
 description: 在前文Sentinel入门指北中简单介绍了一下Sentinel，今天就来具体说一下Sentinel的基本原理。
+abbrlink: 950c5430
+date: 2021-05-30 13:01:11
 ---
 
 【**前面的话**】在前文 [Sentinel入门指北](https://eelve.com/archives/hellosentinel) 中简单介绍了一下`Sentinel`，今天就来具体说一下`Sentinel`的基本原理。
