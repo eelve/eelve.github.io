@@ -215,6 +215,7 @@ EventObserverRegistry.getInstance().addStateChangeObserver("logging",
     });
 ```
 
+---
 
 【**后面的话**】[最后是我自己实践的源码](https://github.com/eelve/awesomesentinel) ,包括流量控制和初始规则加载等等。
 
