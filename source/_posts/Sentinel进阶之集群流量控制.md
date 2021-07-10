@@ -2,6 +2,7 @@
 title: Sentinel进阶之集群流量控制
 tags: sentinel
 categories: sentinel
+description: 在前面几篇文章中简单介绍了一下Sentinel的功能都是针对单机的，今天就来继续说一下Sentinel的集群流量控制。
 abbrlink: 318cbe59
 date: 2021-07-10 09:04:09
 ---
