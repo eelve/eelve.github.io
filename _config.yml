@@ -87,8 +87,8 @@ deploy:
   branch: master
 
 #设置保存CNAME的插件
-Plugins:
-  - hexo-generator-cname
+#Plugins:
+#  - hexo-generator-cname
 
 
 feed:
