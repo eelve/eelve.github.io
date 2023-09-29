@@ -16,3 +16,9 @@
   {% include 'pjax.swig' %}
 {%- endif %}
 {% include 'three.swig' %}
+<script type="text/javascript">
+  // console.clear();
+  console.log("%c 有朋自远方来, 不亦说乎.", "background:#24272A; color:#ffffff", "");
+  console.log("%c Github %c", "background:#24272A; color:#ffffff", "", "https://github.com/eelve");
+</script>
+
