@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/virrina.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/virrina.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/virrina.jpg">
+  <link rel="mask-icon" href="/images/virrina.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"eelve.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="在前文Sentinel进阶之熔断降级控制中简单介绍了一下Sentinel的熔断降级，今天就来继续说一下Sentinel的系统自适应保护。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Sentinel进阶之系统自适应保护">
+<meta property="og:url" content="https://eelve.com/posts/97e25d71.html">
+<meta property="og:site_name" content="南国薏米">
+<meta property="og:description" content="在前文Sentinel进阶之熔断降级控制中简单介绍了一下Sentinel的熔断降级，今天就来继续说一下Sentinel的系统自适应保护。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://image.eelve.com/eblog/system-load.png">
+<meta property="og:image" content="https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png">
+<meta property="article:published_time" content="2021-06-07T00:07:07.000Z">
+<meta property="article:modified_time" content="2021-06-07T00:30:39.658Z">
+<meta property="article:author" content="Chillo">
+<meta property="article:tag" content="sentinel">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://image.eelve.com/eblog/system-load.png">
+
+<link rel="canonical" href="https://eelve.com/posts/97e25d71.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Sentinel进阶之系统自适应保护 | 南国薏米</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?6206b88a2a2be02cc7450a7cb8c20126";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="南国薏米" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">南国薏米</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">南国不须收薏苡,百年终竟是芭蕉。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404.html" rel="section"><i class="fa fa-fw fa-heartbeat"></i>公益 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/eelve" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://eelve.com/posts/97e25d71.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/virrina.jpg">
+      <meta itemprop="name" content="Chillo">
+      <meta itemprop="description" content="A human being,who loves football and music.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="南国薏米">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Sentinel进阶之系统自适应保护
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-06-07 08:07:07 / 修改时间：08:30:39" itemprop="dateCreated datePublished" datetime="2021-06-07T08:07:07+08:00">2021-06-07</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/sentinel/" itemprop="url" rel="index"><span itemprop="name">sentinel</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+            <div class="post-description">在前文Sentinel进阶之熔断降级控制中简单介绍了一下Sentinel的熔断降级，今天就来继续说一下Sentinel的系统自适应保护。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>【<strong>前面的话</strong>】在前文 <a href="https://eelve.com/archives/sentinel-circuit-breaking">Sentinel进阶之熔断降级</a> 中简单介绍了一下<code>Sentinel</code>的流量控制，今天就来继续说一下Sentinel的系统自适应保护。</p>
+<hr>
+<h1 id="壹、概述"><a href="#壹、概述" class="headerlink" title="壹、概述"></a>壹、概述</h1><p>Sentinel 系统自适应保护从整体维度对应用入口流量进行控制，结合应用的 Load、总体平均 RT、入口QPS 和线程数等几个维度的监控指标，让系统的入口流量和系统的负载达到一个平衡，让系统尽可能跑在最大吞吐量的同时保证系统整体的稳定性。</p>
+<h1 id="贰、背景"><a href="#贰、背景" class="headerlink" title="贰、背景"></a>贰、背景</h1><p>在开始之前，先回顾一下 <code>Sentinel</code> 做系统自适应保护的目的：</p>
+<ul>
+<li>保证系统不被拖垮</li>
+<li>在系统稳定的前提下，保持系统的吞吐量</li>
+</ul>
+<p>长期以来，系统自适应保护的思路是根据硬指标，即系统的负载 (load1) 来做系统过载保护。当系统负载高于某个阈值，就禁止或者减少流量的进入；当load开始好转，则恢复流量的进入。这个思路给我们带来了不可避免的两个问题：</p>
+<ul>
+<li>load 是一个“果”，如果根据 load 的情况来调节流量的通过率，那么就始终有延迟性。也就意味着通过率的任何调整，都会过一段时间才能看到效果。当前通过率是使load恶化的一个动作，那么也至少要过 1 秒之后才能观测到；同理，如果当前通过率调整是让 <code>load</code> 好转的一个动作，也需要1秒之后才能继续调整，这样就浪费了系统的处理能力。所以我们看到的曲线，总是会有抖动。</li>
+<li>恢复慢。想象一下这样的一个场景（真实），出现了这样一个问题，下游应用不可靠，导致应用RT很高，从而load到了一个很高的点。过了一段时间之后下游应用恢复了，应用RT也相应减少。这个时候，其实应该大幅度增大流量的通过率；但是由于这个时候 <code>load</code> 仍然很高，通过率的恢复仍然不高。</li>
+</ul>
+<p><code>TCP BBR</code> 的思想给了我们一个很大的启发。我们应该根据系统能够处理的请求，和允许进来的请求，来做平衡，而不是根据一个间接的指标（系统 load）来做限流。最终我们追求的目标是 <code>在系统不被拖垮的情况下，提高系统的吞吐率，而不是 load 一定要到低于某个阈值</code>。如果我们还是按照固有的思维，超过特定的 load 就禁止流量进入，系统 load 恢复就放开流量，这样做的结果是无论我们怎么调参数，调比例，都是按照果来调节因，都无法取得良好的效果。</p>
+<p><code>Sentinel</code> 在系统自适应保护的做法是，用 load1 作为启动控制流量的值，而允许通过的流量由处理请求的能力，即请求的响应时间以及当前系统正在处理的请求速率来决定。</p>
+<h1 id="叁、系统规则"><a href="#叁、系统规则" class="headerlink" title="叁、系统规则"></a>叁、系统规则</h1><p>系统保护规则是从应用级别的入口流量进行控制，从单台机器的总体Load、RT、入口QPS 和线程数四个维度监控应用数据，让系统尽可能跑在最大吞吐量的同时保证系统整体的稳定性。</p>
+<p>系统保护规则是应用整体维度的，而不是资源维度的，并且<code>仅对入口流量生效</code>。入口流量指的是进入应用的流量（<code>EntryType.IN</code>），比如 Web 服务或 Dubbo 服务端接收的请求，都属于入口流量。</p>
+<p>系统规则支持以下的阈值类型：</p>
+<ul>
+<li><code>Load</code>（仅对 <code>Linux/Unix-like</code> 机器生效）：当系统 <code>load1</code> 超过阈值，且系统当前的并发线程数超过系统容量时才会触发系统保护。系统容量由系统的 <code>maxQps * minRt</code> 计算得出。设定参考值一般是 <code>CPU cores * 2.5</code>。</li>
+<li><code>CPU usage</code>（1.5.0+ 版本）：当系统 <code>CPU</code> 使用率超过阈值即触发系统保护（取值范围 <code>0.0-1.0</code>）。</li>
+<li><code>RT</code>：当单台机器上所有入口流量的<code>平均RT</code> 达到阈值即触发系统保护，单位是毫秒。</li>
+<li><code>线程数</code>：当单台机器上所有入口流量的并发线程数达到阈值即触发系统保护。</li>
+<li><code>入口 QPS</code>：当单台机器上所有入口流量的 <code>QPS</code> 达到阈值即触发系统保护。</li>
+</ul>
+<h1 id="肆、原理"><a href="#肆、原理" class="headerlink" title="肆、原理"></a>肆、原理</h1><p>先用经典图来镇楼:</p>
+<p><img src="https://image.eelve.com/eblog/system-load.png" alt="系统load"></p>
+<p>我们把系统处理请求的过程想象为一个水管，到来的请求是往这个水管灌水，当系统处理顺畅的时候，请求不需要排队，直接从水管中穿过，这个请求的RT是最短的；反之，当请求堆积的时候，那么处理请求的时间则会变为：排队时间 + 最短处理时间。</p>
+<ul>
+<li>推论一: 如果我们能够保证水管里的水量，能够让水顺畅的流动，则不会增加排队的请求；也就是说，这个时候的系统负载不会进一步恶化。</li>
+</ul>
+<p>我们用 T 来表示(水管内部的水量)，用RT来表示请求的处理时间，用P来表示进来的请求数，那么一个请求从进入水管道到从水管出来，这个水管会存在 <code>P * RT</code>　个请求。换一句话来说，当 <code>T ≈ QPS * Avg(RT)</code> 的时候，我们可以认为系统的处理能力和允许进入的请求个数达到了平衡，系统的负载不会进一步恶化。</p>
+<p>接下来的问题是，水管的水位是可以达到了一个平衡点，但是这个平衡点只能保证水管的水位不再继续增高，但是还面临一个问题，就是在达到平衡点之前，这个水管里已经堆积了多少水。如果之前水管的水已经在一个量级了，那么这个时候系统允许通过的水量可能只能缓慢通过，RT会大，之前堆积在水管里的水会滞留；反之，如果之前的水管水位偏低，那么又会浪费了系统的处理能力。</p>
+<ul>
+<li>推论二:　当保持入口的流量是水管出来的流量的最大的值的时候，可以最大利用水管的处理能力。</li>
+</ul>
+<p>然而，和 TCP BBR 的不一样的地方在于，还需要用一个系统负载的值（load1）来激发这套机制启动。</p>
+<blockquote>
+<p>这种系统自适应算法对于低 load 的请求，它的效果是一个“兜底”的角色。<code>对于不是应用本身造成的 load 高的情况（如其它进程导致的不稳定的情况），效果不明显</code>。</p>
+</blockquote>
+<h1 id="伍、示例"><a href="#伍、示例" class="headerlink" title="伍、示例"></a>伍、示例</h1><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SystemGuardDemo</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> AtomicInteger pass = <span class="keyword">new</span> AtomicInteger();</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> AtomicInteger block = <span class="keyword">new</span> AtomicInteger();</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> AtomicInteger total = <span class="keyword">new</span> AtomicInteger();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">volatile</span> <span class="keyword">boolean</span> stop = <span class="keyword">false</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> threadCount = <span class="number">100</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">int</span> seconds = <span class="number">60</span> + <span class="number">40</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line"></span><br><span class="line">        tick();</span><br><span class="line">        initSystemRule();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; threadCount; i++) &#123;</span><br><span class="line">            Thread entryThread = <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">                <span class="meta">@Override</span></span><br><span class="line">                <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                    <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">                        Entry entry = <span class="keyword">null</span>;</span><br><span class="line">                        <span class="keyword">try</span> &#123;</span><br><span class="line">                            entry = SphU.entry(<span class="string">&quot;methodA&quot;</span>, EntryType.IN);</span><br><span class="line">                            pass.incrementAndGet();</span><br><span class="line">                            <span class="keyword">try</span> &#123;</span><br><span class="line">                                TimeUnit.MILLISECONDS.sleep(<span class="number">20</span>);</span><br><span class="line">                            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                                <span class="comment">// ignore</span></span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125; <span class="keyword">catch</span> (BlockException e1) &#123;</span><br><span class="line">                            block.incrementAndGet();</span><br><span class="line">                            <span class="keyword">try</span> &#123;</span><br><span class="line">                                TimeUnit.MILLISECONDS.sleep(<span class="number">20</span>);</span><br><span class="line">                            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                                <span class="comment">// ignore</span></span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125; <span class="keyword">catch</span> (Exception e2) &#123;</span><br><span class="line">                            <span class="comment">// biz exception</span></span><br><span class="line">                        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">                            total.incrementAndGet();</span><br><span class="line">                            <span class="keyword">if</span> (entry != <span class="keyword">null</span>) &#123;</span><br><span class="line">                                entry.exit();</span><br><span class="line">                            &#125;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">            &#125;);</span><br><span class="line">            entryThread.setName(<span class="string">&quot;working-thread&quot;</span>);</span><br><span class="line">            entryThread.start();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">initSystemRule</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        List&lt;SystemRule&gt; rules = <span class="keyword">new</span> ArrayList&lt;SystemRule&gt;();</span><br><span class="line">        SystemRule rule = <span class="keyword">new</span> SystemRule();</span><br><span class="line">        <span class="comment">// max load is 3</span></span><br><span class="line">        rule.setHighestSystemLoad(<span class="number">3.0</span>);</span><br><span class="line">        <span class="comment">// max cpu usage is 60%</span></span><br><span class="line">        rule.setHighestCpuUsage(<span class="number">0.6</span>);</span><br><span class="line">        <span class="comment">// max avg rt of all request is 10 ms</span></span><br><span class="line">        rule.setAvgRt(<span class="number">10</span>);</span><br><span class="line">        <span class="comment">// max total qps is 20</span></span><br><span class="line">        rule.setQps(<span class="number">20</span>);</span><br><span class="line">        <span class="comment">// max parallel working thread is 10</span></span><br><span class="line">        rule.setMaxThread(<span class="number">10</span>);</span><br><span class="line"></span><br><span class="line">        rules.add(rule);</span><br><span class="line">        SystemRuleManager.loadRules(Collections.singletonList(rule));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">tick</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Thread timer = <span class="keyword">new</span> Thread(<span class="keyword">new</span> TimerTask());</span><br><span class="line">        timer.setName(<span class="string">&quot;sentinel-timer-task&quot;</span>);</span><br><span class="line">        timer.start();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">TimerTask</span> <span class="keyword">implements</span> <span class="title">Runnable</span> </span>&#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;begin to statistic!!!&quot;</span>);</span><br><span class="line">            <span class="keyword">long</span> oldTotal = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">long</span> oldPass = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">long</span> oldBlock = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">while</span> (!stop) &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    TimeUnit.SECONDS.sleep(<span class="number">1</span>);</span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">long</span> globalTotal = total.get();</span><br><span class="line">                <span class="keyword">long</span> oneSecondTotal = globalTotal - oldTotal;</span><br><span class="line">                oldTotal = globalTotal;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">long</span> globalPass = pass.get();</span><br><span class="line">                <span class="keyword">long</span> oneSecondPass = globalPass - oldPass;</span><br><span class="line">                oldPass = globalPass;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">long</span> globalBlock = block.get();</span><br><span class="line">                <span class="keyword">long</span> oneSecondBlock = globalBlock - oldBlock;</span><br><span class="line">                oldBlock = globalBlock;</span><br><span class="line"></span><br><span class="line">                System.out.println(seconds + <span class="string">&quot;, &quot;</span> + TimeUtil.currentTimeMillis() + <span class="string">&quot;, total:&quot;</span></span><br><span class="line">                    + oneSecondTotal + <span class="string">&quot;, pass:&quot;</span></span><br><span class="line">                    + oneSecondPass + <span class="string">&quot;, block:&quot;</span> + oneSecondBlock);</span><br><span class="line">                <span class="keyword">if</span> (seconds-- &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">                    stop = <span class="keyword">true</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            System.exit(<span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<p>【<strong>后面的话</strong>】<a target="_blank" rel="noopener" href="https://github.com/eelve/awesomesentinel">最后是我自己实践的源码</a> ,包括流量控制和初始规则加载等等。</p>
+<hr>
+<p><img src="https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png" alt="薏米笔记"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/sentinel/" rel="tag"># sentinel</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/b6bfdc75.html" rel="prev" title="Sentinel进阶之熔断降级">
+      <i class="fa fa-chevron-left"></i> Sentinel进阶之熔断降级
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/318cbe59.html" rel="next" title="Sentinel进阶之集群流量控制">
+      Sentinel进阶之集群流量控制 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC80NTk1NS8yMjQ2Ng=="></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A3%B9%E3%80%81%E6%A6%82%E8%BF%B0"><span class="nav-number">1.</span> <span class="nav-text">壹、概述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B4%B0%E3%80%81%E8%83%8C%E6%99%AF"><span class="nav-number">2.</span> <span class="nav-text">贰、背景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%81%E3%80%81%E7%B3%BB%E7%BB%9F%E8%A7%84%E5%88%99"><span class="nav-number">3.</span> <span class="nav-text">叁、系统规则</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%82%86%E3%80%81%E5%8E%9F%E7%90%86"><span class="nav-number">4.</span> <span class="nav-text">肆、原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BC%8D%E3%80%81%E7%A4%BA%E4%BE%8B"><span class="nav-number">5.</span> <span class="nav-text">伍、示例</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Chillo"
+      src="/images/virrina.jpg">
+  <p class="site-author-name" itemprop="name">Chillo</p>
+  <div class="site-description" itemprop="description">A human being,who loves football and music.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">77</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/eelve" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;eelve" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:i@eelve.com" title="E-Mail → mailto:i@eelve.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/eivou" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;eivou" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://eelve.com/" title="https:&#x2F;&#x2F;eelve.com&#x2F;">南国薏米</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://shilikun.com/" title="https:&#x2F;&#x2F;shilikun.com&#x2F;" rel="noopener" target="_blank">坤坤</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://binge.eelve.com/" title="https:&#x2F;&#x2F;binge.eelve.com&#x2F;" rel="noopener" target="_blank">Binge</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://bobo.eelve.com/" title="https:&#x2F;&#x2F;bobo.eelve.com&#x2F;" rel="noopener" target="_blank">BoBo</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sunkening0.github.io/" title="https:&#x2F;&#x2F;sunkening0.github.io&#x2F;" rel="noopener" target="_blank">克宁</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        <a href="https://www.upyun.com/?utm_source=lianmeng&amp;utm_medium=referral" target="_blank"><img src="https://i.loli.net/2021/03/07/cM1D8kHpsetuyjR.png" style="width:48px"></a>
+  <div class="beian"><a href="http://www.beian.miit.gov.cn/" rel="noopener" target="_blank"> </a><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=16014637" rel="noopener" target="_blank">蜀ICP备16014637号-1 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">南国薏米</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数">484k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">7:20</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+<script type="text/javascript">
+  // console.clear();
+  console.log("%c 有朋自远方来, 不亦说乎.", "background:#24272A; color:#ffffff", "");
+  console.log("%c Github %c", "background:#24272A; color:#ffffff", "", "https://github.com/eelve");
+</script>
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+</body>
+</html>

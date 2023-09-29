@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/virrina.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/virrina.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/virrina.jpg">
+  <link rel="mask-icon" href="/images/virrina.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"eelve.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="首先还是是简单说一下Elastic Stack技术栈吧。ELK &#x3D; Elasticsearch, Logstash, Kibana 是一套实时数据收集，存储，索引，检索，统计分析及可视化的解决方案。最新版本已经改名为Elastic Stack，并新增了Beats项目。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Elastic Stack实战之环境准备">
+<meta property="og:url" content="https://eelve.com/posts/cdfa1d48.html">
+<meta property="og:site_name" content="南国薏米">
+<meta property="og:description" content="首先还是是简单说一下Elastic Stack技术栈吧。ELK &#x3D; Elasticsearch, Logstash, Kibana 是一套实时数据收集，存储，索引，检索，统计分析及可视化的解决方案。最新版本已经改名为Elastic Stack，并新增了Beats项目。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030104-b3bb574e37fd4c9a959c5b8ba383033c.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030105-8644c0540b6041d9a726b0fdf31845a0.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/2/2020022903-e627be2203d040a8aae53c43c767e582.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/2/2020022903-e627be2203d040a8aae53c43c767e582.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/2/2020022905-baf50368479142869e6d506e899f6623.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/2/2020022906-79511d7494064df9a76dbbb00a529757.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/2/2020022907-d16b584e859c43c794badd92ed116ccc.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/2/2020022911-e111cb9fe7d94935b0cd7b8613d6e278.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/2/2020022913-34b2a693fd0e4cfa9c6484063bc3a00c.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/2/2020022914-8fb414bf521544518671a2da4fb142f1.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/2/2020022915-d2e5d18a228448709a81391ce595bcff.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/2/2020022916-1ca2096fd9c945a4bdc1da5ea0c6c898.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/2/2020022917-10884dc7ec5348eebb35f8682e627281.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/2/2020022918-006bef024d834c50bef94d415e3b3e05.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/2/2020022919-208c5c4049a847ff94be761f512e9dde.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/2/2020022920-57cff54e5cde4ddd96079ae6172070ae.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/2/2020022921-0f8c6a976821406081e228e76f359236.png">
+<meta property="og:image" content="https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png">
+<meta property="article:published_time" content="2020-02-29T08:29:26.000Z">
+<meta property="article:modified_time" content="2021-04-19T06:44:39.012Z">
+<meta property="article:author" content="Chillo">
+<meta property="article:tag" content="ELK">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="VM">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://eelve.com/upload/2020/3/2020030104-b3bb574e37fd4c9a959c5b8ba383033c.png">
+
+<link rel="canonical" href="https://eelve.com/posts/cdfa1d48.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Elastic Stack实战之环境准备 | 南国薏米</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?6206b88a2a2be02cc7450a7cb8c20126";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="南国薏米" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">南国薏米</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">南国不须收薏苡,百年终竟是芭蕉。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404.html" rel="section"><i class="fa fa-fw fa-heartbeat"></i>公益 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/eelve" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://eelve.com/posts/cdfa1d48.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/virrina.jpg">
+      <meta itemprop="name" content="Chillo">
+      <meta itemprop="description" content="A human being,who loves football and music.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="南国薏米">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Elastic Stack实战之环境准备
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-02-29 16:29:26" itemprop="dateCreated datePublished" datetime="2020-02-29T16:29:26+08:00">2020-02-29</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-19 14:44:39" itemprop="dateModified" datetime="2021-04-19T14:44:39+08:00">2021-04-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Elastic-Stack/" itemprop="url" rel="index"><span itemprop="name">Elastic Stack</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.3k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+            <div class="post-description">首先还是是简单说一下Elastic Stack技术栈吧。ELK = Elasticsearch, Logstash, Kibana 是一套实时数据收集，存储，索引，检索，统计分析及可视化的解决方案。最新版本已经改名为Elastic Stack，并新增了Beats项目。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>【<strong>前面的话</strong>】首先还是是简单说一下<a target="_blank" rel="noopener" href="https://www.elastic.co/">Elastic Stack</a>技术栈吧。ELK = Elasticsearch, Logstash, Kibana 是一套实时数据收集，存储，索引，检索，统计分析及可视化的解决方案。最新版本已经改名为Elastic Stack，并新增了Beats项目。</p>
+<p><img src="https://eelve.com/upload/2020/3/2020030104-b3bb574e37fd4c9a959c5b8ba383033c.png" alt="2020030104"><br><img src="https://eelve.com/upload/2020/3/2020030105-8644c0540b6041d9a726b0fdf31845a0.png" alt="2020030105"></p>
+<p><strong>Elasticsearch</strong></p>
+<pre><code>Elasticsearch 基于java，是个开源分布式搜索引擎，它的特点有：分布式，零配置，自动发现，索引自动分片，索引
+副本机制，restful风格接口，多数据源，自动搜索负载等。
+</code></pre>
+<p><strong>Logstash</strong></p>
+<pre><code>Logstash 基于java，是一个开源的用于收集,分析和存储日志的工具。
+</code></pre>
+<p><strong>Kibana</strong></p>
+<pre><code>Kibana 基于nodejs，也是一个开源和免费的工具，Kibana可以为 Logstash 和 ElasticSearch 提供的日志分析友好的
+Web 界面，可以汇总、分析和搜索重要数据日志。
+</code></pre>
+<p><strong>Beats</strong></p>
+<pre><code>Beats是elastic公司开源的一款采集系统监控数据的代理agent，是在被监控服务器上以客户端形式运行的数据收集
+器的统称，可以直接把数据发送给Elasticsearch或者通过Logstash发送给Elasticsearch，然后进行后续的数据分析活
+动。
+Beats由如下组成:
+Packetbeat：是一个网络数据包分析器，用于监控、收集网络流量信息，Packetbeat嗅探服务器之间的流量，
+解析应用层协议，并关联到消息的处理，其支 持ICMP (v4 and v6)、DNS、HTTP、Mysql、PostgreSQL、
+Redis、MongoDB、Memcache等协议；
+Filebeat：用于监控、收集服务器日志文件，其已取代 logstash forwarder；
+Metricbeat：可定期获取外部系统的监控指标信息，其可以监控、收集 Apache、HAProxy、MongoDB
+MySQL、Nginx、PostgreSQL、Redis、System、Zookeeper等服务；
+Winlogbeat：用于监控、收集Windows系统的日志信息；
+</code></pre>
+<p>但是很多用户还是用ELK来代替Elastic Stack，并且目前的最新版本已经来到了7.6.0，在后面的实践过程中如果没有特指的话，都会是基于最新版本的实践。下面来说一下我的环境，我本人的云服务器，性能不是很够，这边我的解决方案是用虚拟机来解决。所以在这篇文章中是主要介绍在VM中搭建linux服务器的，并且为了资源不浪费，我这边会做最小化安装。</p>
+<hr>
+<h1 id="壹、软件版本"><a href="#壹、软件版本" class="headerlink" title="壹、软件版本"></a>壹、软件版本</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">Centos：CentOS-7-x86_64-Minimal-1908</span></span><br><span class="line"><span class="attr">VM:</span> <span class="number">15.5</span><span class="number">.0</span> <span class="string">build-14665864</span></span><br></pre></td></tr></table></figure>
+<h1 id="贰、主要步骤"><a href="#贰、主要步骤" class="headerlink" title="贰、主要步骤"></a>贰、主要步骤</h1><pre><code>在网络中有很多安装的具体步骤，我子啊这里只是说一下容易出错的点。
+</code></pre>
+<h2 id="2-1-VM创建虚拟机"><a href="#2-1-VM创建虚拟机" class="headerlink" title="2.1 VM创建虚拟机"></a>2.1 VM创建虚拟机</h2><p><img src="https://eelve.com/upload/2020/2/2020022903-e627be2203d040a8aae53c43c767e582.png" alt="2020022903"><br><img src="https://eelve.com/upload/2020/2/2020022903-e627be2203d040a8aae53c43c767e582.png" alt="2020022903"><br><img src="https://eelve.com/upload/2020/2/2020022905-baf50368479142869e6d506e899f6623.png" alt="2020022905"><br><img src="https://eelve.com/upload/2020/2/2020022906-79511d7494064df9a76dbbb00a529757.png" alt="2020022906"><br><img src="https://eelve.com/upload/2020/2/2020022907-d16b584e859c43c794badd92ed116ccc.png" alt="2020022907"><br><img src="https://eelve.com/upload/2020/2/2020022911-e111cb9fe7d94935b0cd7b8613d6e278.png" alt="2020022911"></p>
+<h2 id="2-2-安装Centos7"><a href="#2-2-安装Centos7" class="headerlink" title="2.2 安装Centos7"></a>2.2 安装Centos7</h2><p><img src="https://eelve.com/upload/2020/2/2020022913-34b2a693fd0e4cfa9c6484063bc3a00c.png" alt="2020022913"><br><img src="https://eelve.com/upload/2020/2/2020022914-8fb414bf521544518671a2da4fb142f1.png" alt="2020022914"><br><img src="https://eelve.com/upload/2020/2/2020022915-d2e5d18a228448709a81391ce595bcff.png" alt="2020022915"><br><img src="https://eelve.com/upload/2020/2/2020022916-1ca2096fd9c945a4bdc1da5ea0c6c898.png" alt="2020022916"><br><img src="https://eelve.com/upload/2020/2/2020022917-10884dc7ec5348eebb35f8682e627281.png" alt="2020022917"></p>
+<h1 id="叁、注意事项"><a href="#叁、注意事项" class="headerlink" title="叁、注意事项"></a>叁、注意事项</h1><pre><code>以下几点是特别需要主要：静态网络映射，时钟同步，系统资源配置
+</code></pre>
+<h2 id="3-1-静态网络映射"><a href="#3-1-静态网络映射" class="headerlink" title="3.1 静态网络映射"></a>3.1 静态网络映射</h2><p>首先获取子网IP，子网掩码，和网关地址</p>
+<p><img src="https://eelve.com/upload/2020/2/2020022918-006bef024d834c50bef94d415e3b3e05.png" alt="2020022918"><br><img src="https://eelve.com/upload/2020/2/2020022919-208c5c4049a847ff94be761f512e9dde.png" alt="2020022919"></p>
+<p>在最小化安装的CentOS7中，ifconfig是不能使用的，查看网卡信息的命令是：</p>
+<figure class="highlight shell"><figcaption><span>script</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ip addr</span><br></pre></td></tr></table></figure>
+<p><img src="https://eelve.com/upload/2020/2/2020022920-57cff54e5cde4ddd96079ae6172070ae.png" alt="2020022920"></p>
+<p>其中“ens33”为网卡名称，根据得到网关和子网ip等修改IP地址等信息</p>
+<figure class="highlight shell"><figcaption><span>script</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">vi /etc/sysconfig/network-scripts/ifcfg-ens33</span><br><span class="line"></span><br><span class="line">TYPE=Ethernet</span><br><span class="line">PROXY_METHOD=none</span><br><span class="line">BROWSER_ONLY=no</span><br><span class="line">BOOTPROTO=static</span><br><span class="line">DEFROUTE=yes</span><br><span class="line">PEERROUTES=yes</span><br><span class="line">IPV4_FAILURE_FATAL=no</span><br><span class="line">IPV6INIT=yes</span><br><span class="line">IPV6_AUTOCONF=yes</span><br><span class="line">IPV6_DEFROUTE=yes</span><br><span class="line">IPV6_FAILURE_FATAL=no</span><br><span class="line">IPV6_ADDR_GEN_MODE=stable-privacy</span><br><span class="line">NAME=ens33</span><br><span class="line">UUID=2cce262f-99d8-485e-aa8e-f2493405715a</span><br><span class="line">DEVICE=ens33</span><br><span class="line">ONBOOT=yes</span><br><span class="line">IPADDR=192.168.237.11</span><br><span class="line">GATEWAY=192.168.237.2</span><br><span class="line">NETMASK=255.255.255.0</span><br><span class="line">DNS1=192.168.237.2</span><br><span class="line">DNS2=8.8.8.8</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>修改好后保存退出，并重启网络，测试网络是否连接正常：</p>
+<figure class="highlight shell"><figcaption><span>script</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">[root@192 ~]# service network restart</span><br><span class="line">Restarting network (via systemctl):                        [  OK  ]</span><br><span class="line">[root@192 ~]# ping www.eelve.com</span><br><span class="line">PING www.eelve.com (47.98.209.166) 56(84) bytes of data.</span><br><span class="line">64 bytes from 47.98.209.166 (47.98.209.166): icmp_seq=1 ttl=128 time=38.1 ms</span><br><span class="line">64 bytes from 47.98.209.166 (47.98.209.166): icmp_seq=2 ttl=128 time=38.7 ms</span><br><span class="line">64 bytes from 47.98.209.166 (47.98.209.166): icmp_seq=3 ttl=128 time=39.4 ms</span><br><span class="line">64 bytes from 47.98.209.166 (47.98.209.166): icmp_seq=4 ttl=128 time=51.3 ms</span><br><span class="line">64 bytes from 47.98.209.166 (47.98.209.166): icmp_seq=5 ttl=128 time=38.1 ms</span><br><span class="line">64 bytes from 47.98.209.166 (47.98.209.166): icmp_seq=6 ttl=128 time=37.9 ms</span><br><span class="line">64 bytes from 47.98.209.166 (47.98.209.166): icmp_seq=7 ttl=128 time=44.5 ms</span><br><span class="line">64 bytes from 47.98.209.166 (47.98.209.166): icmp_seq=8 ttl=128 time=37.7 ms</span><br><span class="line">64 bytes from 47.98.209.166 (47.98.209.166): icmp_seq=9 ttl=128 time=37.9 ms</span><br><span class="line">^C</span><br><span class="line">--- www.eelve.com ping statistics ---</span><br><span class="line">9 packets transmitted, 9 received, 0% packet loss, time 9110ms</span><br><span class="line">rtt min/avg/max/mdev = 37.753/40.435/51.388/4.365 ms</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>到了这里我们就可以使用XShell用配置的静态IP来连接服务器使用了</p>
+<p><img src="https://eelve.com/upload/2020/2/2020022921-0f8c6a976821406081e228e76f359236.png" alt="2020022921"></p>
+<h2 id="3-2-时钟同步"><a href="#3-2-时钟同步" class="headerlink" title="3.2 时钟同步"></a>3.2 时钟同步</h2><p>yum进行软件安装，软件安装过程中如遇到询问，一律选择y，ntp是时间同步命令</p>
+<figure class="highlight shell"><figcaption><span>script</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install ntp</span><br></pre></td></tr></table></figure>
+<figure class="highlight shell"><figcaption><span>script</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ntpdate time1.aliyun.com</span><br></pre></td></tr></table></figure>
+<p>然后就可以成功同步时间，然后查看</p>
+<figure class="highlight shell"><figcaption><span>script</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[root@192 ~]# date</span><br><span class="line">Sat Feb 29 18:08:31 CST 2020</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="3-3-系统资源配置"><a href="#3-3-系统资源配置" class="headerlink" title="3.3 系统资源配置"></a>3.3 系统资源配置</h2><p>系统资源的话，主要是虚拟机安装，都可以方便修改，这边后期要安装Elastic Stack，最好是稍微调大一点，内存至少为2G，因为Elasticsearch和Kibana都是需要用到Java虚拟机的，尤其是你准备把这两个服务都安装在一台机器上的话。</p>
+<hr>
+<p>【<strong>最后的话</strong>】时钟同步，是一定要配置的，不然会造成之后Elastic Stack中的服务不可用，当然也不是真的不可用，你只是会在Kibana中看不到你的数据映射，因为默认Kibana的时间展示参数为最近15分钟，如果你的时间相差很远的话，就可能造成Elasticsearch中能采集数据，但是Kibana展示不出来，这个对于初学者来说会造成Kibana数据不能映射问题，这点在后面会做具体介绍的。</p>
+<hr>
+<p><img src="https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png" alt="薏米笔记"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/ELK/" rel="tag"># ELK</a>
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+              <a href="/tags/VM/" rel="tag"># VM</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/520ff9fc.html" rel="prev" title="Elastic Stack实战之环境准备本地版">
+      <i class="fa fa-chevron-left"></i> Elastic Stack实战之环境准备本地版
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/a3bae550.html" rel="next" title="怎么找回遗失的Github的Contribution">
+      怎么找回遗失的Github的Contribution <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC80NTk1NS8yMjQ2Ng=="></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A3%B9%E3%80%81%E8%BD%AF%E4%BB%B6%E7%89%88%E6%9C%AC"><span class="nav-number">1.</span> <span class="nav-text">壹、软件版本</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B4%B0%E3%80%81%E4%B8%BB%E8%A6%81%E6%AD%A5%E9%AA%A4"><span class="nav-number">2.</span> <span class="nav-text">贰、主要步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-VM%E5%88%9B%E5%BB%BA%E8%99%9A%E6%8B%9F%E6%9C%BA"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 VM创建虚拟机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-%E5%AE%89%E8%A3%85Centos7"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 安装Centos7</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%81%E3%80%81%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="nav-number">3.</span> <span class="nav-text">叁、注意事项</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-%E9%9D%99%E6%80%81%E7%BD%91%E7%BB%9C%E6%98%A0%E5%B0%84"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 静态网络映射</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-%E6%97%B6%E9%92%9F%E5%90%8C%E6%AD%A5"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 时钟同步</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-%E7%B3%BB%E7%BB%9F%E8%B5%84%E6%BA%90%E9%85%8D%E7%BD%AE"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 系统资源配置</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Chillo"
+      src="/images/virrina.jpg">
+  <p class="site-author-name" itemprop="name">Chillo</p>
+  <div class="site-description" itemprop="description">A human being,who loves football and music.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">77</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/eelve" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;eelve" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:i@eelve.com" title="E-Mail → mailto:i@eelve.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/eivou" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;eivou" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://eelve.com/" title="https:&#x2F;&#x2F;eelve.com&#x2F;">南国薏米</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://shilikun.com/" title="https:&#x2F;&#x2F;shilikun.com&#x2F;" rel="noopener" target="_blank">坤坤</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://binge.eelve.com/" title="https:&#x2F;&#x2F;binge.eelve.com&#x2F;" rel="noopener" target="_blank">Binge</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://bobo.eelve.com/" title="https:&#x2F;&#x2F;bobo.eelve.com&#x2F;" rel="noopener" target="_blank">BoBo</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sunkening0.github.io/" title="https:&#x2F;&#x2F;sunkening0.github.io&#x2F;" rel="noopener" target="_blank">克宁</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        <a href="https://www.upyun.com/?utm_source=lianmeng&amp;utm_medium=referral" target="_blank"><img src="https://i.loli.net/2021/03/07/cM1D8kHpsetuyjR.png" style="width:48px"></a>
+  <div class="beian"><a href="http://www.beian.miit.gov.cn/" rel="noopener" target="_blank"> </a><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=16014637" rel="noopener" target="_blank">蜀ICP备16014637号-1 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">南国薏米</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数">484k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">7:20</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+<script type="text/javascript">
+  // console.clear();
+  console.log("%c 有朋自远方来, 不亦说乎.", "background:#24272A; color:#ffffff", "");
+  console.log("%c Github %c", "background:#24272A; color:#ffffff", "", "https://github.com/eelve");
+</script>
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+</body>
+</html>

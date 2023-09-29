@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/virrina.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/virrina.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/virrina.jpg">
+  <link rel="mask-icon" href="/images/virrina.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"eelve.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="在前文 浅析Spring Boot单体应用熔断技术 中对比了一下几种常见的接口熔断的技术。这里就具体使用 Sentinel 来记录以下。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Sentinel入门指北">
+<meta property="og:url" content="https://eelve.com/posts/d2ca763d.html">
+<meta property="og:site_name" content="南国薏米">
+<meta property="og:description" content="在前文 浅析Spring Boot单体应用熔断技术 中对比了一下几种常见的接口熔断的技术。这里就具体使用 Sentinel 来记录以下。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://image.eelve.com/eblog/sentinel-flow-overview-ca2015f6c76449e2ac74f5a377e0573d.jpg">
+<meta property="og:image" content="https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png">
+<meta property="article:published_time" content="2021-02-01T12:30:57.000Z">
+<meta property="article:modified_time" content="2021-04-19T06:44:39.284Z">
+<meta property="article:author" content="Chillo">
+<meta property="article:tag" content="sentinel">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="springboot">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://image.eelve.com/eblog/sentinel-flow-overview-ca2015f6c76449e2ac74f5a377e0573d.jpg">
+
+<link rel="canonical" href="https://eelve.com/posts/d2ca763d.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Sentinel入门指北 | 南国薏米</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?6206b88a2a2be02cc7450a7cb8c20126";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="南国薏米" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">南国薏米</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">南国不须收薏苡,百年终竟是芭蕉。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404.html" rel="section"><i class="fa fa-fw fa-heartbeat"></i>公益 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/eelve" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://eelve.com/posts/d2ca763d.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/virrina.jpg">
+      <meta itemprop="name" content="Chillo">
+      <meta itemprop="description" content="A human being,who loves football and music.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="南国薏米">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Sentinel入门指北
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-02-01 20:30:57" itemprop="dateCreated datePublished" datetime="2021-02-01T20:30:57+08:00">2021-02-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-19 14:44:39" itemprop="dateModified" datetime="2021-04-19T14:44:39+08:00">2021-04-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/sentinel/" itemprop="url" rel="index"><span itemprop="name">sentinel</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>11k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>10 分钟</span>
+            </span>
+            <div class="post-description">在前文 浅析Spring Boot单体应用熔断技术 中对比了一下几种常见的接口熔断的技术。这里就具体使用 Sentinel 来记录以下。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>【<strong>前面的话</strong>】在前文 <a href="https://eelve.com/archives/springbootcircuitbreaker">浅析Spring Boot单体应用熔断技术</a> 中对比了一下几种常见的接口熔断的技术。这里就具体使用 <code>Sentinel</code> 来记录以下。</p>
+<hr>
+<h1 id="壹、sentinel介绍"><a href="#壹、sentinel介绍" class="headerlink" title="壹、sentinel介绍"></a>壹、sentinel介绍</h1><p>随着微服务的流行，服务和服务之间的稳定性变得越来越重要。<code>Sentinel</code> 是面向分布式服务架构的流量控制组件，主要以流量为切入点，从流量控制、熔断降级、系统自适应保护等多个维度来帮助您保障微服务的稳定性。</p>
+<h2 id="Sentinel的基本概念基本概念包括"><a href="#Sentinel的基本概念基本概念包括" class="headerlink" title="Sentinel的基本概念基本概念包括:"></a>Sentinel的基本概念基本概念包括:</h2><h3 id="资源"><a href="#资源" class="headerlink" title="资源"></a>资源</h3><p>资源是 <code>Sentinel</code> 的关键概念。它可以是 <code>Java</code> 应用程序中的任何内容，例如，由应用程序提供的服务，或由应用程序调用的其它应用提供的服务，甚至可以是一段代码。只要通过 <code>Sentinel API</code> 定义的代码，就是资源，能够被 <code>Sentinel</code> 保护起来。大部分情况下，可以使用方法签名，URL，甚至服务名称作为资源名来标示资源。</p>
+<h3 id="规则"><a href="#规则" class="headerlink" title="规则"></a>规则</h3><p>围绕资源的实时状态设定的规则，可以包括流量控制规则、熔断降级规则以及系统保护规则。所有规则可以动态实时调整。</p>
+<h2 id="Sentinel的主要功能"><a href="#Sentinel的主要功能" class="headerlink" title="Sentinel的主要功能"></a>Sentinel的主要功能</h2><h3 id="流量控制"><a href="#流量控制" class="headerlink" title="流量控制"></a>流量控制</h3><p>流量控制在网络传输中是一个常用的概念，它用于调整网络包的发送数据。然而，从系统稳定性角度考虑，在处理请求的速度上，也有非常多的讲究。任意时间到来的请求往往是随机不可控的，而系统的处理能力是有限的。我们需要根据系统的处理能力对流量进行控制。Sentinel 作为一个调配器，可以根据需要把随机的请求调整成合适的形状，如下图所示：</p>
+<p><img src="https://image.eelve.com/eblog/sentinel-flow-overview-ca2015f6c76449e2ac74f5a377e0573d.jpg" alt="流控效果"></p>
+<p>流量控制有以下几个角度:</p>
+<ul>
+<li>资源的调用关系，例如资源的调用链路，资源和资源之间的关系；</li>
+<li>运行指标，例如 <code>QPS</code>、线程池、系统负载等；</li>
+<li>控制的效果，例如直接限流、冷启动、排队等。</li>
+</ul>
+<p>Sentinel 的设计理念是让您自由选择控制的角度，并进行灵活组合，从而达到想要的效果。</p>
+<h3 id="熔断降级"><a href="#熔断降级" class="headerlink" title="熔断降级"></a>熔断降级</h3><p>除了流量控制以外，降低调用链路中的不稳定资源也是 <code>Sentinel</code> 的使命之一。由于调用关系的复杂性，如果调用链路中的某个资源出现了不稳定，最终会导致请求发生堆积。当调用链路中某个资源出现不稳定，例如，表现为 <code>timeout</code>，异常比例升高的时候，则对这个资源的调用进行限制，并让请求快速失败，避免影响到其它的资源，最终产生雪崩的效果。</p>
+<p>降级有以下几个角度:</p>
+<ul>
+<li>通过并发线程数进行限制</li>
+</ul>
+<p>和资源池隔离的方法不同，Sentinel 通过限制资源并发线程的数量，来减少不稳定资源对其它资源的影响。这样不但没有线程切换的损耗，也不需要您预先分配线程池的大小。当某个资源出现不稳定的情况下，例如响应时间变长，对资源的直接影响就是会造成线程数的逐步堆积。当线程数在特定资源上堆积到一定的数量之后，对该资源的新请求就会被拒绝。堆积的线程完成任务后才开始继续接收请求。</p>
+<ul>
+<li>通过响应时间对资源进行降级</li>
+</ul>
+<p>除了对并发线程数进行控制以外，<code>Sentinel</code> 还可以通过响应时间来快速降级不稳定的资源。当依赖的资源出现响应时间过长后，所有对该资源的访问都会被直接拒绝，直到过了指定的时间窗口之后才重新恢复。</p>
+<h3 id="系统负载保护"><a href="#系统负载保护" class="headerlink" title="系统负载保护"></a>系统负载保护</h3><p>Sentinel同时提供系统维度的自适应保护能力。防止雪崩，是系统防护中重要的一环。当系统负载较高的时候，如果还持续让请求进入，可能会导致系统崩溃，无法响应。在集群环境下，网络负载均衡会把本应这台机器承载的流量转发到其它的机器上去。如果这个时候其它的机器也处在一个边缘状态的时候，这个增加的流量就会导致这台机器也崩溃，最后导致整个集群不可用。</p>
+<p>针对这个情况，<code>Sentinel</code> 提供了对应的保护机制，让系统的入口流量和系统的负载达到一个平衡，保证系统在能力范围之内处理最多的请求。</p>
+<h2 id="主要工作机制"><a href="#主要工作机制" class="headerlink" title="主要工作机制"></a>主要工作机制</h2><ul>
+<li>对主流框架提供适配或者显示的 <code>API</code>，来定义需要保护的资源，并提供设施对资源进行实时统计和调用链路分析。</li>
+<li>根据预设的规则，结合对资源的实时统计信息，对流量进行控制。同时，<code>Sentinel</code> 提供开放的接口，方便您定义及改变规则。</li>
+<li><code>Sentinel</code> 提供实时的监控系统，方便您快速了解目前系统的状态。</li>
+</ul>
+<h1 id="贰、基础使用"><a href="#贰、基础使用" class="headerlink" title="贰、基础使用"></a>贰、基础使用</h1><h2 id="2-1、-通过抛出异常的方式"><a href="#2-1、-通过抛出异常的方式" class="headerlink" title="2.1、 通过抛出异常的方式"></a>2.1、 通过抛出异常的方式</h2><p><code>SphU</code>包含了<code>try-catch</code>风格的<code>API</code>。用这种方式，当资源发生了限流之后会抛出<code>BlockException</code>。这个时候可以捕捉异常，进行限流之后的逻辑处理。示例代码如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 资源名可使用任意有业务语义的字符串，比如方法名、接口名或其它可唯一标识的字符串。</span></span><br><span class="line"><span class="keyword">try</span> (Entry entry = SphU.entry(<span class="string">&quot;resourceName&quot;</span>)) &#123;</span><br><span class="line">  <span class="comment">// 被保护的业务逻辑</span></span><br><span class="line">  <span class="comment">// do something here...</span></span><br><span class="line">&#125; <span class="keyword">catch</span> (BlockException ex) &#123;</span><br><span class="line">  <span class="comment">// 资源访问阻止，被限流或被降级</span></span><br><span class="line">  <span class="comment">// 在此处进行相应的处理操作</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注意：<code>SphU.entry(xxx)</code>需要与<code>entry.exit()</code>方法成对出现，匹配调用，否则会导致调用链记录异常，抛出<code>ErrorEntryFreeException</code>异常。</p>
+</blockquote>
+<h2 id="2-2、通过返回布尔值方式"><a href="#2-2、通过返回布尔值方式" class="headerlink" title="2.2、通过返回布尔值方式"></a>2.2、通过返回布尔值方式</h2><p><code>SphO</code>提供 <code>if-else</code> 风格的 <code>API</code>。用这种方式，当资源发生了限流之后会返回 <code>false</code>，这个时候可以根据返回值，进行限流之后的逻辑处理。示例代码如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 资源名可使用任意有业务语义的字符串</span></span><br><span class="line"><span class="keyword">if</span> (SphO.entry(<span class="string">&quot;自定义资源名&quot;</span>)) &#123;</span><br><span class="line">  <span class="comment">// 务必保证finally会被执行</span></span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">    * 被保护的业务逻辑</span></span><br><span class="line"><span class="comment">    */</span></span><br><span class="line">  &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">    SphO.exit();</span><br><span class="line">  &#125;</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">  <span class="comment">// 资源访问阻止，被限流或被降级</span></span><br><span class="line">  <span class="comment">// 进行相应的处理操作</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2-3、异步调用支持"><a href="#2-3、异步调用支持" class="headerlink" title="2.3、异步调用支持"></a>2.3、异步调用支持</h3><p><code>Sentinel</code> 支持异步调用链路的统计。在异步调用中，需要通过 <code>SphU.asyncEntry(xxx)</code> 方法定义资源，并通常需要在异步的回调函数中调用 <code>exit</code> 方法。以下是一个简单的示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    AsyncEntry entry = SphU.asyncEntry(resourceName);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 异步调用.</span></span><br><span class="line">    doAsync(userId, result -&gt; &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 在此处处理异步调用的结果.</span></span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="comment">// 在回调结束后 exit.</span></span><br><span class="line">            entry.exit();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125; <span class="keyword">catch</span> (BlockException ex) &#123;</span><br><span class="line">    <span class="comment">// Request blocked.</span></span><br><span class="line">    <span class="comment">// Handle the exception (e.g. retry or fallback).</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>SphU.asyncEntry(xxx)</code> 不会影响当前（调用线程）的 <code>Context</code>，因此以下两个 <code>entry</code> 在调用链上是平级关系（处于同一层），而不是嵌套关系：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 调用链类似于：</span></span><br><span class="line"><span class="comment">// -parent</span></span><br><span class="line"><span class="comment">// ---asyncResource</span></span><br><span class="line"><span class="comment">// ---syncResource</span></span><br><span class="line">asyncEntry = SphU.asyncEntry(asyncResource);</span><br><span class="line">entry = SphU.entry(normalResource);</span><br></pre></td></tr></table></figure>
+<p>若在异步回调中需要嵌套其它的资源调用（无论是 <code>entry</code> 还是 <code>asyncEntry</code>），只需要借助<code>Sentinel</code>提供的上下文切换功能，在对应的地方通过 <code>ContextUtil.runOnContext(context, f)</code> 进行 <code>Context</code> 变换，将对应资源调用处的 <code>Context</code> 切换为生成的异步 <code>Context</code>，即可维持正确的调用链路关系。示例如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">handleResult</span><span class="params">(String result)</span> </span>&#123;</span><br><span class="line">    Entry entry = <span class="keyword">null</span>;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        entry = SphU.entry(<span class="string">&quot;handleResultForAsync&quot;</span>);</span><br><span class="line">        <span class="comment">// Handle your result here.</span></span><br><span class="line">    &#125; <span class="keyword">catch</span> (BlockException ex) &#123;</span><br><span class="line">        <span class="comment">// Blocked for the result handler.</span></span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (entry != <span class="keyword">null</span>) &#123;</span><br><span class="line">            entry.exit();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">someAsync</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        AsyncEntry entry = SphU.asyncEntry(resourceName);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Asynchronous invocation.</span></span><br><span class="line">        doAsync(userId, result -&gt; &#123;</span><br><span class="line">            <span class="comment">// 在异步回调中进行上下文变换，通过 AsyncEntry 的 getAsyncContext 方法获取异步 Context</span></span><br><span class="line">            ContextUtil.runOnContext(entry.getAsyncContext(), () -&gt; &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    <span class="comment">// 此处嵌套正常的资源调用.</span></span><br><span class="line">                    handleResult(result);</span><br><span class="line">                &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">                    entry.exit();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;);</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (BlockException ex) &#123;</span><br><span class="line">        <span class="comment">// Request blocked.</span></span><br><span class="line">        <span class="comment">// Handle the exception (e.g. retry or fallback).</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>此时的调用链就类似于：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">-parent</span><br><span class="line">---asyncInvocation</span><br><span class="line">-----handleResultForAsync</span><br></pre></td></tr></table></figure>
+<h1 id="叁、注解使用"><a href="#叁、注解使用" class="headerlink" title="叁、注解使用"></a>叁、注解使用</h1><p><code>Sentinel</code> 提供了 <code>@SentinelResource</code> 注解用于定义资源，并提供了 <code>AspectJ</code> 的扩展用于自动定义资源、处理 <code>BlockException</code> 等。使用 <code>Sentinel Annotation AspectJ Extension</code> 的时候需要引入以下依赖：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba.csp<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>sentinel-annotation-aspectj<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.8.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注意：注解方式埋点不支持 private 方法。</p>
+</blockquote>
+<p><code>@SentinelResource</code> 用于定义资源，并提供可选的异常处理和 <code>fallback</code> 配置项。 <code>@SentinelResource</code> 注解包含以下属性：</p>
+<ul>
+<li><code>value</code>：资源名称，必需项（不能为空）</li>
+<li><code>entryType</code>：<code>entry</code> 类型，可选项（默认为 <code>EntryType.OUT</code>）</li>
+<li><code>blockHandler</code> / <code>blockHandlerClass</code>: <code>blockHandler</code> 对应处理 <code>BlockException</code> 的函数名称，可选项。<code>blockHandler</code> 函数访问范围需要是 <code>public</code>，返回类型需要与原方法相匹配，参数类型需要和原方法相匹配并且最后加一个额外的参数，类型为 <code>BlockException</code>。<code>blockHandler</code> 函数默认需要和原方法在同一个类中。若希望使用其他类的函数，则可以指定 <code>blockHandlerClass</code> 为对应的类的 <code>Class</code> 对象，注意对应的函数必需为 <code>static</code> 函数，否则无法解析。</li>
+<li><code>fallback</code>：<code>fallback</code> 函数名称，可选项，用于在抛出异常的时候提供 <code>fallback</code> 处理逻辑。  <code>fallback</code> 函数可以针对所有类型的异常（除了 <code>exceptionsToIgnore</code> 里面排除掉的异常类型）进行处理。<code>fallback</code> 函数签名和位置要求：<ul>
+<li>返回值类型必须与原函数返回值类型一致；</li>
+<li>方法参数列表需要和原函数一致，或者可以额外多一个 <code>Throwable</code> 类型的参数用于接收对应的异常。</li>
+<li><code>fallback</code> 函数默认需要和原方法在同一个类中。若希望使用其他类的函数，则可以指定 <code>fallbackClass</code> 为对应的类的 <code>Class</code> 对象，注意对应的函数必需为 <code>static</code> 函数，否则无法解析。</li>
+</ul>
+</li>
+<li><code>defaultFallback</code>（since 1.6.0）：默认的 <code>fallback</code> 函数名称，可选项，通常用于通用的 <code>fallback</code> 逻辑（即可以用于很多服务或方法）。默认 <code>fallback</code> 函数可以针对所以类型的异常（除了 <code>exceptionsToIgnore</code> 里面排除掉的异常类型）进行处理。若同时配置了 <code>fallback</code> 和 <code>defaultFallback</code>，则只有 <code>fallback</code> 会生效。<code>defaultFallback</code> 函数签名要求：<ul>
+<li>返回值类型必须与原函数返回值类型一致；</li>
+<li>方法参数列表需要为空，或者可以额外多一个 <code>Throwable</code> 类型的参数用于接收对应的异常。</li>
+<li><code>defaultFallback</code> 函数默认需要和原方法在同一个类中。若希望使用其他类的函数，则可以指定 <code>fallbackClass</code> 为对应的类的 <code>Class</code> 对象，注意对应的函数必需为 <code>static</code> 函数，否则无法解析。</li>
+</ul>
+</li>
+<li><code>exceptionsToIgnore</code>（since 1.6.0）：用于指定哪些异常被排除掉，不会计入异常统计中，也不会进入 <code>fallback</code> 逻辑中，而是会原样抛出。</li>
+</ul>
+<blockquote>
+<p>注：1.6.0 之前的版本 <code>fallback</code> 函数只针对降级异常（<code>DegradeException</code>）进行处理，不能针对业务异常进行处理。</p>
+</blockquote>
+<p>特别地，若 <code>blockHandler</code> 和 <code>fallback</code> 都进行了配置，则被限流降级而抛出 <code>BlockException</code> 时只会进入 <code>blockHandler</code> 处理逻辑。若未配置 <code>blockHandler</code>、<code>fallback</code> 和 <code>defaultFallback</code>，则被限流降级时会将 <code>BlockException</code> 直接抛出。</p>
+<h1 id="肆、规则的种类"><a href="#肆、规则的种类" class="headerlink" title="肆、规则的种类"></a>肆、规则的种类</h1><p><code>Sentinel</code> 的所有规则都可以在内存态中动态地查询及修改，修改之后立即生效。同时 <code>Sentinel</code> 也提供相关 <code>API</code>，供您来定制自己的规则策略。</p>
+<p><code>Sentinel</code> 支持以下几种规则：流量控制规则、熔断降级规则、系统保护规则、来源访问控制规则 和 热点参数规则。</p>
+<h2 id="4-1、流量控制规则-FlowRule"><a href="#4-1、流量控制规则-FlowRule" class="headerlink" title="4.1、流量控制规则 (FlowRule)"></a>4.1、流量控制规则 (FlowRule)</h2><ul>
+<li>重要属性</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>说明</th>
+<th>默认值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>resource</td>
+<td>资源名，资源名是限流规则的作用对象</td>
+<td></td>
+</tr>
+<tr>
+<td>count</td>
+<td>限流阈值</td>
+<td></td>
+</tr>
+<tr>
+<td>grade</td>
+<td>限流阈值类型，QPS 或线程数模式</td>
+<td>QPS 模式</td>
+</tr>
+<tr>
+<td>limitApp</td>
+<td>流控针对的调用来源</td>
+<td>default，代表不区分调用来源</td>
+</tr>
+<tr>
+<td>strategy</td>
+<td>调用关系限流策略：直接、链路、关联</td>
+<td>根据资源本身（直接）</td>
+</tr>
+<tr>
+<td>controlBehavior</td>
+<td>流控效果（直接拒绝 / 排队等待 / 慢启动模式），不支持按调用关系限流</td>
+<td>直接拒绝</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>同一个资源可以同时有多个限流规则。</p>
+</blockquote>
+<ul>
+<li>通过代码定义流量控制规则</li>
+</ul>
+<p>理解上面规则的定义之后，我们可以通过调用 <code>FlowRuleManager.loadRules()</code> 方法来用硬编码的方式定义流量控制规则，比如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">initFlowQpsRule</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    List&lt;FlowRule&gt; rules = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    FlowRule rule1 = <span class="keyword">new</span> FlowRule();</span><br><span class="line">    rule1.setResource(resource);</span><br><span class="line">    <span class="comment">// Set max qps to 20</span></span><br><span class="line">    rule1.setCount(<span class="number">20</span>);</span><br><span class="line">    rule1.setGrade(RuleConstant.FLOW_GRADE_QPS);</span><br><span class="line">    rule1.setLimitApp(<span class="string">&quot;default&quot;</span>);</span><br><span class="line">    rules.add(rule1);</span><br><span class="line">    FlowRuleManager.loadRules(rules);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="4-2、熔断降级规则-DegradeRule"><a href="#4-2、熔断降级规则-DegradeRule" class="headerlink" title="4.2、熔断降级规则 (DegradeRule)"></a>4.2、熔断降级规则 (DegradeRule)</h2><ul>
+<li>熔断降级规则包含下面几个重要的属性：</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>说明</th>
+<th>默认值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>resource</td>
+<td>资源名，即规则的作用对象</td>
+<td></td>
+</tr>
+<tr>
+<td>grade</td>
+<td>熔断策略，支持慢调用比例/异常比例/异常数策略</td>
+<td>慢调用比例</td>
+</tr>
+<tr>
+<td>count</td>
+<td>慢调用比例模式下为慢调用临界 RT（超出该值计为慢调用）；异常比例/异常数模式下为对应的阈值</td>
+<td></td>
+</tr>
+<tr>
+<td>timeWindow</td>
+<td>熔断时长，单位为 s</td>
+<td></td>
+</tr>
+<tr>
+<td>minRequestAmount</td>
+<td>熔断触发的最小请求数，请求数小于该值时即使异常比率超出阈值也不会熔断（1.7.0 引入）</td>
+<td>5</td>
+</tr>
+<tr>
+<td>statIntervalMs</td>
+<td>统计时长（单位为 ms），如 60*1000 代表分钟级（1.8.0 引入）</td>
+<td>1000 ms</td>
+</tr>
+<tr>
+<td>slowRatioThreshold</td>
+<td>慢调用比例阈值，仅慢调用比例模式有效（1.8.0 引入）</td>
+<td></td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>同一个资源可以同时有多个降级规则</p>
+</blockquote>
+<ul>
+<li>通过代码定义流量控制规则</li>
+</ul>
+<p>理解上面规则的定义之后，我们可以通过调用 <code>DegradeRuleManager.loadRules()</code> 方法来用硬编码的方式定义流量控制规则。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">initDegradeRule</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    List&lt;DegradeRule&gt; rules = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    DegradeRule rule = <span class="keyword">new</span> DegradeRule(resource);</span><br><span class="line">        .setGrade(CircuitBreakerStrategy.ERROR_RATIO.getType());</span><br><span class="line">        .setCount(<span class="number">0.7</span>); <span class="comment">// Threshold is 70% error ratio</span></span><br><span class="line">        .setMinRequestAmount(<span class="number">100</span>)</span><br><span class="line">        .setStatIntervalMs(<span class="number">30000</span>) <span class="comment">// 30s</span></span><br><span class="line">        .setTimeWindow(<span class="number">10</span>);</span><br><span class="line">    rules.add(rule);</span><br><span class="line">    DegradeRuleManager.loadRules(rules);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="4-3、系统保护规则-SystemRule"><a href="#4-3、系统保护规则-SystemRule" class="headerlink" title="4.3、系统保护规则 (SystemRule)"></a>4.3、系统保护规则 (SystemRule)</h2><p><code>Sentinel</code> 系统自适应限流从整体维度对应用入口流量进行控制，结合应用的 <code>Load</code>、<code>CPU</code> 使用率、<code>总体平均 RT</code>、<code>入口 QPS</code> 和<code>并发线程数</code>等几个维度的监控指标，通过自适应的流控策略，让系统的入口流量和系统的负载达到一个平衡，让系统尽可能跑在最大吞吐量的同时保证系统整体的稳定性。</p>
+<ul>
+<li>系统规则包含下面几个重要的属性</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>说明</th>
+<th>默认值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>highestSystemLoad</td>
+<td>load1 触发值，用于触发自适应控制阶段</td>
+<td>-1 (不生效)</td>
+</tr>
+<tr>
+<td>avgRt</td>
+<td>所有入口流量的平均响应时间</td>
+<td>-1 (不生效)</td>
+</tr>
+<tr>
+<td>maxThread</td>
+<td>入口流量的最大并发数</td>
+<td>-1 (不生效)</td>
+</tr>
+<tr>
+<td>qps</td>
+<td>所有入口资源的 QPS</td>
+<td>-1 (不生效)</td>
+</tr>
+<tr>
+<td>highestCpuUsage</td>
+<td>当前系统的 CPU 使用率（0.0-1.0）</td>
+<td>-1 (不生效)</td>
+</tr>
+</tbody></table>
+<ul>
+<li>通过代码定义流量控制规则</li>
+</ul>
+<p>理解上面规则的定义之后，我们可以通过调用 <code>SystemRuleManager.loadRules()</code> 方法来用硬编码的方式定义流量控制规则</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">initSystemProtectionRule</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  List&lt;SystemRule&gt; rules = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">  SystemRule rule = <span class="keyword">new</span> SystemRule();</span><br><span class="line">  rule.setHighestSystemLoad(<span class="number">10</span>);</span><br><span class="line">  rules.add(rule);</span><br><span class="line">  SystemRuleManager.loadRules(rules);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="4-4、访问控制规则-AuthorityRule"><a href="#4-4、访问控制规则-AuthorityRule" class="headerlink" title="4.4、访问控制规则 (AuthorityRule)"></a>4.4、访问控制规则 (AuthorityRule)</h2><p>很多时候，我们需要根据调用方来限制资源是否通过，这时候可以使用 <code>Sentinel</code> 的访问控制（黑白名单）的功能。黑白名单根据资源的请求来源（<code>origin</code>）限制资源是否通过，若配置白名单则只有请求来源位于白名单内时才可通过；若配置黑名单则请求来源位于黑名单时不通过，其余的请求通过。</p>
+<p>授权规则，即黑白名单规则（AuthorityRule）非常简单，主要有以下配置项：</p>
+<ul>
+<li><code>resource</code>：资源名，即限流规则的作用对象</li>
+<li><code>limitApp</code>：对应的黑名单/白名单，不同 <code>origin</code> 用 , 分隔，如 <code>appA</code>,<code>appB</code></li>
+<li><code>strategy</code>：限制模式，<code>AUTHORITY_WHITE</code> 为白名单模式，<code>AUTHORITY_BLACK</code> 为黑名单模式，默认为白名单模式</li>
+</ul>
+<hr>
+<p>【<strong>后面的话</strong>】在使用<code>API</code>去加载规则的时候，发现存在规则不生效的时候，通过调试发现：<code>Sentinel</code>在加载规则到内存中的时候会校验规则的合法性，如果规则不合法，该规则将不被加载。</p>
+<p>具体可以查看<code>com.alibaba.csp.sentinel.property#configLoad</code>方法的实现类中参数校验方法，下面贴出<code>FlowRule</code> 和 <code>Degrade</code>的校验方法</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">&#x2F;**</span><br><span class="line"> * Check whether provided flow rule is valid.</span><br><span class="line"> *</span><br><span class="line"> * @param rule flow rule to check</span><br><span class="line"> * @return true if valid, otherwise false</span><br><span class="line"> *&#x2F;</span><br><span class="line">public static boolean isValidRule(FlowRule rule) &#123;</span><br><span class="line">    boolean baseValid &#x3D; rule !&#x3D; null &amp;&amp; !StringUtil.isBlank(rule.getResource()) &amp;&amp; rule.getCount() &gt;&#x3D; 0</span><br><span class="line">        &amp;&amp; rule.getGrade() &gt;&#x3D; 0 &amp;&amp; rule.getStrategy() &gt;&#x3D; 0 &amp;&amp; rule.getControlBehavior() &gt;&#x3D; 0;</span><br><span class="line">    if (!baseValid) &#123;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line">    &#x2F;&#x2F; Check strategy and control (shaping) behavior.</span><br><span class="line">    return checkClusterField(rule) &amp;&amp; checkStrategyField(rule) &amp;&amp; checkControlBehaviorField(rule);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private static boolean checkClusterField(&#x2F;*@NonNull*&#x2F; FlowRule rule) &#123;</span><br><span class="line">    if (!rule.isClusterMode()) &#123;</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line">    ClusterFlowConfig clusterConfig &#x3D; rule.getClusterConfig();</span><br><span class="line">    if (clusterConfig &#x3D;&#x3D; null) &#123;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line">    if (!validClusterRuleId(clusterConfig.getFlowId())) &#123;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line">    if (!isWindowConfigValid(clusterConfig.getSampleCount(), clusterConfig.getWindowIntervalMs())) &#123;</span><br><span class="line">        return false;</span><br><span class="line">    &#125;</span><br><span class="line">    switch (clusterConfig.getStrategy()) &#123;</span><br><span class="line">        case ClusterRuleConstant.FLOW_CLUSTER_STRATEGY_NORMAL:</span><br><span class="line">            return true;</span><br><span class="line">        default:</span><br><span class="line">            return false;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public static boolean isWindowConfigValid(int sampleCount, int windowIntervalMs) &#123;</span><br><span class="line">    return sampleCount &gt; 0 &amp;&amp; windowIntervalMs &gt; 0 &amp;&amp; windowIntervalMs % sampleCount &#x3D;&#x3D; 0;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private static boolean checkStrategyField(&#x2F;*@NonNull*&#x2F; FlowRule rule) &#123;</span><br><span class="line">    if (rule.getStrategy() &#x3D;&#x3D; RuleConstant.STRATEGY_RELATE || rule.getStrategy() &#x3D;&#x3D; RuleConstant.STRATEGY_CHAIN) &#123;</span><br><span class="line">        return StringUtil.isNotBlank(rule.getRefResource());</span><br><span class="line">    &#125;</span><br><span class="line">    return true;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">private static boolean checkControlBehaviorField(&#x2F;*@NonNull*&#x2F; FlowRule rule) &#123;</span><br><span class="line">    switch (rule.getControlBehavior()) &#123;</span><br><span class="line">        case RuleConstant.CONTROL_BEHAVIOR_WARM_UP:</span><br><span class="line">            return rule.getWarmUpPeriodSec() &gt; 0;</span><br><span class="line">        case RuleConstant.CONTROL_BEHAVIOR_RATE_LIMITER:</span><br><span class="line">            return rule.getMaxQueueingTimeMs() &gt; 0;</span><br><span class="line">        case RuleConstant.CONTROL_BEHAVIOR_WARM_UP_RATE_LIMITER:</span><br><span class="line">            return rule.getWarmUpPeriodSec() &gt; 0 &amp;&amp; rule.getMaxQueueingTimeMs() &gt; 0;</span><br><span class="line">        default:</span><br><span class="line">            return true;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">boolean</span> <span class="title">isValidRule</span><span class="params">(DegradeRule rule)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">boolean</span> baseValid = rule != <span class="keyword">null</span> &amp;&amp; !StringUtil.isBlank(rule.getResource())</span><br><span class="line">        &amp;&amp; rule.getCount() &gt;= <span class="number">0</span> &amp;&amp; rule.getTimeWindow() &gt; <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (!baseValid) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (rule.getMinRequestAmount() &lt;= <span class="number">0</span> || rule.getStatIntervalMs() &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">switch</span> (rule.getGrade()) &#123;</span><br><span class="line">        <span class="keyword">case</span> RuleConstant.DEGRADE_GRADE_RT:</span><br><span class="line">            <span class="keyword">return</span> rule.getSlowRatioThreshold() &gt;= <span class="number">0</span> &amp;&amp; rule.getSlowRatioThreshold() &lt;= <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">case</span> RuleConstant.DEGRADE_GRADE_EXCEPTION_RATIO:</span><br><span class="line">            <span class="keyword">return</span> rule.getCount() &lt;= <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">case</span> RuleConstant.DEGRADE_GRADE_EXCEPTION_COUNT:</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>最后是我自己实现的 <a target="_blank" rel="noopener" href="https://github.com/eelve/awesomesentinel/tree/basic-sentinel">demo</a> 。</p>
+</blockquote>
+<hr>
+<p><img src="https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png" alt="薏米笔记"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/sentinel/" rel="tag"># sentinel</a>
+              <a href="/tags/java/" rel="tag"># java</a>
+              <a href="/tags/springboot/" rel="tag"># springboot</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/56832225.html" rel="prev" title="浅析Spring Boot单体应用熔断技术">
+      <i class="fa fa-chevron-left"></i> 浅析Spring Boot单体应用熔断技术
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/1523c2c1.html" rel="next" title="Spring Boot单体应用集成Sentinel熔断能力">
+      Spring Boot单体应用集成Sentinel熔断能力 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC80NTk1NS8yMjQ2Ng=="></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A3%B9%E3%80%81sentinel%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">壹、sentinel介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Sentinel%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5%E5%8C%85%E6%8B%AC"><span class="nav-number">1.1.</span> <span class="nav-text">Sentinel的基本概念基本概念包括:</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B5%84%E6%BA%90"><span class="nav-number">1.1.1.</span> <span class="nav-text">资源</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%84%E5%88%99"><span class="nav-number">1.1.2.</span> <span class="nav-text">规则</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Sentinel%E7%9A%84%E4%B8%BB%E8%A6%81%E5%8A%9F%E8%83%BD"><span class="nav-number">1.2.</span> <span class="nav-text">Sentinel的主要功能</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6"><span class="nav-number">1.2.1.</span> <span class="nav-text">流量控制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%86%94%E6%96%AD%E9%99%8D%E7%BA%A7"><span class="nav-number">1.2.2.</span> <span class="nav-text">熔断降级</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E8%B4%9F%E8%BD%BD%E4%BF%9D%E6%8A%A4"><span class="nav-number">1.2.3.</span> <span class="nav-text">系统负载保护</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BB%E8%A6%81%E5%B7%A5%E4%BD%9C%E6%9C%BA%E5%88%B6"><span class="nav-number">1.3.</span> <span class="nav-text">主要工作机制</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B4%B0%E3%80%81%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8"><span class="nav-number">2.</span> <span class="nav-text">贰、基础使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1%E3%80%81-%E9%80%9A%E8%BF%87%E6%8A%9B%E5%87%BA%E5%BC%82%E5%B8%B8%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="nav-number">2.1.</span> <span class="nav-text">2.1、 通过抛出异常的方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2%E3%80%81%E9%80%9A%E8%BF%87%E8%BF%94%E5%9B%9E%E5%B8%83%E5%B0%94%E5%80%BC%E6%96%B9%E5%BC%8F"><span class="nav-number">2.2.</span> <span class="nav-text">2.2、通过返回布尔值方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3%E3%80%81%E5%BC%82%E6%AD%A5%E8%B0%83%E7%94%A8%E6%94%AF%E6%8C%81"><span class="nav-number">2.2.1.</span> <span class="nav-text">2.3、异步调用支持</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%81%E3%80%81%E6%B3%A8%E8%A7%A3%E4%BD%BF%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">叁、注解使用</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%82%86%E3%80%81%E8%A7%84%E5%88%99%E7%9A%84%E7%A7%8D%E7%B1%BB"><span class="nav-number">4.</span> <span class="nav-text">肆、规则的种类</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1%E3%80%81%E6%B5%81%E9%87%8F%E6%8E%A7%E5%88%B6%E8%A7%84%E5%88%99-FlowRule"><span class="nav-number">4.1.</span> <span class="nav-text">4.1、流量控制规则 (FlowRule)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2%E3%80%81%E7%86%94%E6%96%AD%E9%99%8D%E7%BA%A7%E8%A7%84%E5%88%99-DegradeRule"><span class="nav-number">4.2.</span> <span class="nav-text">4.2、熔断降级规则 (DegradeRule)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-3%E3%80%81%E7%B3%BB%E7%BB%9F%E4%BF%9D%E6%8A%A4%E8%A7%84%E5%88%99-SystemRule"><span class="nav-number">4.3.</span> <span class="nav-text">4.3、系统保护规则 (SystemRule)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-4%E3%80%81%E8%AE%BF%E9%97%AE%E6%8E%A7%E5%88%B6%E8%A7%84%E5%88%99-AuthorityRule"><span class="nav-number">4.4.</span> <span class="nav-text">4.4、访问控制规则 (AuthorityRule)</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Chillo"
+      src="/images/virrina.jpg">
+  <p class="site-author-name" itemprop="name">Chillo</p>
+  <div class="site-description" itemprop="description">A human being,who loves football and music.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">77</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/eelve" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;eelve" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:i@eelve.com" title="E-Mail → mailto:i@eelve.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/eivou" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;eivou" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://eelve.com/" title="https:&#x2F;&#x2F;eelve.com&#x2F;">南国薏米</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://shilikun.com/" title="https:&#x2F;&#x2F;shilikun.com&#x2F;" rel="noopener" target="_blank">坤坤</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://binge.eelve.com/" title="https:&#x2F;&#x2F;binge.eelve.com&#x2F;" rel="noopener" target="_blank">Binge</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://bobo.eelve.com/" title="https:&#x2F;&#x2F;bobo.eelve.com&#x2F;" rel="noopener" target="_blank">BoBo</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sunkening0.github.io/" title="https:&#x2F;&#x2F;sunkening0.github.io&#x2F;" rel="noopener" target="_blank">克宁</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        <a href="https://www.upyun.com/?utm_source=lianmeng&amp;utm_medium=referral" target="_blank"><img src="https://i.loli.net/2021/03/07/cM1D8kHpsetuyjR.png" style="width:48px"></a>
+  <div class="beian"><a href="http://www.beian.miit.gov.cn/" rel="noopener" target="_blank"> </a><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=16014637" rel="noopener" target="_blank">蜀ICP备16014637号-1 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">南国薏米</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数">484k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">7:20</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+<script type="text/javascript">
+  // console.clear();
+  console.log("%c 有朋自远方来, 不亦说乎.", "background:#24272A; color:#ffffff", "");
+  console.log("%c Github %c", "background:#24272A; color:#ffffff", "", "https://github.com/eelve");
+</script>
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/virrina.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/virrina.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/virrina.jpg">
+  <link rel="mask-icon" href="/images/virrina.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"eelve.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="前面对Sentinel的入门知识有了一定了解之后，这里就来介绍在生产中简单的应用。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring Boot单体应用集成Sentinel熔断能力">
+<meta property="og:url" content="https://eelve.com/posts/1523c2c1.html">
+<meta property="og:site_name" content="南国薏米">
+<meta property="og:description" content="前面对Sentinel的入门知识有了一定了解之后，这里就来介绍在生产中简单的应用。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png">
+<meta property="article:published_time" content="2021-02-13T03:52:54.000Z">
+<meta property="article:modified_time" content="2021-04-19T06:52:48.655Z">
+<meta property="article:author" content="Chillo">
+<meta property="article:tag" content="sentinel">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="springboot">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png">
+
+<link rel="canonical" href="https://eelve.com/posts/1523c2c1.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Spring Boot单体应用集成Sentinel熔断能力 | 南国薏米</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?6206b88a2a2be02cc7450a7cb8c20126";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="南国薏米" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">南国薏米</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">南国不须收薏苡,百年终竟是芭蕉。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404.html" rel="section"><i class="fa fa-fw fa-heartbeat"></i>公益 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/eelve" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://eelve.com/posts/1523c2c1.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/virrina.jpg">
+      <meta itemprop="name" content="Chillo">
+      <meta itemprop="description" content="A human being,who loves football and music.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="南国薏米">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Spring Boot单体应用集成Sentinel熔断能力
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-02-13 11:52:54" itemprop="dateCreated datePublished" datetime="2021-02-13T11:52:54+08:00">2021-02-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-19 14:52:48" itemprop="dateModified" datetime="2021-04-19T14:52:48+08:00">2021-04-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/sentinel/" itemprop="url" rel="index"><span itemprop="name">sentinel</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>20k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>18 分钟</span>
+            </span>
+            <div class="post-description">前面对Sentinel的入门知识有了一定了解之后，这里就来介绍在生产中简单的应用。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>【<strong>前面的话</strong>】在前文 <a href="https://eelve.com/archives/hellosentinel">Sentinel入门指北</a> 中对<code>Sentinel</code>有了简单的了解之后，下面就<code>Spring Boot</code>单体应用集成<code>Sentinel</code>做一下简单的讨论。实际上官方已经提供了 <a target="_blank" rel="noopener" href="https://github.com/alibaba/spring-cloud-alibaba/wiki/Sentinel">Spring Cloud Alibaba Sentinel</a> ，然后在配合 <code>控制台</code> 就可以方便使用熔断能力。但是存在部分不想引入<code>控制台</code>的场景，此文就由此而来。</p>
+<hr>
+<h1 id="壹、总体设计"><a href="#壹、总体设计" class="headerlink" title="壹、总体设计"></a>壹、总体设计</h1><p><code>Sentinel</code>在官方提供了<code>API</code>用于动态修改熔断的规则，针对每种规则都有独有的<code>loadRules</code>方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Load &#123;<span class="doctag">@link</span> FlowRule&#125;s, former rules will be replaced.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> rules new rules to load.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">loadRules</span><span class="params">(List&lt;FlowRule&gt; rules)</span> </span>&#123;</span><br><span class="line">    currentProperty.updateValue(rules);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Load &#123;<span class="doctag">@link</span> DegradeRule&#125;s, former rules will be replaced.</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> rules new rules to load.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">loadRules</span><span class="params">(List&lt;DegradeRule&gt; rules)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        currentProperty.updateValue(rules);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Throwable e) &#123;</span><br><span class="line">        RecordLog.error(<span class="string">&quot;[DegradeRuleManager] Unexpected error when loading degrade rules&quot;</span>, e);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>Sentiunel</code>还有一个缺点，就是熔断规则只缓存在内存中，当应用重启之后，规则就消失了。所以解决方法就是可以考虑讲规则持久化，官方也有相应的实现的方案：<a target="_blank" rel="noopener" href="https://sentinelguard.io/zh-cn/docs/dynamic-rule-configuration.html">动态规则扩展</a> 。我这里实现的方案则是将规则存在数据库中，并提供API方式修改规则。 </p>
+<h1 id="贰、实现细节"><a href="#贰、实现细节" class="headerlink" title="贰、实现细节"></a>贰、实现细节</h1><h2 id="2-1、pom依赖"><a href="#2-1、pom依赖" class="headerlink" title="2.1、pom依赖"></a>2.1、pom依赖</h2><blockquote>
+<p><code>sentinel-annotation-aspectj</code> 提供注解支持功能，并且其中包含了 <code>sentinel-core</code> 所以就不需要单独再引入了。 </p>
+</blockquote>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba.csp<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>sentinel-annotation-aspectj<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.8.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h2 id="2-2、实体类"><a href="#2-2、实体类" class="headerlink" title="2.2、实体类"></a>2.2、实体类</h2><blockquote>
+<p>包括流控规则和降级规则的实体类</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.eelve.limiting.sentinel.entity;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.alibaba.csp.sentinel.slots.block.RuleConstant;</span><br><span class="line"><span class="keyword">import</span> com.alibaba.csp.sentinel.slots.block.flow.FlowRule;</span><br><span class="line"><span class="keyword">import</span> lombok.Data;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.persistence.*;</span><br><span class="line"><span class="keyword">import</span> javax.validation.constraints.NotBlank;</span><br><span class="line"><span class="keyword">import</span> javax.validation.constraints.NotNull;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhaozhilue</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@Table(name = &quot;flow_rule&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FlowRuleEntity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="meta">@GeneratedValue(strategy = GenerationType.AUTO)</span></span><br><span class="line">    <span class="meta">@Column(name=&quot;id&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> Integer id;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Column(name=&quot;app&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String app;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Resource name.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Column(name=&quot;resource&quot;)</span></span><br><span class="line">    <span class="meta">@NotBlank</span></span><br><span class="line">    <span class="keyword">private</span> String resource;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * &lt;p&gt;</span></span><br><span class="line"><span class="comment">     * Application name that will be limited by origin.</span></span><br><span class="line"><span class="comment">     * The default c is &#123;<span class="doctag">@code</span> default&#125;, which means allowing all origin apps.</span></span><br><span class="line"><span class="comment">     * &lt;/p&gt;</span></span><br><span class="line"><span class="comment">     * &lt;p&gt;</span></span><br><span class="line"><span class="comment">     * For authority rules, multiple origin name can be separated with comma (&#x27;,&#x27;).</span></span><br><span class="line"><span class="comment">     * &lt;/p&gt;</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Column(name=&quot;limit_app&quot;)</span></span><br><span class="line">    <span class="meta">@NotBlank</span></span><br><span class="line">    <span class="keyword">private</span> String limitApp;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * The threshold type of flow control (0: thread count, 1: QPS).</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Column(name = &quot;grade&quot;,columnDefinition=&quot;INT default 1&quot;,nullable = false)</span></span><br><span class="line">    <span class="meta">@NotNull</span></span><br><span class="line">    <span class="keyword">private</span> Integer grade = RuleConstant.FLOW_GRADE_QPS;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Flow control threshold count.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Column(name = &quot;count&quot;)</span></span><br><span class="line">    <span class="meta">@NotNull</span></span><br><span class="line">    <span class="keyword">private</span> Double count;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Flow control strategy based on invocation chain.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * &#123;<span class="doctag">@link</span> RuleConstant#STRATEGY_DIRECT&#125; for direct flow control (by origin);</span></span><br><span class="line"><span class="comment">     * &#123;<span class="doctag">@link</span> RuleConstant#STRATEGY_RELATE&#125; for relevant flow control (with relevant resource);</span></span><br><span class="line"><span class="comment">     * &#123;<span class="doctag">@link</span> RuleConstant#STRATEGY_CHAIN&#125; for chain flow control (by entrance resource).</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Column(name = &quot;strategy&quot;,columnDefinition=&quot;INT default 0&quot;,nullable = false)</span></span><br><span class="line">    <span class="keyword">private</span> Integer strategy = RuleConstant.STRATEGY_DIRECT;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Reference resource in flow control with relevant resource or context.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Column(name = &quot;ref_resource&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String refResource;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Rate limiter control behavior.</span></span><br><span class="line"><span class="comment">     * 0. default(reject directly), 1. warm up, 2. rate limiter, 3. warm up + rate limiter</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Column(name = &quot;control_behavior&quot;,columnDefinition=&quot;INT default 0&quot;,nullable = false)</span></span><br><span class="line">    <span class="keyword">private</span> Integer controlBehavior = RuleConstant.CONTROL_BEHAVIOR_DEFAULT;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Column(name = &quot;warm_up_period_sec&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> Integer warmUpPeriodSec = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Max queueing time in rate limiter behavior.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Column(name = &quot;max_queueing_time_ms&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> Integer maxQueueingTimeMs = <span class="number">500</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Column(name = &quot;cluster_mode&quot;,columnDefinition=&quot;BOOLEAN default false&quot;,nullable = false)</span></span><br><span class="line">    <span class="keyword">private</span> Boolean clusterMode = <span class="keyword">false</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> FlowRule <span class="title">toRule</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        FlowRule flowRule = <span class="keyword">new</span> FlowRule();</span><br><span class="line">        flowRule.setCount(<span class="keyword">this</span>.count);</span><br><span class="line">        flowRule.setGrade(<span class="keyword">this</span>.grade);</span><br><span class="line">        flowRule.setResource(<span class="keyword">this</span>.resource);</span><br><span class="line">        flowRule.setLimitApp(<span class="keyword">this</span>.limitApp);</span><br><span class="line">        flowRule.setRefResource(<span class="keyword">this</span>.refResource);</span><br><span class="line">        flowRule.setStrategy(<span class="keyword">this</span>.strategy);</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.controlBehavior != <span class="keyword">null</span>) &#123;</span><br><span class="line">            flowRule.setControlBehavior(controlBehavior);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.warmUpPeriodSec != <span class="keyword">null</span>) &#123;</span><br><span class="line">            flowRule.setWarmUpPeriodSec(warmUpPeriodSec);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">this</span>.maxQueueingTimeMs != <span class="keyword">null</span>) &#123;</span><br><span class="line">            flowRule.setMaxQueueingTimeMs(maxQueueingTimeMs);</span><br><span class="line">        &#125;</span><br><span class="line">        flowRule.setClusterMode(clusterMode);</span><br><span class="line">        <span class="keyword">return</span> flowRule;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.eelve.limiting.sentinel.entity;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.alibaba.csp.sentinel.slots.block.RuleConstant;</span><br><span class="line"><span class="keyword">import</span> com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;</span><br><span class="line"><span class="keyword">import</span> lombok.Data;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.persistence.*;</span><br><span class="line"><span class="keyword">import</span> javax.validation.constraints.NotBlank;</span><br><span class="line"><span class="keyword">import</span> javax.validation.constraints.NotNull;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhaozhilue</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@Table(name = &quot;degrade_rule&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DegradeRuleEntity</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="meta">@GeneratedValue(strategy = GenerationType.AUTO)</span></span><br><span class="line">    <span class="meta">@Column(name=&quot;id&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> Integer id;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Column(name=&quot;app&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String app;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Resource name.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Column(name=&quot;resource&quot;)</span></span><br><span class="line">    <span class="meta">@NotBlank</span></span><br><span class="line">    <span class="keyword">private</span> String resource;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * &lt;p&gt;</span></span><br><span class="line"><span class="comment">     * Application name that will be limited by origin.</span></span><br><span class="line"><span class="comment">     * The default limitApp is &#123;<span class="doctag">@code</span> default&#125;, which means allowing all origin apps.</span></span><br><span class="line"><span class="comment">     * &lt;/p&gt;</span></span><br><span class="line"><span class="comment">     * &lt;p&gt;</span></span><br><span class="line"><span class="comment">     * For authority rules, multiple origin name can be separated with comma (&#x27;,&#x27;).</span></span><br><span class="line"><span class="comment">     * &lt;/p&gt;</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Column(name=&quot;limit_app&quot;)</span></span><br><span class="line">    <span class="meta">@NotBlank</span></span><br><span class="line">    <span class="keyword">private</span> String limitApp;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Circuit breaking strategy (0: average RT, 1: exception ratio, 2: exception count).</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Column(name = &quot;grade&quot;,columnDefinition=&quot;INT default 0&quot;,nullable = false)</span></span><br><span class="line">    <span class="meta">@NotNull</span></span><br><span class="line">    <span class="keyword">private</span> Integer grade = RuleConstant.DEGRADE_GRADE_RT;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Threshold count.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Column(name = &quot;count&quot;)</span></span><br><span class="line">    <span class="meta">@NotNull</span></span><br><span class="line">    <span class="keyword">private</span> Double count;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Recovery timeout (in seconds) when circuit breaker opens. After the timeout, the circuit breaker will</span></span><br><span class="line"><span class="comment">     * transform to half-open state for trying a few requests.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Column(name = &quot;timeWindow&quot;)</span></span><br><span class="line">    <span class="meta">@NotNull</span></span><br><span class="line">    <span class="keyword">private</span> Integer timeWindow;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Minimum number of requests (in an active statistic time span) that can trigger circuit breaking.</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@since</span> 1.7.0</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Column(name = &quot;min_request_amount&quot;,columnDefinition=&quot;INT default 5&quot;,nullable = false)</span></span><br><span class="line">    <span class="keyword">private</span> Integer minRequestAmount = RuleConstant.DEGRADE_DEFAULT_MIN_REQUEST_AMOUNT;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * The threshold of slow request ratio in RT mode.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Column(name = &quot;slow_ratio_threshold&quot;,columnDefinition=&quot;DOUBLE default 1000&quot;,nullable = false)</span></span><br><span class="line">    <span class="keyword">private</span> Double slowRatioThreshold = <span class="number">1.0d</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Column(name = &quot;stat_interval_ms&quot;,columnDefinition=&quot;INT default 1000&quot;,nullable = false)</span></span><br><span class="line">    <span class="keyword">private</span> Integer statIntervalMs = <span class="number">1000</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> DegradeRule <span class="title">toRule</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        DegradeRule rule = <span class="keyword">new</span> DegradeRule();</span><br><span class="line">        rule.setResource(resource);</span><br><span class="line">        rule.setLimitApp(limitApp);</span><br><span class="line">        rule.setCount(count);</span><br><span class="line">        rule.setTimeWindow(timeWindow);</span><br><span class="line">        rule.setGrade(grade);</span><br><span class="line">        <span class="keyword">if</span> (minRequestAmount != <span class="keyword">null</span>) &#123;</span><br><span class="line">            rule.setMinRequestAmount(minRequestAmount);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (slowRatioThreshold != <span class="keyword">null</span>) &#123;</span><br><span class="line">            rule.setSlowRatioThreshold(slowRatioThreshold);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (statIntervalMs != <span class="keyword">null</span>) &#123;</span><br><span class="line">            rule.setStatIntervalMs(statIntervalMs);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> rule;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="2-3、核心规则变更"><a href="#2-3、核心规则变更" class="headerlink" title="2.3、核心规则变更"></a>2.3、核心规则变更</h2><blockquote>
+<p>主要是提供规则更新的工具类</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.eelve.limiting.sentinel.enums;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">enum</span> <span class="title">RulesEnum</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    Flow(<span class="number">1</span>),</span><br><span class="line"></span><br><span class="line">    Degrade(<span class="number">2</span>),</span><br><span class="line"></span><br><span class="line">    System(<span class="number">3</span>),</span><br><span class="line"></span><br><span class="line">    Authority(<span class="number">4</span>);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> code;</span><br><span class="line"></span><br><span class="line">    RulesEnum(<span class="keyword">int</span> code) &#123;</span><br><span class="line">        <span class="keyword">this</span>.code = code;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getCode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> code;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.eelve.limiting.sentinel.util;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.alibaba.csp.sentinel.slots.block.AbstractRule;</span><br><span class="line"><span class="keyword">import</span> com.alibaba.csp.sentinel.slots.block.authority.AuthorityRule;</span><br><span class="line"><span class="keyword">import</span> com.alibaba.csp.sentinel.slots.block.authority.AuthorityRuleManager;</span><br><span class="line"><span class="keyword">import</span> com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;</span><br><span class="line"><span class="keyword">import</span> com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;</span><br><span class="line"><span class="keyword">import</span> com.alibaba.csp.sentinel.slots.block.flow.FlowRule;</span><br><span class="line"><span class="keyword">import</span> com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;</span><br><span class="line"><span class="keyword">import</span> com.alibaba.csp.sentinel.slots.system.SystemRule;</span><br><span class="line"><span class="keyword">import</span> com.alibaba.csp.sentinel.slots.system.SystemRuleManager;</span><br><span class="line"><span class="keyword">import</span> com.eelve.limiting.sentinel.enums.RulesEnum;</span><br><span class="line"><span class="keyword">import</span> lombok.extern.java.Log;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhaozhilue</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Log</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RefreshRulesUtil</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> &lt;T extends AbstractRule&gt; <span class="function"><span class="keyword">void</span> <span class="title">refreshRule</span><span class="params">(List&lt;T&gt; ruleList, RulesEnum rulesEnum)</span></span>&#123;</span><br><span class="line"></span><br><span class="line">        log.info(<span class="string">&quot;操作类型:&quot;</span>+rulesEnum.getCode() + <span class="string">&quot;,ruleList:&quot;</span> + ruleList.toString());</span><br><span class="line"></span><br><span class="line">        <span class="keyword">switch</span> (rulesEnum)&#123;</span><br><span class="line">            <span class="keyword">case</span> Flow:</span><br><span class="line">                FlowRuleManager.loadRules((List&lt;FlowRule&gt;) ruleList);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> Degrade:</span><br><span class="line">                DegradeRuleManager.loadRules((List&lt;DegradeRule&gt;)ruleList);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> System:</span><br><span class="line">                SystemRuleManager.loadRules((List&lt;SystemRule&gt;)ruleList);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> Authority:</span><br><span class="line">                AuthorityRuleManager.loadRules((List&lt;AuthorityRule&gt;)ruleList);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                log.info(<span class="string">&quot;无效操作&quot;</span>);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="2-4、规则更新接口"><a href="#2-4、规则更新接口" class="headerlink" title="2.4、规则更新接口"></a>2.4、规则更新接口</h2><blockquote>
+<p>主要是提供接口给前端用于规则更新，并且包括更新内存中的熔断规则。</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.eelve.limiting.sentinel.controller;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.alibaba.csp.sentinel.slots.block.flow.FlowRule;</span><br><span class="line"><span class="keyword">import</span> com.eelve.limiting.sentinel.entity.FlowRuleEntity;</span><br><span class="line"><span class="keyword">import</span> com.eelve.limiting.sentinel.enums.RulesEnum;</span><br><span class="line"><span class="keyword">import</span> com.eelve.limiting.sentinel.service.iml.FlowRuleServiceImpl;</span><br><span class="line"><span class="keyword">import</span> com.eelve.limiting.sentinel.util.RefreshRulesUtil;</span><br><span class="line"><span class="keyword">import</span> com.eelve.limiting.sentinel.vo.JsonResult;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.*;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletRequest;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletResponse;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"><span class="keyword">import</span> java.util.stream.Collectors;</span><br><span class="line"></span><br><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/api/eelve/flow-rule&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FlowRuleController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> FlowRuleServiceImpl flowRuleService;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@GetMapping(&quot;/rules&quot;)</span></span><br><span class="line">    <span class="meta">@ResponseBody</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> JsonResult <span class="title">allRules</span><span class="params">(HttpServletRequest request, HttpServletResponse response)</span></span>&#123;</span><br><span class="line">        List&lt;FlowRule&gt; ruleList =  flowRuleService.allRules().stream().map(x -&gt; x.toRule()).collect(Collectors.toList());</span><br><span class="line">        RefreshRulesUtil.refreshRule(ruleList, RulesEnum.Flow);</span><br><span class="line">        <span class="keyword">return</span> JsonResult.ok().put(flowRuleService.allRules());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@PostMapping(&quot;/rules&quot;)</span></span><br><span class="line">    <span class="meta">@ResponseBody</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> JsonResult <span class="title">addRule</span><span class="params">(HttpServletRequest request, HttpServletResponse response, <span class="meta">@RequestBody</span> FlowRuleEntity flowRuleEntity)</span></span>&#123;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 先添加，然后再查询出来批量更新</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        flowRuleService.addRule(flowRuleEntity);</span><br><span class="line">        List&lt;FlowRule&gt; ruleList =  flowRuleService.allRules().stream().map(x -&gt; x.toRule()).collect(Collectors.toList());</span><br><span class="line">        RefreshRulesUtil.refreshRule(ruleList, RulesEnum.Flow);</span><br><span class="line">        <span class="keyword">return</span> JsonResult.ok().put(flowRuleEntity);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@PutMapping(&quot;/rules&quot;)</span></span><br><span class="line">    <span class="meta">@ResponseBody</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> JsonResult <span class="title">updateRule</span><span class="params">(HttpServletRequest request, HttpServletResponse response, <span class="meta">@RequestBody</span> FlowRuleEntity flowRuleEntity)</span></span>&#123;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 先添加，然后再查询出来批量更新</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        flowRuleService.addRule(flowRuleEntity);</span><br><span class="line">        List&lt;FlowRule&gt; ruleList =  flowRuleService.allRules().stream().map(x -&gt; x.toRule()).collect(Collectors.toList());</span><br><span class="line">        RefreshRulesUtil.refreshRule(ruleList, RulesEnum.Flow);</span><br><span class="line">        <span class="keyword">return</span> JsonResult.ok().put(flowRuleEntity);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@DeleteMapping(&quot;/rules/&#123;id&#125;&quot;)</span></span><br><span class="line">    <span class="meta">@ResponseBody</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> JsonResult <span class="title">deleteRule</span><span class="params">(HttpServletRequest request, HttpServletResponse response, <span class="meta">@PathVariable(name = &quot;id&quot;)</span> Integer id)</span></span>&#123;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 先添加，然后再查询出来批量更新</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        flowRuleService.deleteRuleById(id);</span><br><span class="line">        List&lt;FlowRule&gt; ruleList =  flowRuleService.allRules().stream().map(x -&gt; x.toRule()).collect(Collectors.toList());</span><br><span class="line">        RefreshRulesUtil.refreshRule(ruleList, RulesEnum.Flow);</span><br><span class="line">        <span class="keyword">return</span> JsonResult.ok();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.eelve.limiting.sentinel.controller;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;</span><br><span class="line"><span class="keyword">import</span> com.eelve.limiting.sentinel.entity.DegradeRuleEntity;</span><br><span class="line"><span class="keyword">import</span> com.eelve.limiting.sentinel.enums.RulesEnum;</span><br><span class="line"><span class="keyword">import</span> com.eelve.limiting.sentinel.service.iml.DegradeRuleServiceImpl;</span><br><span class="line"><span class="keyword">import</span> com.eelve.limiting.sentinel.util.RefreshRulesUtil;</span><br><span class="line"><span class="keyword">import</span> com.eelve.limiting.sentinel.vo.JsonResult;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.*;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletRequest;</span><br><span class="line"><span class="keyword">import</span> javax.servlet.http.HttpServletResponse;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"><span class="keyword">import</span> java.util.stream.Collectors;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@ClassName</span> DegradeRuleController</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Description</span> TODO</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Author</span> zhao.zhilue</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span> 2021/1/29 20:18</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Version</span> 1.0</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/api/eelve/degrade-rule&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DegradeRuleController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> DegradeRuleServiceImpl degradeRuleService;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@GetMapping(&quot;/rules&quot;)</span></span><br><span class="line">    <span class="meta">@ResponseBody</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> JsonResult <span class="title">allRules</span><span class="params">(HttpServletRequest request, HttpServletResponse response)</span></span>&#123;</span><br><span class="line">        List&lt;DegradeRule&gt; ruleList =  degradeRuleService.allRules().stream().map(x -&gt; x.toRule()).collect(Collectors.toList());</span><br><span class="line">        RefreshRulesUtil.refreshRule(ruleList, RulesEnum.Degrade);</span><br><span class="line">        <span class="keyword">return</span> JsonResult.ok().put(degradeRuleService.allRules());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@PostMapping(&quot;/rules&quot;)</span></span><br><span class="line">    <span class="meta">@ResponseBody</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> JsonResult <span class="title">addRule</span><span class="params">(HttpServletRequest request, HttpServletResponse response, <span class="meta">@RequestBody</span> DegradeRuleEntity degradeRuleEntity)</span></span>&#123;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 先添加，然后再查询出来批量更新</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        degradeRuleService.addRule(degradeRuleEntity);</span><br><span class="line">        List&lt;DegradeRule&gt; ruleList =  degradeRuleService.allRules().stream().map(x -&gt; x.toRule()).collect(Collectors.toList());</span><br><span class="line">        RefreshRulesUtil.refreshRule(ruleList, RulesEnum.Degrade);</span><br><span class="line">        <span class="keyword">return</span> JsonResult.ok().put(degradeRuleEntity);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@PutMapping(&quot;/rules&quot;)</span></span><br><span class="line">    <span class="meta">@ResponseBody</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> JsonResult <span class="title">updateRule</span><span class="params">(HttpServletRequest request, HttpServletResponse response, <span class="meta">@RequestBody</span> DegradeRuleEntity degradeRuleEntity)</span></span>&#123;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 先添加，然后再查询出来批量更新</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        degradeRuleService.addRule(degradeRuleEntity);</span><br><span class="line">        List&lt;DegradeRule&gt; ruleList =  degradeRuleService.allRules().stream().map(x -&gt; x.toRule()).collect(Collectors.toList());</span><br><span class="line">        RefreshRulesUtil.refreshRule(ruleList, RulesEnum.Degrade);</span><br><span class="line">        <span class="keyword">return</span> JsonResult.ok().put(degradeRuleEntity);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@DeleteMapping(&quot;/rules/&#123;id&#125;&quot;)</span></span><br><span class="line">    <span class="meta">@ResponseBody</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> JsonResult <span class="title">deleteRule</span><span class="params">(HttpServletRequest request, HttpServletResponse response, <span class="meta">@PathVariable(name = &quot;id&quot;)</span> Integer id)</span></span>&#123;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 先添加，然后再查询出来批量更新</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        degradeRuleService.deleteRuleById(id);</span><br><span class="line">        List&lt;DegradeRule&gt; ruleList =  degradeRuleService.allRules().stream().map(x -&gt; x.toRule()).collect(Collectors.toList());</span><br><span class="line">        RefreshRulesUtil.refreshRule(ruleList, RulesEnum.Degrade);</span><br><span class="line">        <span class="keyword">return</span> JsonResult.ok();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h2 id="2-5、规则初始化"><a href="#2-5、规则初始化" class="headerlink" title="2.5、规则初始化"></a>2.5、规则初始化</h2><blockquote>
+<p>规则初始化可以使用 <code>Sentinel</code> 提供的 <code>SPI</code> 机制，实现 <code>com.alibaba.csp.sentinel.init#InitFunc</code> 接口，在接口被第一次调用时初始化，不过需要单独引入 <code>sentinel-datasource-extension</code> 。当然我们也可以直接 <code>Spring</code> 提供的 <code>CommandLineRunner</code> 或 <code>ApplicationRunner</code> 在项目启动是从数据库中加载规则。</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.eelve.limiting.sentinel.config;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.alibaba.csp.sentinel.slots.block.RuleConstant;</span><br><span class="line"><span class="keyword">import</span> com.alibaba.csp.sentinel.slots.block.degrade.DegradeRule;</span><br><span class="line"><span class="keyword">import</span> com.alibaba.csp.sentinel.slots.block.degrade.DegradeRuleManager;</span><br><span class="line"><span class="keyword">import</span> com.alibaba.csp.sentinel.slots.block.degrade.circuitbreaker.CircuitBreakerStrategy;</span><br><span class="line"><span class="keyword">import</span> com.alibaba.csp.sentinel.slots.block.flow.FlowRule;</span><br><span class="line"><span class="keyword">import</span> com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;</span><br><span class="line"><span class="keyword">import</span> com.alibaba.csp.sentinel.slots.system.SystemRule;</span><br><span class="line"><span class="keyword">import</span> com.alibaba.csp.sentinel.slots.system.SystemRuleManager;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.ApplicationArguments;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.ApplicationRunner;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Component;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.ArrayList;</span><br><span class="line"><span class="keyword">import</span> java.util.List;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> zhaozhilue</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RuleInitFunc</span> <span class="keyword">implements</span> <span class="title">ApplicationRunner</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">(ApplicationArguments args)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        initFlowQpsRule();</span><br><span class="line"></span><br><span class="line">        initDegradeRule();</span><br><span class="line"></span><br><span class="line">        initSystemProtectionRule();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 初始化流量规则</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">initFlowQpsRule</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        List&lt;FlowRule&gt; rules = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        FlowRule rule1 = <span class="keyword">new</span> FlowRule();</span><br><span class="line">        rule1.setResource(<span class="string">&quot;allInfos&quot;</span>);</span><br><span class="line">        <span class="comment">// Set max qps to 2</span></span><br><span class="line">        rule1.setCount(<span class="number">2</span>);</span><br><span class="line">        rule1.setGrade(RuleConstant.FLOW_GRADE_QPS);</span><br><span class="line">        rule1.setLimitApp(<span class="string">&quot;default&quot;</span>);</span><br><span class="line">        rules.add(rule1);</span><br><span class="line">        FlowRuleManager.loadRules(rules);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 初始化熔断规则</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">initDegradeRule</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        List&lt;DegradeRule&gt; rules = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        DegradeRule rule = <span class="keyword">new</span> DegradeRule(<span class="string">&quot;allInfos&quot;</span>)</span><br><span class="line">        .setGrade(CircuitBreakerStrategy.ERROR_RATIO.getType())</span><br><span class="line">        .setCount(<span class="number">0.7</span>) <span class="comment">// Threshold is 70% error ratio</span></span><br><span class="line">        .setMinRequestAmount(<span class="number">100</span>)</span><br><span class="line">                .setStatIntervalMs(<span class="number">30000</span>) <span class="comment">// 30s</span></span><br><span class="line">                .setTimeWindow(<span class="number">10</span>);</span><br><span class="line">        rules.add(rule);</span><br><span class="line">        DegradeRuleManager.loadRules(rules);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 初始化系统保护跪着</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">initSystemProtectionRule</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        List&lt;SystemRule&gt; rules = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        SystemRule rule = <span class="keyword">new</span> SystemRule();</span><br><span class="line">        rule.setHighestSystemLoad(<span class="number">10</span>);</span><br><span class="line">        rules.add(rule);</span><br><span class="line">        SystemRuleManager.loadRules(rules);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>至此简单的 <code>Spring Boot</code> 单体应用接入 <code>Sentinel</code> 的熔断能力的后端开发就完成了。然后前端再开发相应的页面，就可以给用户真正的使用了。</p>
+</blockquote>
+<hr>
+<p>【<strong>后面的话</strong>】以上的接口有一点缺陷就是需要用户填写具体的熔断资源名称，但是用户实际上是有可能填写错误，从而导致熔断规则不生效。为此这里给出的解决方案是，在应用启动过程中扫描所有添加 <code>@SentinelResource</code> 注解的资源，然后再开放接口提供给前端，然后用户再填写熔断资源名称的时候就可以通过下拉来选择具体的资源名称了。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.eelve.limiting.sentinel.config;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.alibaba.csp.sentinel.annotation.SentinelResource;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.BeansException;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.ApplicationContext;</span><br><span class="line"><span class="keyword">import</span> org.springframework.context.ApplicationContextAware;</span><br><span class="line"><span class="keyword">import</span> org.springframework.core.annotation.AnnotationUtils;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Component;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Controller;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.annotation.PostConstruct;</span><br><span class="line"><span class="keyword">import</span> java.lang.reflect.Method;</span><br><span class="line"><span class="keyword">import</span> java.util.HashSet;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"><span class="keyword">import</span> java.util.Objects;</span><br><span class="line"><span class="keyword">import</span> java.util.Set;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@ClassName</span> SentinelResourcetHolder</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Description</span> 扫描资源</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Author</span> zhao.zhilue</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span> 2021/1/30 9:45</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Version</span> 1.0</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SentinelResourcetHolder</span> <span class="keyword">implements</span> <span class="title">ApplicationContextAware</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Set&lt;String&gt; SENTINEL_RESOURCE = <span class="keyword">new</span> HashSet();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Set&lt;String&gt; <span class="title">getSentinelResource</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> SENTINEL_RESOURCE;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> ApplicationContext applicationContext = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@PostConstruct</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">inintSentinelResourcetHolder</span><span class="params">()</span></span>&#123;</span><br><span class="line">        Map&lt;String, Object&gt; objectMap =  applicationContext.getBeansWithAnnotation(Controller.class);</span><br><span class="line">        objectMap.entrySet().forEach(o -&gt; &#123;</span><br><span class="line">            Method[] methods = o.getValue().getClass().getDeclaredMethods();</span><br><span class="line">            <span class="keyword">for</span> (Method method : methods) &#123;</span><br><span class="line">                SentinelResource sentinelResource = AnnotationUtils.findAnnotation(method, SentinelResource.class);</span><br><span class="line">                <span class="keyword">if</span> (!Objects.isNull(sentinelResource))&#123;</span><br><span class="line">                    SENTINEL_RESOURCE.add(sentinelResource.value());</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setApplicationContext</span><span class="params">(ApplicationContext applicationContext)</span> <span class="keyword">throws</span> BeansException </span>&#123;</span><br><span class="line">        SentinelResourcetHolder.applicationContext = applicationContext;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.eelve.limiting.sentinel.controller;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.eelve.limiting.sentinel.config.SentinelResourceFactory;</span><br><span class="line"><span class="keyword">import</span> com.eelve.limiting.sentinel.config.SentinelResourcetHolder;</span><br><span class="line"><span class="keyword">import</span> com.eelve.limiting.sentinel.vo.JsonResult;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.GetMapping;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RequestMapping;</span><br><span class="line"><span class="keyword">import</span> org.springframework.web.bind.annotation.RestController;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@ClassName</span> SentinelResourceControl</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Description</span> TODO</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Author</span> zhao.zhilue</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span> 2021/1/31 12:31</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Version</span> 1.0</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/api/eelve/sentinel/resource&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SentinelResourceController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@GetMapping</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> JsonResult <span class="title">getAllSentinelResourceV2</span><span class="params">()</span></span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> JsonResult.ok().put(SentinelResourcetHolder.getSentinelResource());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>只有Controller层和Service层的直接第一层方法才能通过注解触发，如果是方法再调用普通方法需要勇SphO或者SphU原生写法</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">extractedSphO</span><span class="params">(Integer num)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (SphO.entry(<span class="string">&quot;extractedSphO&quot;</span>))&#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="comment">//需要保护的逻辑</span></span><br><span class="line">            &#125;<span class="keyword">finally</span> &#123;</span><br><span class="line">                <span class="comment">//需要和SphO.entry成对出现</span></span><br><span class="line">                SphO.exit();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">//熔断之后执行的方法</span></span><br><span class="line">            log.info(<span class="string">&quot;something bad with blockException&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">extractedSphU</span><span class="params">(Integer num)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> (Entry entry = SphU.entry(<span class="string">&quot;extractedSphU&quot;</span>)) &#123;</span><br><span class="line">            <span class="comment">//需要保护的逻辑</span></span><br><span class="line">        &#125; <span class="keyword">catch</span> (BlockException ex) &#123;</span><br><span class="line">            <span class="comment">//熔断之后执行的方法</span></span><br><span class="line">            log.info(<span class="string">&quot;something bad with blockException&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<p><img src="https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png" alt="薏米笔记"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/sentinel/" rel="tag"># sentinel</a>
+              <a href="/tags/java/" rel="tag"># java</a>
+              <a href="/tags/springboot/" rel="tag"># springboot</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/d2ca763d.html" rel="prev" title="Sentinel入门指北">
+      <i class="fa fa-chevron-left"></i> Sentinel入门指北
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/17d40800.html" rel="next" title="基于Guava实现限流">
+      基于Guava实现限流 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC80NTk1NS8yMjQ2Ng=="></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A3%B9%E3%80%81%E6%80%BB%E4%BD%93%E8%AE%BE%E8%AE%A1"><span class="nav-number">1.</span> <span class="nav-text">壹、总体设计</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B4%B0%E3%80%81%E5%AE%9E%E7%8E%B0%E7%BB%86%E8%8A%82"><span class="nav-number">2.</span> <span class="nav-text">贰、实现细节</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1%E3%80%81pom%E4%BE%9D%E8%B5%96"><span class="nav-number">2.1.</span> <span class="nav-text">2.1、pom依赖</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2%E3%80%81%E5%AE%9E%E4%BD%93%E7%B1%BB"><span class="nav-number">2.2.</span> <span class="nav-text">2.2、实体类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3%E3%80%81%E6%A0%B8%E5%BF%83%E8%A7%84%E5%88%99%E5%8F%98%E6%9B%B4"><span class="nav-number">2.3.</span> <span class="nav-text">2.3、核心规则变更</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4%E3%80%81%E8%A7%84%E5%88%99%E6%9B%B4%E6%96%B0%E6%8E%A5%E5%8F%A3"><span class="nav-number">2.4.</span> <span class="nav-text">2.4、规则更新接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-5%E3%80%81%E8%A7%84%E5%88%99%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="nav-number">2.5.</span> <span class="nav-text">2.5、规则初始化</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Chillo"
+      src="/images/virrina.jpg">
+  <p class="site-author-name" itemprop="name">Chillo</p>
+  <div class="site-description" itemprop="description">A human being,who loves football and music.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">77</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/eelve" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;eelve" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:i@eelve.com" title="E-Mail → mailto:i@eelve.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/eivou" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;eivou" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://eelve.com/" title="https:&#x2F;&#x2F;eelve.com&#x2F;">南国薏米</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://shilikun.com/" title="https:&#x2F;&#x2F;shilikun.com&#x2F;" rel="noopener" target="_blank">坤坤</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://binge.eelve.com/" title="https:&#x2F;&#x2F;binge.eelve.com&#x2F;" rel="noopener" target="_blank">Binge</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://bobo.eelve.com/" title="https:&#x2F;&#x2F;bobo.eelve.com&#x2F;" rel="noopener" target="_blank">BoBo</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sunkening0.github.io/" title="https:&#x2F;&#x2F;sunkening0.github.io&#x2F;" rel="noopener" target="_blank">克宁</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        <a href="https://www.upyun.com/?utm_source=lianmeng&amp;utm_medium=referral" target="_blank"><img src="https://i.loli.net/2021/03/07/cM1D8kHpsetuyjR.png" style="width:48px"></a>
+  <div class="beian"><a href="http://www.beian.miit.gov.cn/" rel="noopener" target="_blank"> </a><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=16014637" rel="noopener" target="_blank">蜀ICP备16014637号-1 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">南国薏米</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数">484k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">7:20</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+<script type="text/javascript">
+  // console.clear();
+  console.log("%c 有朋自远方来, 不亦说乎.", "background:#24272A; color:#ffffff", "");
+  console.log("%c Github %c", "background:#24272A; color:#ffffff", "", "https://github.com/eelve");
+</script>
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+</body>
+</html>

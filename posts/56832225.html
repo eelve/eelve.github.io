@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/virrina.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/virrina.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/virrina.jpg">
+  <link rel="mask-icon" href="/images/virrina.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"eelve.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="最近在看服务熔断的相关技术，下面就来总结一下。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浅析Spring Boot单体应用熔断技术">
+<meta property="og:url" content="https://eelve.com/posts/56832225.html">
+<meta property="og:site_name" content="南国薏米">
+<meta property="og:description" content="最近在看服务熔断的相关技术，下面就来总结一下。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://image.eelve.com/eblog/2021012001.png">
+<meta property="og:image" content="https://image.eelve.com/eblog/2021012002.png">
+<meta property="og:image" content="https://image.eelve.com/eblog/2021012003.png">
+<meta property="og:image" content="https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png">
+<meta property="article:published_time" content="2021-01-20T12:20:20.000Z">
+<meta property="article:modified_time" content="2021-04-19T06:44:39.305Z">
+<meta property="article:author" content="Chillo">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="springboot">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://image.eelve.com/eblog/2021012001.png">
+
+<link rel="canonical" href="https://eelve.com/posts/56832225.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>浅析Spring Boot单体应用熔断技术 | 南国薏米</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?6206b88a2a2be02cc7450a7cb8c20126";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="南国薏米" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">南国薏米</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">南国不须收薏苡,百年终竟是芭蕉。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404.html" rel="section"><i class="fa fa-fw fa-heartbeat"></i>公益 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/eelve" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://eelve.com/posts/56832225.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/virrina.jpg">
+      <meta itemprop="name" content="Chillo">
+      <meta itemprop="description" content="A human being,who loves football and music.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="南国薏米">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          浅析Spring Boot单体应用熔断技术
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-01-20 20:20:20" itemprop="dateCreated datePublished" datetime="2021-01-20T20:20:20+08:00">2021-01-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-19 14:44:39" itemprop="dateModified" datetime="2021-04-19T14:44:39+08:00">2021-04-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/springboot/" itemprop="url" rel="index"><span itemprop="name">springboot</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>11k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>10 分钟</span>
+            </span>
+            <div class="post-description">最近在看服务熔断的相关技术，下面就来总结一下。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>【<strong>前面的话</strong>】最近在看服务熔断的相关技术，下面就来总结一下。</p>
+<h1 id="壹、入围方案"><a href="#壹、入围方案" class="headerlink" title="壹、入围方案"></a>壹、入围方案</h1><ul>
+<li>Sentinel<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/alibaba/Sentinel">github地址</a></li>
+<li><a target="_blank" rel="noopener" href="https://sentinelguard.io/zh-cn/docs/introduction.html">https://sentinelguard.io/zh-cn/docs/introduction.html</a></li>
+<li>阿里出品，Spring Cloud Alibaba限流组件，目前持续更新中</li>
+<li>自带Dashboard，可以查看接口Qps等，并且可以动态修改各种规则</li>
+<li>流量控制，直接限流、冷启动、排队</li>
+<li>熔断降级，限制并发限制数和相应时间</li>
+<li>系统负载保护，提供系统级别防护，限制总体CPU等</li>
+<li>主要核心：资源，规则（流量控制规则、熔断降级规则、系统保护规则、来源访问控制规则 和 热点参数规则。），和指标</li>
+<li>文档非常清晰和详细，中文</li>
+<li>支持动态规则（推模式和拉模式）</li>
+</ul>
+</li>
+<li>Hystrix<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/Netflix/Hystrix">github地址</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/Netflix/Hystrix/wiki">https://github.com/Netflix/Hystrix/wiki</a></li>
+<li>Netflix出品，Spring Cloud Netflix限流组件，已经停止新特性开发，只进行bug修复，最近更新为2018年，功能稳定</li>
+<li>有简单的dashboard页面</li>
+<li>以隔离和熔断为主的容错机制，超时或被熔断的调用将会快速失败，并可以提供 fallback 机制的初代熔断框架，异常统计基于滑动窗口</li>
+</ul>
+</li>
+<li>resilience4j<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/resilience4j/resilience4j">github地址</a></li>
+<li><a target="_blank" rel="noopener" href="https://resilience4j.readme.io/docs">https://resilience4j.readme.io/docs</a></li>
+<li>是一款轻量、简单，并且文档非常清晰、丰富的熔断工具。是Hystrix替代品，实现思路和Hystrix一致，目前持续更新中</li>
+<li>需要自己对micrometer、prometheus以及Dropwizard metrics进行整合</li>
+<li>CircuitBreaker 熔断</li>
+<li>Bulkhead 隔离</li>
+<li>RateLimiter QPS限制</li>
+<li>Retry 重试</li>
+<li>TimeLimiter 超时限制</li>
+<li>Cache 缓存</li>
+</ul>
+</li>
+<li>自己实现(基于Guava)<ul>
+<li>基于Guava的令牌桶，可以轻松实现对QPS进行限流</li>
+</ul>
+</li>
+</ul>
+<h1 id="贰、技术对比"><a href="#贰、技术对比" class="headerlink" title="贰、技术对比"></a>贰、技术对比</h1><table>
+<thead>
+<tr>
+<th></th>
+<th><strong>Sentinel</strong></th>
+<th><strong>Hystrix</strong></th>
+<th><strong>resilience4j</strong></th>
+<th>使用Guava实现</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>隔离策略</td>
+<td>信号量隔离（并发线程数限流）</td>
+<td>线程池隔离/信号量隔离</td>
+<td>信号量隔离</td>
+<td></td>
+</tr>
+<tr>
+<td>熔断降级策略</td>
+<td>基于响应时间、异常比率、异常数</td>
+<td>基于异常比率</td>
+<td>基于异常比率、响应时间</td>
+<td></td>
+</tr>
+<tr>
+<td>实时统计实现</td>
+<td>滑动窗口（LeapArray）</td>
+<td>滑动窗口（基于 RxJava）</td>
+<td>Ring Bit Buffer</td>
+<td>令牌桶</td>
+</tr>
+<tr>
+<td>动态规则配置</td>
+<td>支持多种数据源</td>
+<td>支持多种数据源</td>
+<td>有限支持</td>
+<td></td>
+</tr>
+<tr>
+<td>扩展性</td>
+<td>多个扩展点</td>
+<td>插件的形式</td>
+<td>接口的形式</td>
+<td></td>
+</tr>
+<tr>
+<td>基于注解的支持</td>
+<td>支持</td>
+<td>支持</td>
+<td>支持</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>单机限流</td>
+<td>基于 QPS，支持基于调用关系的限流</td>
+<td>有限的支持</td>
+<td>Rate Limiter</td>
+<td>基于 QPS</td>
+</tr>
+<tr>
+<td>集群流控</td>
+<td>支持</td>
+<td>不支持</td>
+<td>不支持</td>
+<td></td>
+</tr>
+<tr>
+<td>流量整形</td>
+<td>支持预热模式与匀速排队控制效果</td>
+<td>不支持</td>
+<td>简单的 Rate Limiter 模式</td>
+<td></td>
+</tr>
+<tr>
+<td>系统自适应保护</td>
+<td>支持</td>
+<td>不支持</td>
+<td>不支持</td>
+<td></td>
+</tr>
+<tr>
+<td>热点识别/防护</td>
+<td>支持</td>
+<td>不支持</td>
+<td>不支持</td>
+<td></td>
+</tr>
+<tr>
+<td>Service Mesh 支持</td>
+<td>支持 Envoy/Istio</td>
+<td>不支持</td>
+<td>不支持</td>
+<td></td>
+</tr>
+<tr>
+<td>控制台</td>
+<td>提供开箱即用的控制台，可配置规则、实时监控、机器发现等</td>
+<td>简单的监控查看</td>
+<td>不提供控制台，可对接其它监控系统</td>
+<td></td>
+</tr>
+<tr>
+<td>是否支持默认规则</td>
+<td>不支持，需要针对每个接口配置规则</td>
+<td>支持</td>
+<td>支持</td>
+<td></td>
+</tr>
+<tr>
+<td>是否支持过滤异常</td>
+<td>注解单个接口支持</td>
+<td>注解和全局默认配置</td>
+<td>注解和全局默认配置</td>
+<td></td>
+</tr>
+</tbody></table>
+<h1 id="叁、应用改造"><a href="#叁、应用改造" class="headerlink" title="叁、应用改造"></a>叁、应用改造</h1><h2 id="3-1、sentinel"><a href="#3-1、sentinel" class="headerlink" title="3.1、sentinel"></a>3.1、sentinel</h2><h3 id="3-1-1、引入依赖"><a href="#3-1-1、引入依赖" class="headerlink" title="3.1.1、引入依赖"></a>3.1.1、引入依赖</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;com.alibaba.cloud&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;spring-cloud-starter-alibaba-sentinel&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;2.0.3.RELEASE&lt;&#x2F;version&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="3-1-2、改造接口或者service层"><a href="#3-1-2、改造接口或者service层" class="headerlink" title="3.1.2、改造接口或者service层"></a>3.1.2、改造接口或者service层</h3><blockquote>
+<p>@SentinelResource(value = “allInfos”,fallback = “errorReturn”)</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Target(&#123;ElementType.METHOD, ElementType.TYPE&#125;)</span></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.RUNTIME)</span></span><br><span class="line"><span class="meta">@Inherited</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> SentinelResource &#123;</span><br><span class="line">    <span class="comment">//资源名称</span></span><br><span class="line">    <span class="function">String <span class="title">value</span><span class="params">()</span> <span class="keyword">default</span> &quot;&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//流量方向</span></span><br><span class="line">    <span class="function">EntryType <span class="title">entryType</span><span class="params">()</span> <span class="keyword">default</span> EntryType.OUT</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//资源类型</span></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">resourceType</span><span class="params">()</span> <span class="keyword">default</span> 0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//异常处理方法</span></span><br><span class="line">    <span class="function">String <span class="title">blockHandler</span><span class="params">()</span> <span class="keyword">default</span> &quot;&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//异常处理类</span></span><br><span class="line">    Class&lt;?&gt;[] blockHandlerClass() <span class="keyword">default</span> &#123;&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//熔断方法</span></span><br><span class="line">    <span class="function">String <span class="title">fallback</span><span class="params">()</span> <span class="keyword">default</span> &quot;&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//默认熔断方法</span></span><br><span class="line">    <span class="function">String <span class="title">defaultFallback</span><span class="params">()</span> <span class="keyword">default</span> &quot;&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//熔断类</span></span><br><span class="line">    Class&lt;?&gt;[] fallbackClass() <span class="keyword">default</span> &#123;&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//统计异常</span></span><br><span class="line">    Class&lt;? extends Throwable&gt;[] exceptionsToTrace() <span class="keyword">default</span> &#123;Throwable.class&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//忽略异常</span></span><br><span class="line">    Class&lt;? extends Throwable&gt;[] exceptionsToIgnore() <span class="keyword">default</span> &#123;&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;/get&quot;)</span></span><br><span class="line"><span class="meta">@ResponseBody</span></span><br><span class="line"><span class="meta">@SentinelResource(value = &quot;allInfos&quot;,fallback = &quot;errorReturn&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> JsonResult <span class="title">allInfos</span><span class="params">(HttpServletRequest request, HttpServletResponse response, <span class="meta">@RequestParam</span> Integer num)</span></span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (num % <span class="number">2</span> == <span class="number">0</span>) &#123;</span><br><span class="line">                log.info(<span class="string">&quot;num % 2 == 0&quot;</span>);</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> BaseException(<span class="string">&quot;something bad with 2&quot;</span>, <span class="number">400</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> JsonResult.ok();</span><br><span class="line">        &#125; <span class="keyword">catch</span> (ProgramException e) &#123;</span><br><span class="line">            log.info(<span class="string">&quot;error&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> JsonResult.error(<span class="string">&quot;error&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="3-1-3、针对接口配置熔断方法或者限流方法"><a href="#3-1-3、针对接口配置熔断方法或者限流方法" class="headerlink" title="3.1.3、针对接口配置熔断方法或者限流方法"></a>3.1.3、针对接口配置熔断方法或者限流方法</h3><blockquote>
+<p>默认过滤拦截所有Controller接口</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 限流，参数需要和方法保持一致</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> request</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> response</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> num</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> BlockException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> JsonResult <span class="title">errorReturn</span><span class="params">(HttpServletRequest request, HttpServletResponse response, <span class="meta">@RequestParam</span> Integer num)</span> <span class="keyword">throws</span> BlockException </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> JsonResult.error(<span class="string">&quot;error 限流&quot;</span> + num );</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 熔断，参数需要和方法保持一直，并且需要添加BlockException异常</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> request</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> response</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> num</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> b</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> BlockException</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> JsonResult <span class="title">errorReturn</span><span class="params">(HttpServletRequest request, HttpServletResponse response, <span class="meta">@RequestParam</span> Integer num,BlockException b)</span> <span class="keyword">throws</span> BlockException </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> JsonResult.error(<span class="string">&quot;error 熔断&quot;</span> + num );</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>注意也可以不配置限流或者熔断方法。通过全局异常去捕获<strong>UndeclaredThrowableException</strong>或者<strong>BlockException</strong>避免大量的开发量</p>
+</blockquote>
+<h3 id="3-1-4、接入dashboard"><a href="#3-1-4、接入dashboard" class="headerlink" title="3.1.4、接入dashboard"></a>3.1.4、接入dashboard</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">cloud:</span></span><br><span class="line">    <span class="attr">sentinel:</span></span><br><span class="line">      <span class="attr">transport:</span></span><br><span class="line">        <span class="attr">port:</span> <span class="number">8719</span></span><br><span class="line">        <span class="attr">dashboard:</span> <span class="string">localhost:8080</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://image.eelve.com/eblog/2021012001.png" alt="sentinel"></p>
+<h3 id="3-1-5、规则持久化和动态更新"><a href="#3-1-5、规则持久化和动态更新" class="headerlink" title="3.1.5、规则持久化和动态更新"></a>3.1.5、规则持久化和动态更新</h3><blockquote>
+<p>接入配置中心如：zookeeper等等，并对规则采用推模式</p>
+</blockquote>
+<h2 id="3-2、hystrix"><a href="#3-2、hystrix" class="headerlink" title="3.2、hystrix"></a>3.2、hystrix</h2><h3 id="3-2-1、引入依赖"><a href="#3-2-1、引入依赖" class="headerlink" title="3.2.1、引入依赖"></a>3.2.1、引入依赖</h3> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.springframework.boot&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;spring-boot-starter-actuator&lt;&#x2F;artifactId&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.springframework.cloud&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;spring-cloud-starter-netflix-hystrix-dashboard&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;2.0.4.RELEASE&lt;&#x2F;version&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.springframework.cloud&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;spring-cloud-starter-netflix-hystrix&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;2.0.4.RELEASE&lt;&#x2F;version&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="3-2-2、改造接口"><a href="#3-2-2、改造接口" class="headerlink" title="3.2.2、改造接口"></a>3.2.2、改造接口</h3><blockquote>
+<p>@HystrixCommand(fallbackMethod = “timeOutError”)</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Target(&#123;ElementType.METHOD&#125;)</span></span><br><span class="line"><span class="meta">@Retention(RetentionPolicy.RUNTIME)</span></span><br><span class="line"><span class="meta">@Inherited</span></span><br><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> HystrixCommand &#123;</span><br><span class="line">    <span class="function">String <span class="title">groupKey</span><span class="params">()</span> <span class="keyword">default</span> &quot;&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function">String <span class="title">commandKey</span><span class="params">()</span> <span class="keyword">default</span> &quot;&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function">String <span class="title">threadPoolKey</span><span class="params">()</span> <span class="keyword">default</span> &quot;&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function">String <span class="title">fallbackMethod</span><span class="params">()</span> <span class="keyword">default</span> &quot;&quot;</span>;</span><br><span class="line"></span><br><span class="line">    HystrixProperty[] commandProperties() <span class="keyword">default</span> &#123;&#125;;</span><br><span class="line"></span><br><span class="line">    HystrixProperty[] threadPoolProperties() <span class="keyword">default</span> &#123;&#125;;</span><br><span class="line"></span><br><span class="line">    Class&lt;? extends Throwable&gt;[] ignoreExceptions() <span class="keyword">default</span> &#123;&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="function">ObservableExecutionMode <span class="title">observableExecutionMode</span><span class="params">()</span> <span class="keyword">default</span> ObservableExecutionMode.EAGER</span>;</span><br><span class="line"></span><br><span class="line">    HystrixException[] raiseHystrixExceptions() <span class="keyword">default</span> &#123;&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="function">String <span class="title">defaultFallback</span><span class="params">()</span> <span class="keyword">default</span> &quot;&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;/get&quot;)</span></span><br><span class="line"><span class="meta">@ResponseBody</span></span><br><span class="line"><span class="meta">@HystrixCommand(fallbackMethod = &quot;fallbackMethod&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> JsonResult <span class="title">allInfos</span><span class="params">(HttpServletRequest request, HttpServletResponse response, <span class="meta">@RequestParam</span> Integer num)</span></span>&#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (num % <span class="number">3</span> == <span class="number">0</span>) &#123;</span><br><span class="line">            log.info(<span class="string">&quot;num % 3 == 0&quot;</span>);</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> BaseException(<span class="string">&quot;something bad whitch 3&quot;</span>, <span class="number">400</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> JsonResult.ok();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (ProgramException | InterruptedException exception) &#123;</span><br><span class="line">        log.info(<span class="string">&quot;error&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> JsonResult.error(<span class="string">&quot;error&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="3-2-3、针对接口配置熔断方法"><a href="#3-2-3、针对接口配置熔断方法" class="headerlink" title="3.2.3、针对接口配置熔断方法"></a>3.2.3、针对接口配置熔断方法</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 该方法是熔断回调方法，参数需要和接口保持一致</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> request</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> response</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> num</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> JsonResult <span class="title">fallbackMethod</span><span class="params">(HttpServletRequest request, HttpServletResponse response, <span class="meta">@RequestParam</span> Integer num)</span> </span>&#123;</span><br><span class="line">    response.setStatus(<span class="number">500</span>);</span><br><span class="line">    log.info(<span class="string">&quot;发生了熔断！！&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> JsonResult.error(<span class="string">&quot;熔断&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="3-2-4、配置默认策略"><a href="#3-2-4、配置默认策略" class="headerlink" title="3.2.4、配置默认策略"></a>3.2.4、配置默认策略</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">hystrix:</span><br><span class="line">  command:</span><br><span class="line">    default:</span><br><span class="line">      execution:</span><br><span class="line">        isolation:</span><br><span class="line">          strategy: THREAD</span><br><span class="line">          thread:</span><br><span class="line">            # 线程超时15秒,调用Fallback方法</span><br><span class="line">            timeoutInMilliseconds: 15000</span><br><span class="line">      metrics:</span><br><span class="line">        rollingStats:</span><br><span class="line">          timeInMilliseconds: 15000</span><br><span class="line">      circuitBreaker:</span><br><span class="line">        # 10秒内出现3个以上请求(已临近阀值),并且出错率在50%以上,开启断路器.断开服务,调用Fallback方法</span><br><span class="line">        requestVolumeThreshold: 3</span><br><span class="line">        sleepWindowInMilliseconds: 10000</span><br></pre></td></tr></table></figure>
+<h3 id="3-2-5、接入监控"><a href="#3-2-5、接入监控" class="headerlink" title="3.2.5、接入监控"></a>3.2.5、接入监控</h3><p><img src="https://image.eelve.com/eblog/2021012002.png" alt="hystrix"></p>
+<p><img src="https://image.eelve.com/eblog/2021012003.png" alt="hystrix示意图"></p>
+<blockquote>
+<p>曲线：用来记录2分钟内流量的相对变化，我们可以通过它来观察到流量的上升和下降趋势。</p>
+</blockquote>
+<blockquote>
+<p><strong>集群监控需要用到注册中心</strong></p>
+</blockquote>
+<h2 id="3-3、resilience4j"><a href="#3-3、resilience4j" class="headerlink" title="3.3、resilience4j"></a>3.3、resilience4j</h2><h3 id="3-3-1、引入依赖"><a href="#3-3-1、引入依赖" class="headerlink" title="3.3.1、引入依赖"></a>3.3.1、引入依赖</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.springframework.boot&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;spring-boot-starter-web&lt;&#x2F;artifactId&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br><span class="line"></span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.springframework.boot&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;spring-boot-starter-test&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;scope&gt;test&lt;&#x2F;scope&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br><span class="line"></span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;io.github.resilience4j&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;resilience4j-spring-boot2&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;1.6.1&lt;&#x2F;version&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br><span class="line"></span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;io.github.resilience4j&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;resilience4j-bulkhead&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;1.6.1&lt;&#x2F;version&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br><span class="line"></span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;io.github.resilience4j&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;resilience4j-ratelimiter&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;1.6.1&lt;&#x2F;version&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br><span class="line"></span><br><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;io.github.resilience4j&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;resilience4j-timelimiter&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;1.6.1&lt;&#x2F;version&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>可以按需要引入：bulkhead，ratelimiter，timelimiter等</p>
+</blockquote>
+<h3 id="3-3-2、改造接口"><a href="#3-3-2、改造接口" class="headerlink" title="3.3.2、改造接口"></a>3.3.2、改造接口</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;/get&quot;)</span></span><br><span class="line"><span class="meta">@ResponseBody</span></span><br><span class="line"><span class="comment">//@TimeLimiter(name = &quot;BulkheadA&quot;,fallbackMethod = &quot;fallbackMethod&quot;)</span></span><br><span class="line"><span class="meta">@CircuitBreaker(name = &quot;BulkheadA&quot;,fallbackMethod = &quot;fallbackMethod&quot;)</span></span><br><span class="line"><span class="meta">@Bulkhead(name = &quot;BulkheadA&quot;,fallbackMethod = &quot;fallbackMethod&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> JsonResult <span class="title">allInfos</span><span class="params">(HttpServletRequest request, HttpServletResponse response, <span class="meta">@RequestParam</span> Integer num)</span></span>&#123;</span><br><span class="line">    log.info(<span class="string">&quot;param-----&gt;&quot;</span> + num);</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="comment">//Thread.sleep(num);</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (num % <span class="number">2</span> == <span class="number">0</span>) &#123;</span><br><span class="line">            log.info(<span class="string">&quot;num % 2 == 0&quot;</span>);</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> BaseException(<span class="string">&quot;something bad with 2&quot;</span>, <span class="number">400</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (num % <span class="number">3</span> == <span class="number">0</span>) &#123;</span><br><span class="line">            log.info(<span class="string">&quot;num % 3 == 0&quot;</span>);</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> BaseException(<span class="string">&quot;something bad whitch 3&quot;</span>, <span class="number">400</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (num % <span class="number">5</span> == <span class="number">0</span>) &#123;</span><br><span class="line">            log.info(<span class="string">&quot;num % 5 == 0&quot;</span>);</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> ProgramException(<span class="string">&quot;something bad whitch 5&quot;</span>, <span class="number">400</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (num % <span class="number">7</span> == <span class="number">0</span>) &#123;</span><br><span class="line">            log.info(<span class="string">&quot;num % 7 == 0&quot;</span>);</span><br><span class="line">            <span class="keyword">int</span> res = <span class="number">1</span> / <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> JsonResult.ok();</span><br><span class="line">    &#125; <span class="keyword">catch</span> (BufferUnderflowException e) &#123;</span><br><span class="line">        log.info(<span class="string">&quot;error&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> JsonResult.error(<span class="string">&quot;error&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="3-3-3、针对接口配置熔断方法"><a href="#3-3-3、针对接口配置熔断方法" class="headerlink" title="3.3.3、针对接口配置熔断方法"></a>3.3.3、针对接口配置熔断方法</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 需要参数一致，并且加上相应异常</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> request</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> response</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> num</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> exception</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> JsonResult <span class="title">fallbackMethod</span><span class="params">(HttpServletRequest request, HttpServletResponse response, <span class="meta">@RequestParam</span> Integer num, BulkheadFullException exception)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> JsonResult.error(<span class="string">&quot;error 熔断&quot;</span> + num );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="3-3-4、配置规则"><a href="#3-3-4、配置规则" class="headerlink" title="3.3.4、配置规则"></a>3.3.4、配置规则</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">resilience4j.circuitbreaker:</span></span><br><span class="line">    <span class="attr">instances:</span></span><br><span class="line">        <span class="attr">backendA:</span></span><br><span class="line">            <span class="attr">registerHealthIndicator:</span> <span class="literal">true</span></span><br><span class="line">            <span class="attr">slidingWindowSize:</span> <span class="number">100</span></span><br><span class="line">        <span class="attr">backendB:</span></span><br><span class="line">            <span class="attr">registerHealthIndicator:</span> <span class="literal">true</span></span><br><span class="line">            <span class="attr">slidingWindowSize:</span> <span class="number">10</span></span><br><span class="line">            <span class="attr">permittedNumberOfCallsInHalfOpenState:</span> <span class="number">3</span></span><br><span class="line">            <span class="attr">slidingWindowType:</span> <span class="string">TIME_BASED</span></span><br><span class="line">            <span class="attr">minimumNumberOfCalls:</span> <span class="number">20</span></span><br><span class="line">            <span class="attr">waitDurationInOpenState:</span> <span class="string">50s</span></span><br><span class="line">            <span class="attr">failureRateThreshold:</span> <span class="number">50</span></span><br><span class="line">            <span class="attr">eventConsumerBufferSize:</span> <span class="number">10</span></span><br><span class="line">            <span class="attr">recordFailurePredicate:</span> <span class="string">io.github.robwin.exception.RecordFailurePredicate</span></span><br><span class="line"></span><br><span class="line"><span class="attr">resilience4j.retry:</span></span><br><span class="line">    <span class="attr">instances:</span></span><br><span class="line">        <span class="attr">backendA:</span></span><br><span class="line">            <span class="attr">maxRetryAttempts:</span> <span class="number">3</span></span><br><span class="line">            <span class="attr">waitDuration:</span> <span class="string">10s</span></span><br><span class="line">            <span class="attr">enableExponentialBackoff:</span> <span class="literal">true</span></span><br><span class="line">            <span class="attr">exponentialBackoffMultiplier:</span> <span class="number">2</span></span><br><span class="line">            <span class="attr">retryExceptions:</span></span><br><span class="line">                <span class="bullet">-</span> <span class="string">org.springframework.web.client.HttpServerErrorException</span></span><br><span class="line">                <span class="bullet">-</span> <span class="string">java.io.IOException</span></span><br><span class="line">            <span class="attr">ignoreExceptions:</span></span><br><span class="line">                <span class="bullet">-</span> <span class="string">io.github.robwin.exception.BusinessException</span></span><br><span class="line">        <span class="attr">backendB:</span></span><br><span class="line">            <span class="attr">maxRetryAttempts:</span> <span class="number">3</span></span><br><span class="line">            <span class="attr">waitDuration:</span> <span class="string">10s</span></span><br><span class="line">            <span class="attr">retryExceptions:</span></span><br><span class="line">                <span class="bullet">-</span> <span class="string">org.springframework.web.client.HttpServerErrorException</span></span><br><span class="line">                <span class="bullet">-</span> <span class="string">java.io.IOException</span></span><br><span class="line">            <span class="attr">ignoreExceptions:</span></span><br><span class="line">                <span class="bullet">-</span> <span class="string">io.github.robwin.exception.BusinessException</span></span><br><span class="line"></span><br><span class="line"><span class="attr">resilience4j.bulkhead:</span></span><br><span class="line">    <span class="attr">instances:</span></span><br><span class="line">        <span class="attr">backendA:</span></span><br><span class="line">            <span class="attr">maxConcurrentCalls:</span> <span class="number">10</span></span><br><span class="line">        <span class="attr">backendB:</span></span><br><span class="line">            <span class="attr">maxWaitDuration:</span> <span class="string">10ms</span></span><br><span class="line">            <span class="attr">maxConcurrentCalls:</span> <span class="number">20</span></span><br><span class="line"></span><br><span class="line"><span class="attr">resilience4j.thread-pool-bulkhead:</span></span><br><span class="line">  <span class="attr">instances:</span></span><br><span class="line">    <span class="attr">backendC:</span></span><br><span class="line">      <span class="attr">maxThreadPoolSize:</span> <span class="number">1</span></span><br><span class="line">      <span class="attr">coreThreadPoolSize:</span> <span class="number">1</span></span><br><span class="line">      <span class="attr">queueCapacity:</span> <span class="number">1</span></span><br><span class="line"></span><br><span class="line"><span class="attr">resilience4j.ratelimiter:</span></span><br><span class="line">    <span class="attr">instances:</span></span><br><span class="line">        <span class="attr">backendA:</span></span><br><span class="line">            <span class="attr">limitForPeriod:</span> <span class="number">10</span></span><br><span class="line">            <span class="attr">limitRefreshPeriod:</span> <span class="string">1s</span></span><br><span class="line">            <span class="attr">timeoutDuration:</span> <span class="number">0</span></span><br><span class="line">            <span class="attr">registerHealthIndicator:</span> <span class="literal">true</span></span><br><span class="line">            <span class="attr">eventConsumerBufferSize:</span> <span class="number">100</span></span><br><span class="line">        <span class="attr">backendB:</span></span><br><span class="line">            <span class="attr">limitForPeriod:</span> <span class="number">6</span></span><br><span class="line">            <span class="attr">limitRefreshPeriod:</span> <span class="string">500ms</span></span><br><span class="line">            <span class="attr">timeoutDuration:</span> <span class="string">3s</span></span><br><span class="line"></span><br><span class="line"><span class="attr">resilience4j.timelimiter:</span></span><br><span class="line">    <span class="attr">instances:</span></span><br><span class="line">        <span class="attr">backendA:</span></span><br><span class="line">            <span class="attr">timeoutDuration:</span> <span class="string">2s</span></span><br><span class="line">            <span class="attr">cancelRunningFuture:</span> <span class="literal">true</span></span><br><span class="line">        <span class="attr">backendB:</span></span><br><span class="line">            <span class="attr">timeoutDuration:</span> <span class="string">1s</span></span><br><span class="line">            <span class="attr">cancelRunningFuture:</span> <span class="literal">false</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>配置的规则可以被代码覆盖</p>
+</blockquote>
+<h3 id="3-3-5、配置监控"><a href="#3-3-5、配置监控" class="headerlink" title="3.3.5、配置监控"></a>3.3.5、配置监控</h3><blockquote>
+<p>如grafana等</p>
+</blockquote>
+<h1 id="肆、关注点"><a href="#肆、关注点" class="headerlink" title="肆、关注点"></a>肆、关注点</h1><ul>
+<li>是否需要过滤部分异常</li>
+<li>是否需要全局默认规则</li>
+<li>可能需要引入其他中间件</li>
+<li>k8s流量控制</li>
+<li>规则存储和动态修改</li>
+<li>接入改造代价</li>
+</ul>
+<h1 id="【后面的话】"><a href="#【后面的话】" class="headerlink" title="【后面的话】"></a>【<strong>后面的话</strong>】</h1><p>个人建议的话，比较推荐sentinel，它提供了很多接口便于开发者自己拓展，同时我觉得他的规则动态更新也比较方便。最后是相关示例代码:<a target="_blank" rel="noopener" href="https://github.com/eelve/limiting">单体应用示例代码</a></p>
+<hr>
+<p><img src="https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png" alt="薏米笔记"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/java/" rel="tag"># java</a>
+              <a href="/tags/springboot/" rel="tag"># springboot</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/99c3e47d.html" rel="prev" title="站点迁移指北">
+      <i class="fa fa-chevron-left"></i> 站点迁移指北
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/d2ca763d.html" rel="next" title="Sentinel入门指北">
+      Sentinel入门指北 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC80NTk1NS8yMjQ2Ng=="></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A3%B9%E3%80%81%E5%85%A5%E5%9B%B4%E6%96%B9%E6%A1%88"><span class="nav-number">1.</span> <span class="nav-text">壹、入围方案</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B4%B0%E3%80%81%E6%8A%80%E6%9C%AF%E5%AF%B9%E6%AF%94"><span class="nav-number">2.</span> <span class="nav-text">贰、技术对比</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%81%E3%80%81%E5%BA%94%E7%94%A8%E6%94%B9%E9%80%A0"><span class="nav-number">3.</span> <span class="nav-text">叁、应用改造</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1%E3%80%81sentinel"><span class="nav-number">3.1.</span> <span class="nav-text">3.1、sentinel</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-1%E3%80%81%E5%BC%95%E5%85%A5%E4%BE%9D%E8%B5%96"><span class="nav-number">3.1.1.</span> <span class="nav-text">3.1.1、引入依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-2%E3%80%81%E6%94%B9%E9%80%A0%E6%8E%A5%E5%8F%A3%E6%88%96%E8%80%85service%E5%B1%82"><span class="nav-number">3.1.2.</span> <span class="nav-text">3.1.2、改造接口或者service层</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-3%E3%80%81%E9%92%88%E5%AF%B9%E6%8E%A5%E5%8F%A3%E9%85%8D%E7%BD%AE%E7%86%94%E6%96%AD%E6%96%B9%E6%B3%95%E6%88%96%E8%80%85%E9%99%90%E6%B5%81%E6%96%B9%E6%B3%95"><span class="nav-number">3.1.3.</span> <span class="nav-text">3.1.3、针对接口配置熔断方法或者限流方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-4%E3%80%81%E6%8E%A5%E5%85%A5dashboard"><span class="nav-number">3.1.4.</span> <span class="nav-text">3.1.4、接入dashboard</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-5%E3%80%81%E8%A7%84%E5%88%99%E6%8C%81%E4%B9%85%E5%8C%96%E5%92%8C%E5%8A%A8%E6%80%81%E6%9B%B4%E6%96%B0"><span class="nav-number">3.1.5.</span> <span class="nav-text">3.1.5、规则持久化和动态更新</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2%E3%80%81hystrix"><span class="nav-number">3.2.</span> <span class="nav-text">3.2、hystrix</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-1%E3%80%81%E5%BC%95%E5%85%A5%E4%BE%9D%E8%B5%96"><span class="nav-number">3.2.1.</span> <span class="nav-text">3.2.1、引入依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-2%E3%80%81%E6%94%B9%E9%80%A0%E6%8E%A5%E5%8F%A3"><span class="nav-number">3.2.2.</span> <span class="nav-text">3.2.2、改造接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-3%E3%80%81%E9%92%88%E5%AF%B9%E6%8E%A5%E5%8F%A3%E9%85%8D%E7%BD%AE%E7%86%94%E6%96%AD%E6%96%B9%E6%B3%95"><span class="nav-number">3.2.3.</span> <span class="nav-text">3.2.3、针对接口配置熔断方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-4%E3%80%81%E9%85%8D%E7%BD%AE%E9%BB%98%E8%AE%A4%E7%AD%96%E7%95%A5"><span class="nav-number">3.2.4.</span> <span class="nav-text">3.2.4、配置默认策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-5%E3%80%81%E6%8E%A5%E5%85%A5%E7%9B%91%E6%8E%A7"><span class="nav-number">3.2.5.</span> <span class="nav-text">3.2.5、接入监控</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3%E3%80%81resilience4j"><span class="nav-number">3.3.</span> <span class="nav-text">3.3、resilience4j</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-1%E3%80%81%E5%BC%95%E5%85%A5%E4%BE%9D%E8%B5%96"><span class="nav-number">3.3.1.</span> <span class="nav-text">3.3.1、引入依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-2%E3%80%81%E6%94%B9%E9%80%A0%E6%8E%A5%E5%8F%A3"><span class="nav-number">3.3.2.</span> <span class="nav-text">3.3.2、改造接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-3%E3%80%81%E9%92%88%E5%AF%B9%E6%8E%A5%E5%8F%A3%E9%85%8D%E7%BD%AE%E7%86%94%E6%96%AD%E6%96%B9%E6%B3%95"><span class="nav-number">3.3.3.</span> <span class="nav-text">3.3.3、针对接口配置熔断方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-4%E3%80%81%E9%85%8D%E7%BD%AE%E8%A7%84%E5%88%99"><span class="nav-number">3.3.4.</span> <span class="nav-text">3.3.4、配置规则</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-5%E3%80%81%E9%85%8D%E7%BD%AE%E7%9B%91%E6%8E%A7"><span class="nav-number">3.3.5.</span> <span class="nav-text">3.3.5、配置监控</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%82%86%E3%80%81%E5%85%B3%E6%B3%A8%E7%82%B9"><span class="nav-number">4.</span> <span class="nav-text">肆、关注点</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E3%80%90%E5%90%8E%E9%9D%A2%E7%9A%84%E8%AF%9D%E3%80%91"><span class="nav-number">5.</span> <span class="nav-text">【后面的话】</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Chillo"
+      src="/images/virrina.jpg">
+  <p class="site-author-name" itemprop="name">Chillo</p>
+  <div class="site-description" itemprop="description">A human being,who loves football and music.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">77</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/eelve" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;eelve" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:i@eelve.com" title="E-Mail → mailto:i@eelve.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/eivou" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;eivou" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://eelve.com/" title="https:&#x2F;&#x2F;eelve.com&#x2F;">南国薏米</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://shilikun.com/" title="https:&#x2F;&#x2F;shilikun.com&#x2F;" rel="noopener" target="_blank">坤坤</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://binge.eelve.com/" title="https:&#x2F;&#x2F;binge.eelve.com&#x2F;" rel="noopener" target="_blank">Binge</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://bobo.eelve.com/" title="https:&#x2F;&#x2F;bobo.eelve.com&#x2F;" rel="noopener" target="_blank">BoBo</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sunkening0.github.io/" title="https:&#x2F;&#x2F;sunkening0.github.io&#x2F;" rel="noopener" target="_blank">克宁</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        <a href="https://www.upyun.com/?utm_source=lianmeng&amp;utm_medium=referral" target="_blank"><img src="https://i.loli.net/2021/03/07/cM1D8kHpsetuyjR.png" style="width:48px"></a>
+  <div class="beian"><a href="http://www.beian.miit.gov.cn/" rel="noopener" target="_blank"> </a><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=16014637" rel="noopener" target="_blank">蜀ICP备16014637号-1 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">南国薏米</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数">484k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">7:20</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+<script type="text/javascript">
+  // console.clear();
+  console.log("%c 有朋自远方来, 不亦说乎.", "background:#24272A; color:#ffffff", "");
+  console.log("%c Github %c", "background:#24272A; color:#ffffff", "", "https://github.com/eelve");
+</script>
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+</body>
+</html>

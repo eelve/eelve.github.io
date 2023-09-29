@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/virrina.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/virrina.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/virrina.jpg">
+  <link rel="mask-icon" href="/images/virrina.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"eelve.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="在前面已经安装好了Elasticsearch和Logstash，今天就来Kibana进行一下初步体验。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Elastic Stack实战之Kibana初体验本地版">
+<meta property="og:url" content="https://eelve.com/posts/55ef13e7.html">
+<meta property="og:site_name" content="南国薏米">
+<meta property="og:description" content="在前面已经安装好了Elasticsearch和Logstash，今天就来Kibana进行一下初步体验。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/illustrated-screenshot-hero-kibana-ab9ac4d9e6e748fda40fbdff14591bc6.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/animated-gif-lens-drag-and-drop-150ecdc9e8314ff798ae5958edac5963.gif">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/kibana-basics-with-vega-87818e2dc2df4800bd116de2eb8ecf39.jpg">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/geo-101256c64dc24b04abede3b0088ef4b8.jpg">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/kibana-timeseries-9cdce1ca946f44da9279e8c7577709e0.jpg">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/kibana-machine-learning-5148691b6084492fb47558ebbee177e1.jpg">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/kibana-graph-e0e161ba7f3a4d6bb3c0640701e49a30.jpg">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030301-00f0ff22c74c4275be3690daa471cfa2.jpg">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030302-e7c518603e69473a8438fb32a9454154.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030306-5f167cf3142041ad944de9b7b0ff0eb9.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030303-9787af1aceb148ef8b2f6a49015630c4.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030304-a74acb31fabc4f4da44e96e0c7a28610.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030305-c4f00a780a704435b28eb34f360857da.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030308-53cd70f082074829afb4ee887948b24a.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030311-d8de4d9839d34d38b731ba0ce0be2336.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030312-452f0ac1954844cab0ea2955bd43dfa2.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030313-425f770de5064b06b8951748d6a0d01b.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030314-1689d96967794fc38f042ea3807dfc1d.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030315-68061267b1ac4b13a7844b873aa06c6b.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030316-bb66b6f0ba19419abc0ea3b674703f1b.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/screenshot-canvas-log-analysis-e24abcc3311841c886dbc36c8ca8dc05.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/screenshot-canvas-infrastructure-706070724cb94eabbe6c37f1c82ce66d.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/screenshot-canvas-apm-d007b95db41646a8832f1b1e35734c14.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/screenshot-canvas-security-operations-dd4a909ca4164efa93a30fc9e4c7b7e3.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/screenshot-canvas-business-analytics-76b7f80430664be09ca4a2798ffb7faa.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/reporting_no_zoom-optimized-1144e12a2f5e4e308fb9aee150ea7629.gif">
+<meta property="og:image" content="https://i.loli.net/2020/03/03/SlqFLG8AMNZiQXp.gif">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/kibana-homepage-ca50d6a5d73b4e5e981724528a492eca.jpg">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/kibana-management-security-2be33e4e888845ea87d6537b2eeaeb7f.jpg">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/kibana-management-logstash-f9dbc5faf2ed484f9643ead95ef57e02.jpg">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/screenshot-rollups-management-ui-ec0be7dea0374a21a95bd18a048c094f.jpg">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/5.5-console-80pct-generic-rgb-360a6e4bbf484353b27151e27de93b2e.jpg">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/image4-2-d9d1a61d020f4af7b934c3e6fa424208.png">
+<meta property="og:image" content="https://eelve.com/upload/2019/8/eblog-b269767ff45b4e01a1c380e38898c1c0.png">
+<meta property="article:published_time" content="2020-03-03T11:49:22.000Z">
+<meta property="article:modified_time" content="2021-04-19T07:47:19.535Z">
+<meta property="article:author" content="Chillo">
+<meta property="article:tag" content="hide">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://eelve.com/upload/2020/3/illustrated-screenshot-hero-kibana-ab9ac4d9e6e748fda40fbdff14591bc6.png">
+
+<link rel="canonical" href="https://eelve.com/posts/55ef13e7.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Elastic Stack实战之Kibana初体验本地版 | 南国薏米</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?6206b88a2a2be02cc7450a7cb8c20126";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="南国薏米" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">南国薏米</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">南国不须收薏苡,百年终竟是芭蕉。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404.html" rel="section"><i class="fa fa-fw fa-heartbeat"></i>公益 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/eelve" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://eelve.com/posts/55ef13e7.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/virrina.jpg">
+      <meta itemprop="name" content="Chillo">
+      <meta itemprop="description" content="A human being,who loves football and music.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="南国薏米">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Elastic Stack实战之Kibana初体验本地版
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-03 19:49:22" itemprop="dateCreated datePublished" datetime="2020-03-03T19:49:22+08:00">2020-03-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-19 15:47:19" itemprop="dateModified" datetime="2021-04-19T15:47:19+08:00">2021-04-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/hide/" itemprop="url" rel="index"><span itemprop="name">hide</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>13k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>12 分钟</span>
+            </span>
+            <div class="post-description">在前面已经安装好了Elasticsearch和Logstash，今天就来Kibana进行一下初步体验。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <hr>
+<p>layout: elastic<br>title: Elastic Stack实战之Kibana初体验<br>date: 2020-03-03 19:49:22<br>tags: [ELK,Kibana]<br>categories: Elastic Stack</p>
+<hr>
+<p>【<strong>前面的话</strong>】在前面已经安装好了Elasticsearch和Logstash，今天就来<a target="_blank" rel="noopener" href="https://www.elastic.co/cn/kibana">Kibana</a>进行一下初步体验。</p>
+<hr>
+<h1 id="壹、软件版本"><a href="#壹、软件版本" class="headerlink" title="壹、软件版本"></a>壹、软件版本</h1><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">Centos：CentOS-7-x86_64-Minimal-1908</span></span><br><span class="line"><span class="attr">VM:</span> <span class="number">15.5</span><span class="number">.0</span> <span class="string">build-14665864</span></span><br><span class="line"><span class="attr">Java:</span> <span class="number">1.8</span><span class="string">.0_211</span></span><br><span class="line"><span class="attr">Elasticsearch:</span> <span class="string">elasticsearch-7.6.0</span></span><br><span class="line"><span class="attr">Logstash:</span> <span class="string">logstash-7.6.0</span></span><br><span class="line"><span class="attr">Kibana:</span> <span class="string">kibana-7.6.0</span></span><br></pre></td></tr></table></figure>
+<h1 id="贰、Kibana介绍"><a href="#贰、Kibana介绍" class="headerlink" title="贰、Kibana介绍"></a>贰、Kibana介绍</h1><p><img src="https://eelve.com/upload/2020/3/illustrated-screenshot-hero-kibana-ab9ac4d9e6e748fda40fbdff14591bc6.png" alt="illustrated-screenshot-hero-kibana"></p>
+<pre><code>Kibana是了解 Elastic Stack 的窗口。
+
+通过 Kibana，您可以对自己的 Elasticsearch 进行可视化，还可以在 Elastic Stack 中进行导航，这样您便可以进行各种操作了，从跟踪查询负载，到理解请求如何流经您的整个应用，都能轻松完成。 
+</code></pre>
+<p><strong>可视化和分析：</strong> Kibana 让您能够自由地选择如何呈现自己的数据，一张图片胜过千万行日志，可以用下面几个特点来阐述：</p>
+<p><img src="https://eelve.com/upload/2020/3/animated-gif-lens-drag-and-drop-150ecdc9e8314ff798ae5958edac5963.gif" alt="animated-gif-lens-drag-and-drop"></p>
+<ul>
+<li><p><strong>基本内容：</strong> Kibana 核心产品搭载了一批经典功能：柱状图、线状图、饼图、旭日图，等等。当然啦，您还可以搜索自己的所有文档。            </p>
+<p><img src="https://eelve.com/upload/2020/3/kibana-basics-with-vega-87818e2dc2df4800bd116de2eb8ecf39.jpg" alt="kibana-basics-with-vega"></p>
+</li>
+<li><p><strong>位置分析：</strong> 借助 Elastic Maps，探索位置数据，还可以获得创意并对定制图层和矢量形状进行可视化。            </p>
+</li>
+</ul>
+<p><img src="https://eelve.com/upload/2020/3/geo-101256c64dc24b04abede3b0088ef4b8.jpg" alt="geo"></p>
+<ul>
+<li><strong>时间序列：</strong> 借助精选的时序数据 UI，对您 Elasticsearch 中的数据执行高级时间序列分析。您可以利用功能强大、简单易学的表达式来描述查询、转换和可视化。</li>
+</ul>
+<p><img src="https://eelve.com/upload/2020/3/kibana-timeseries-9cdce1ca946f44da9279e8c7577709e0.jpg" alt="kibana-timeseries"></p>
+<ul>
+<li><strong>Machine Learning：</strong> 借助非监督型 Machine Learning 功能来检测隐藏在您 Elasticsearch 数据中的异常情况并探索那些对它们有显著影响的属性。 </li>
+</ul>
+<p><img src="https://eelve.com/upload/2020/3/kibana-machine-learning-5148691b6084492fb47558ebbee177e1.jpg" alt="kibana-machine-learning"></p>
+<ul>
+<li><strong>图表和网络：</strong> 凭借搜索引擎的相关性功能，结合 Graph 关联分析，揭示您 Elasticsearch 数据中极其常见的关系。 </li>
+</ul>
+<p><img src="https://eelve.com/upload/2020/3/kibana-graph-e0e161ba7f3a4d6bb3c0640701e49a30.jpg" alt="kibana-graph"></p>
+<h1 id="叁、Kibana安装"><a href="#叁、Kibana安装" class="headerlink" title="叁、Kibana安装"></a>叁、Kibana安装</h1><h2 id="3-1-下载地址"><a href="#3-1-下载地址" class="headerlink" title="3.1 下载地址"></a>3.1 下载地址</h2><p><a target="_blank" rel="noopener" href="https://artifacts.elastic.co/downloads/kibana/kibana-7.6.0-linux-x86_64.tar.gz">kibana-7.6.0-linux-x86_64.tar.gz</a></p>
+<hr>
+<h2 id="3-2-解压kibana-7-6-0-linux-x86-64-tar-gz"><a href="#3-2-解压kibana-7-6-0-linux-x86-64-tar-gz" class="headerlink" title="3.2 解压kibana-7.6.0-linux-x86_64.tar.gz"></a>3.2 解压kibana-7.6.0-linux-x86_64.tar.gz</h2><figure class="highlight shell"><figcaption><span>script</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -zvxf kibana-7.6.0-linux-x86_64.tar.gz -C /usr/elastic</span><br></pre></td></tr></table></figure>
+<h2 id="3-3-kibana配置说明"><a href="#3-3-kibana配置说明" class="headerlink" title="3.3 kibana配置说明"></a>3.3 kibana配置说明</h2><p>默认配置配置不需要改，下面给出一个最小的配置</p>
+<figure class="highlight shell"><figcaption><span>script</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">server.port: 5601 #浏览器访问端口</span><br><span class="line">server.host: &quot;192.168.237.11&quot;  #对外的服务地址</span><br><span class="line">elasticsearch.hosts: [&quot;http://192.168.237.11:9200&quot;] #这里为你的elasticsearch集群的地址</span><br></pre></td></tr></table></figure>
+<h1 id="肆、Kibana简单使用"><a href="#肆、Kibana简单使用" class="headerlink" title="肆、Kibana简单使用"></a>肆、Kibana简单使用</h1><h2 id="4-1-启动Elasticsearch"><a href="#4-1-启动Elasticsearch" class="headerlink" title="4.1 启动Elasticsearch"></a>4.1 启动Elasticsearch</h2><p>首先我门要启动Elasticsearch，不然Kibana没有数据来源。同时检查是否启动成功，如下图</p>
+<p><img src="https://eelve.com/upload/2020/3/2020030301-00f0ff22c74c4275be3690daa471cfa2.jpg" alt="2020030301"></p>
+<h2 id="4-2-启动Kibana"><a href="#4-2-启动Kibana" class="headerlink" title="4.2 启动Kibana"></a>4.2 启动Kibana</h2><figure class="highlight shell"><figcaption><span>script</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[iio@192 bin]$ ./kibana</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>然后观察日志</p>
+<figure class="highlight shell"><figcaption><span>script</span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br></pre></td><td class="code"><pre><span class="line">log   [13:27:27.338] [info][plugins-service] Plugin &quot;case&quot; is disabled.</span><br><span class="line">log   [13:27:33.648] [info][plugins-system] Setting up [37] plugins: [licensing,taskManager,siem,code,infra,encryptedSavedObjects,usageCollection,metrics,canvas,timelion,features,security,apm_oss,translations,reporting,uiActions,data,navigation,newsfeed,share,status_page,home,spaces,cloud,apm,graph,bfetch,kibana_legacy,management,dev_tools,eui_utils,inspector,expressions,visualizations,embeddable,advancedUiActions,dashboard_embeddable_container]</span><br><span class="line">log   [13:27:33.650] [info][licensing][plugins] Setting up plugin</span><br><span class="line">log   [13:27:33.652] [info][plugins][taskManager] Setting up plugin</span><br><span class="line">log   [13:27:33.667] [info][plugins][siem] Setting up plugin</span><br><span class="line">log   [13:27:33.667] [info][code][plugins] Setting up plugin</span><br><span class="line">log   [13:27:33.668] [info][infra][plugins] Setting up plugin</span><br><span class="line">log   [13:27:33.670] [info][encryptedSavedObjects][plugins] Setting up plugin</span><br><span class="line">log   [13:27:33.671] [warning][config][encryptedSavedObjects][plugins] Generating a random key for xpack.encryptedSavedObjects.encryptionKey. To be able to decrypt encrypted saved objects attributes after restart, please set xpack.encryptedSavedObjects.encryptionKey in kibana.yml</span><br><span class="line">log   [13:27:33.677] [info][plugins][usageCollection] Setting up plugin</span><br><span class="line">log   [13:27:33.679] [info][metrics][plugins] Setting up plugin</span><br><span class="line">log   [13:27:33.680] [info][canvas][plugins] Setting up plugin</span><br><span class="line">log   [13:27:33.687] [info][plugins][timelion] Setting up plugin</span><br><span class="line">log   [13:27:33.689] [info][features][plugins] Setting up plugin</span><br><span class="line">log   [13:27:33.690] [info][plugins][security] Setting up plugin</span><br><span class="line">log   [13:27:33.691] [warning][config][plugins][security] Generating a random key for xpack.security.encryptionKey. To prevent sessions from being invalidated on restart, please set xpack.security.encryptionKey in kibana.yml</span><br><span class="line">log   [13:27:33.691] [warning][config][plugins][security] Session cookies will be transmitted over insecure connections. This is not recommended.</span><br><span class="line">log   [13:27:33.714] [info][apm_oss][plugins] Setting up plugin</span><br><span class="line">log   [13:27:33.715] [info][plugins][translations] Setting up plugin</span><br><span class="line">log   [13:27:33.715] [info][data][plugins] Setting up plugin</span><br><span class="line">log   [13:27:33.722] [info][plugins][share] Setting up plugin</span><br><span class="line">log   [13:27:33.724] [info][home][plugins] Setting up plugin</span><br><span class="line">log   [13:27:33.730] [info][plugins][spaces] Setting up plugin</span><br><span class="line">log   [13:27:33.736] [info][cloud][plugins] Setting up plugin</span><br><span class="line">log   [13:27:33.738] [info][apm][plugins] Setting up plugin</span><br><span class="line">log   [13:27:33.915] [info][graph][plugins] Setting up plugin</span><br><span class="line">log   [13:27:33.921] [info][bfetch][plugins] Setting up plugin</span><br><span class="line">log   [13:27:33.933] [info][savedobjects-service] Waiting until all Elasticsearch nodes are compatible with Kibana before starting saved objects migrations...</span><br><span class="line">log   [13:27:33.933] [info][savedobjects-service] Starting saved objects migrations</span><br><span class="line">log   [13:27:34.115] [info][plugins-system] Starting [22] plugins: [licensing,taskManager,siem,code,infra,encryptedSavedObjects,usageCollection,metrics,canvas,timelion,features,security,apm_oss,translations,data,share,home,spaces,cloud,apm,graph,bfetch]</span><br><span class="line">log   [13:27:40.328] [info][status][plugin:kibana@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:40.346] [info][status][plugin:elasticsearch@7.6.0] Status changed from uninitialized to yellow - Waiting for Elasticsearch</span><br><span class="line">log   [13:27:40.348] [info][status][plugin:elasticsearch@7.6.0] Status changed from yellow to green - Ready</span><br><span class="line">log   [13:27:40.358] [info][status][plugin:xpack_main@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:40.392] [info][status][plugin:graph@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:40.426] [info][kibana-monitoring][monitoring] Starting monitoring stats collection</span><br><span class="line">log   [13:27:40.430] [info][status][plugin:monitoring@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:40.471] [info][status][plugin:spaces@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:40.507] [info][status][plugin:security@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:40.543] [info][status][plugin:searchprofiler@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:40.557] [info][status][plugin:ml@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:40.807] [info][status][plugin:tilemap@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:40.812] [info][status][plugin:watcher@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:40.836] [info][status][plugin:grokdebugger@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:40.856] [info][status][plugin:dashboard_mode@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:40.863] [info][status][plugin:logstash@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:40.891] [info][status][plugin:beats_management@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:40.958] [info][status][plugin:apm_oss@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:41.000] [info][status][plugin:apm@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:41.071] [info][status][plugin:maps@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:41.083] [info][status][plugin:interpreter@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:41.122] [info][status][plugin:canvas@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:41.130] [info][status][plugin:license_management@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:41.141] [info][status][plugin:index_management@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:41.228] [info][status][plugin:console@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:41.238] [info][status][plugin:console_extensions@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:41.245] [info][status][plugin:index_lifecycle_management@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:41.286] [info][status][plugin:kuery_autocomplete@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:41.304] [info][status][plugin:metrics@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:41.425] [info][status][plugin:infra@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:41.437] [info][plugins][taskManager][taskManager] TaskManager is identified by the Kibana UUID: ce42b997-a913-4d58-be46-bb1937feedd6</span><br><span class="line">log   [13:27:41.441] [info][status][plugin:task_manager@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:41.448] [info][status][plugin:rollup@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:41.547] [info][status][plugin:transform@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:41.555] [info][status][plugin:encryptedSavedObjects@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:41.605] [info][status][plugin:actions@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:41.677] [info][status][plugin:alerting@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:41.853] [info][status][plugin:siem@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:41.868] [info][status][plugin:remote_clusters@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:41.876] [info][status][plugin:cross_cluster_replication@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:41.937] [info][status][plugin:upgrade_assistant@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:41.994] [info][status][plugin:uptime@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:42.006] [info][status][plugin:oss_telemetry@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:42.022] [info][status][plugin:file_upload@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:42.032] [info][status][plugin:data@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:42.067] [info][status][plugin:lens@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:42.136] [info][status][plugin:snapshot_restore@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:42.151] [info][status][plugin:input_control_vis@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:42.164] [info][status][plugin:navigation@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:42.169] [info][status][plugin:management@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:42.174] [info][status][plugin:kibana_react@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:42.178] [info][status][plugin:region_map@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:42.217] [info][status][plugin:telemetry@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:42.226] [info][status][plugin:metric_vis@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:42.230] [info][status][plugin:markdown_vis@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:42.399] [info][status][plugin:timelion@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:42.403] [info][status][plugin:ui_metric@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:42.406] [info][status][plugin:tagcloud@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:42.410] [info][status][plugin:table_vis@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:42.414] [info][status][plugin:vega@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:42.421] [warning][browser-driver][reporting] Enabling the Chromium sandbox provides an additional layer of protection.</span><br><span class="line">log   [13:27:44.878] [warning][reporting] Generating a random key for xpack.reporting.encryptionKey. To prevent pending reports from failing on restart, please set xpack.reporting.encryptionKey in kibana.yml</span><br><span class="line">log   [13:27:44.888] [info][status][plugin:reporting@7.6.0] Status changed from uninitialized to green - Ready</span><br><span class="line">log   [13:27:44.970] [info][listening] Server running at http://192.168.237.11:5601</span><br><span class="line">log   [13:27:45.502] [info][server][Kibana][http] http server running at http://192.168.237.11:5601</span><br><span class="line">log   [13:27:45.549] [error][reporting] The Reporting plugin encountered issues launching Chromium in a self-test. You may have trouble generating reports.</span><br><span class="line">log   [13:27:45.549] [error][reporting] ErrorEvent &#123;</span><br><span class="line">target:</span><br><span class="line"> WebSocket &#123;</span><br><span class="line">   _events:</span><br><span class="line">    [Object: null prototype] &#123; open: [Function], error: [Function] &#125;,</span><br><span class="line">   _eventsCount: 2,</span><br><span class="line">   _maxListeners: undefined,</span><br><span class="line">   readyState: 3,</span><br><span class="line">   protocol: &#x27;&#x27;,</span><br><span class="line">   _binaryType: &#x27;nodebuffer&#x27;,</span><br><span class="line">   _closeFrameReceived: false,</span><br><span class="line">   _closeFrameSent: false,</span><br><span class="line">   _closeMessage: &#x27;&#x27;,</span><br><span class="line">   _closeTimer: null,</span><br><span class="line">   _closeCode: 1006,</span><br><span class="line">   _extensions: &#123;&#125;,</span><br><span class="line">   _receiver: null,</span><br><span class="line">   _sender: null,</span><br><span class="line">   _socket: null,</span><br><span class="line">   _isServer: false,</span><br><span class="line">   _redirects: 0,</span><br><span class="line">   url:</span><br><span class="line">    &#x27;ws://127.0.0.1:44598/devtools/browser/cde91cb8-faad-4730-9d12-57c1e8ffd49a&#x27;,</span><br><span class="line">   _req: null &#125;,</span><br><span class="line">type: &#x27;error&#x27;,</span><br><span class="line">message: &#x27;connect ECONNREFUSED 127.0.0.1:44598&#x27;,</span><br><span class="line">error:</span><br><span class="line"> &#123; Error: connect ECONNREFUSED 127.0.0.1:44598</span><br><span class="line">     at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1107:14)</span><br><span class="line">   errno: &#x27;ECONNREFUSED&#x27;,</span><br><span class="line">   code: &#x27;ECONNREFUSED&#x27;,</span><br><span class="line">   syscall: &#x27;connect&#x27;,</span><br><span class="line">   address: &#x27;127.0.0.1&#x27;,</span><br><span class="line">   port: 44598 &#125; &#125;</span><br><span class="line">log   [13:27:45.557] [warning][reporting] See Chromium&#x27;s log output at &quot;/usr/elastic/kibana/data/headless_shell-linux/chrome_debug.log&quot;</span><br><span class="line">log   [13:27:45.559] [warning][reporting] Reporting plugin self-check generated a warning: Error: Could not close browser client handle!</span><br></pre></td></tr></table></figure>
+<h2 id="4-3-浏览器访问"><a href="#4-3-浏览器访问" class="headerlink" title="4.3 浏览器访问"></a>4.3 浏览器访问</h2><p><img src="https://eelve.com/upload/2020/3/2020030302-e7c518603e69473a8438fb32a9454154.png" alt="2020030302"></p>
+<p>下面我们继续操作，利用搭建Elasticsearch的时候添加的数据做一个可视化图表出来</p>
+<p><img src="https://eelve.com/upload/2020/3/2020030306-5f167cf3142041ad944de9b7b0ff0eb9.png" alt="2020030306"><br><img src="https://eelve.com/upload/2020/3/2020030303-9787af1aceb148ef8b2f6a49015630c4.png" alt="2020030303"><br><img src="https://eelve.com/upload/2020/3/2020030304-a74acb31fabc4f4da44e96e0c7a28610.png" alt="2020030304"><br><img src="https://eelve.com/upload/2020/3/2020030305-c4f00a780a704435b28eb34f360857da.png" alt="2020030305"><br><img src="https://eelve.com/upload/2020/3/2020030308-53cd70f082074829afb4ee887948b24a.png" alt="2020030308"><br><img src="https://eelve.com/upload/2020/3/2020030311-d8de4d9839d34d38b731ba0ce0be2336.png" alt="2020030311"></p>
+<p>我们可以看到已经利用数据做出了一个柱饼图了，下面就再美化以下，得到最终结果</p>
+<p><img src="https://eelve.com/upload/2020/3/2020030312-452f0ac1954844cab0ea2955bd43dfa2.png" alt="2020030312"></p>
+<p>另外我们还可以保存分享</p>
+<p><img src="https://eelve.com/upload/2020/3/2020030313-425f770de5064b06b8951748d6a0d01b.png" alt="2020030313"></p>
+<p>然后我们还可以使用一下Kibana的开发工具，给<strong>eelve</strong>新加一条数据</p>
+<p><img src="https://eelve.com/upload/2020/3/2020030314-1689d96967794fc38f042ea3807dfc1d.png" alt="2020030314"><br><img src="https://eelve.com/upload/2020/3/2020030315-68061267b1ac4b13a7844b873aa06c6b.png" alt="2020030315"></p>
+<p>然后再刷新图表，可以看到数据会产生相应的变化</p>
+<p><img src="https://eelve.com/upload/2020/3/2020030316-bb66b6f0ba19419abc0ea3b674703f1b.png" alt="2020030316"></p>
+<p>也就是说如果数据是实时变化的话，这边的图表也会跟着变化。</p>
+<h1 id="伍、Kibana特性"><a href="#伍、Kibana特性" class="headerlink" title="伍、Kibana特性"></a>伍、Kibana特性</h1><ul>
+<li><p>强大的定制功能：根据业务通过Kibana中的Canvas，发挥无限创意自由定制</p>
+<ul>
+<li><p>日志分析</p>
+<p><img src="https://eelve.com/upload/2020/3/screenshot-canvas-log-analysis-e24abcc3311841c886dbc36c8ca8dc05.png" alt="screenshot-canvas-log-analysis"></p>
+</li>
+<li><p>基础设施监测</p>
+<p><img src="https://eelve.com/upload/2020/3/screenshot-canvas-infrastructure-706070724cb94eabbe6c37f1c82ce66d.png" alt="screenshot-canvas-infrastructure"></p>
+</li>
+<li><p>APM</p>
+<p><img src="https://eelve.com/upload/2020/3/screenshot-canvas-apm-d007b95db41646a8832f1b1e35734c14.png" alt="screenshot-canvas-apm"></p>
+</li>
+<li><p>安全运营</p>
+<p><img src="https://eelve.com/upload/2020/3/screenshot-canvas-security-operations-dd4a909ca4164efa93a30fc9e4c7b7e3.png" alt="screenshot-canvas-security-operations"></p>
+</li>
+<li><p>业务分析</p>
+<p><img src="https://eelve.com/upload/2020/3/screenshot-canvas-business-analytics-76b7f80430664be09ca4a2798ffb7faa.png" alt="screenshot-canvas-business-analytics"></p>
+</li>
+</ul>
+</li>
+<li><p>把制作好的图表分享，让每个人都感受到 Kibana 的便利：只需选择适合您的分享选项，即可轻松地把 Kibana 可视化分享给您选择的任何人：您的团队成员、您的老板、老板的老板、您的客户、合规经理或承包商。嵌入仪表板，分享链接，或者导出为 PDF、PNG 或 CSV 文件并作为附件发送给别人。</p>
+</li>
+</ul>
+<p><img src="https://eelve.com/upload/2020/3/reporting_no_zoom-optimized-1144e12a2f5e4e308fb9aee150ea7629.gif" alt="reporting_no_zoom-optimized"></p>
+<ul>
+<li>良好的控制访问权限：通过 Kibana Spaces 整理您的仪表板和可视化。通过基于角色的访问控制，邀请用户访问某些空间（但不允许访问其他空间），让他们能够查看特定内容并使用特定功能。</li>
+</ul>
+<p><img src="https://i.loli.net/2020/03/03/SlqFLG8AMNZiQXp.gif" alt="security-login.gif"></p>
+<ul>
+<li><p>管理：用于数据采集等操作的堆栈管理，有了 Kibana，命令行不再是管理安全设置、监测堆栈、采集和汇总数据或配置其他 Elastic Stack 功能的唯一途径。与此同时，得益于我们出色的 API，用户可以通过可视化 UI 轻松地管理 Elastic Stack 并确保其安全性，这种方式更加直观，也能让更多的人上手使用。</p>
+<ul>
+<li><p>添加数据</p>
+<p><img src="https://eelve.com/upload/2020/3/kibana-homepage-ca50d6a5d73b4e5e981724528a492eca.jpg" alt="kibana-homepage"></p>
+</li>
+<li><p>确保访问的安全性</p>
+<p><img src="https://eelve.com/upload/2020/3/kibana-management-security-2be33e4e888845ea87d6537b2eeaeb7f.jpg" alt="kibana-management-security"></p>
+</li>
+<li><p>管理管道</p>
+<p><img src="https://eelve.com/upload/2020/3/kibana-management-logstash-f9dbc5faf2ed484f9643ead95ef57e02.jpg" alt="kibana-management-logstash"></p>
+</li>
+<li><p>汇总</p>
+<p><img src="https://eelve.com/upload/2020/3/screenshot-rollups-management-ui-ec0be7dea0374a21a95bd18a048c094f.jpg" alt="screenshot-rollups-management-ui"></p>
+</li>
+<li><p>开发工具</p>
+<p><img src="https://eelve.com/upload/2020/3/5.5-console-80pct-generic-rgb-360a6e4bbf484353b27151e27de93b2e.jpg" alt="5.5-console-80pct-generic-rgb"></p>
+</li>
+</ul>
+</li>
+<li><p>可直接应用于用例</p>
+</li>
+</ul>
+<p>有时您只想对某个文件进行 tail 操作。您可能希望跟踪自己网站的运行状态。或者您可能希望查看分布式痕迹。通过 Kibana 内置应用，例如 Logs、Infrastructure、APM、Uptime 以及其他应用，无需离开 Kibana，便能轻松完成这一切。    </p>
+<p><img src="https://eelve.com/upload/2020/3/image4-2-d9d1a61d020f4af7b934c3e6fa424208.png" alt="image4-2"></p>
+<hr>
+<p>【<strong>后面的话</strong>】利用Kibana我们可以做出炫酷的符合业务且满足客户可视化展示。并且Kibana本身都提供相当多数量的各种图标模板，通过各种图标的组合可以轻松的开发一个属于我们自己的大屏。另外我们需要注意的是，我们应该根据我们的数据的特点选择合适的图表进行展示，这样可以是我们的图表显得更美观。今天只是体验了Kibana的部分功能，后续的其他功能，将配合Beats进行体验。</p>
+<hr>
+<p><img src="https://eelve.com/upload/2019/8/eblog-b269767ff45b4e01a1c380e38898c1c0.png" alt="薏米笔记"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/hide/" rel="tag"># hide</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/e05eadb0.html" rel="prev" title="Elastic Stack实战之Logstash初体验">
+      <i class="fa fa-chevron-left"></i> Elastic Stack实战之Logstash初体验
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/b84d7094.html" rel="next" title="Elastic Stack实战之Kibana初体验">
+      Elastic Stack实战之Kibana初体验 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC80NTk1NS8yMjQ2Ng=="></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A3%B9%E3%80%81%E8%BD%AF%E4%BB%B6%E7%89%88%E6%9C%AC"><span class="nav-number">1.</span> <span class="nav-text">壹、软件版本</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B4%B0%E3%80%81Kibana%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.</span> <span class="nav-text">贰、Kibana介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%81%E3%80%81Kibana%E5%AE%89%E8%A3%85"><span class="nav-number">3.</span> <span class="nav-text">叁、Kibana安装</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-%E4%B8%8B%E8%BD%BD%E5%9C%B0%E5%9D%80"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 下载地址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-%E8%A7%A3%E5%8E%8Bkibana-7-6-0-linux-x86-64-tar-gz"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 解压kibana-7.6.0-linux-x86_64.tar.gz</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-kibana%E9%85%8D%E7%BD%AE%E8%AF%B4%E6%98%8E"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 kibana配置说明</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%82%86%E3%80%81Kibana%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8"><span class="nav-number">4.</span> <span class="nav-text">肆、Kibana简单使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-%E5%90%AF%E5%8A%A8Elasticsearch"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 启动Elasticsearch</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2-%E5%90%AF%E5%8A%A8Kibana"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 启动Kibana</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-3-%E6%B5%8F%E8%A7%88%E5%99%A8%E8%AE%BF%E9%97%AE"><span class="nav-number">4.3.</span> <span class="nav-text">4.3 浏览器访问</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BC%8D%E3%80%81Kibana%E7%89%B9%E6%80%A7"><span class="nav-number">5.</span> <span class="nav-text">伍、Kibana特性</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Chillo"
+      src="/images/virrina.jpg">
+  <p class="site-author-name" itemprop="name">Chillo</p>
+  <div class="site-description" itemprop="description">A human being,who loves football and music.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">77</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/eelve" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;eelve" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:i@eelve.com" title="E-Mail → mailto:i@eelve.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/eivou" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;eivou" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://eelve.com/" title="https:&#x2F;&#x2F;eelve.com&#x2F;">南国薏米</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://shilikun.com/" title="https:&#x2F;&#x2F;shilikun.com&#x2F;" rel="noopener" target="_blank">坤坤</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://binge.eelve.com/" title="https:&#x2F;&#x2F;binge.eelve.com&#x2F;" rel="noopener" target="_blank">Binge</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://bobo.eelve.com/" title="https:&#x2F;&#x2F;bobo.eelve.com&#x2F;" rel="noopener" target="_blank">BoBo</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sunkening0.github.io/" title="https:&#x2F;&#x2F;sunkening0.github.io&#x2F;" rel="noopener" target="_blank">克宁</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        <a href="https://www.upyun.com/?utm_source=lianmeng&amp;utm_medium=referral" target="_blank"><img src="https://i.loli.net/2021/03/07/cM1D8kHpsetuyjR.png" style="width:48px"></a>
+  <div class="beian"><a href="http://www.beian.miit.gov.cn/" rel="noopener" target="_blank"> </a><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=16014637" rel="noopener" target="_blank">蜀ICP备16014637号-1 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">南国薏米</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数">484k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">7:20</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+<script type="text/javascript">
+  // console.clear();
+  console.log("%c 有朋自远方来, 不亦说乎.", "background:#24272A; color:#ffffff", "");
+  console.log("%c Github %c", "background:#24272A; color:#ffffff", "", "https://github.com/eelve");
+</script>
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+</body>
+</html>

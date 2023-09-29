@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/virrina.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/virrina.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/virrina.jpg">
+  <link rel="mask-icon" href="/images/virrina.jpg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"eelve.com","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":"default"},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":true,"lazyload":false,"pangu":true,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="前面我们已经安装好了Elasticsearch，现在我们就来尝试简单的使用。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Elastic Stack实战之Elasticsearch初体验(二)本地版">
+<meta property="og:url" content="https://eelve.com/posts/1505cd3f.html">
+<meta property="og:site_name" content="南国薏米">
+<meta property="og:description" content="前面我们已经安装好了Elasticsearch，现在我们就来尝试简单的使用。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020010303-6acab887ee4441b488ee408c30359ab5.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030106-e64fe73ddd004fb1bd87885b30563d48.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030107-079a29b224d14779999957304c279291.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030108-491386349bf145df999db01f96dca5b7.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030109-e2e0dbf0610e4c9e815507b3e08824e6.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030110-0d0eae2e25ec4788b038d3066e0a34df.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030111-8901ba31e0c841ea9f19b3b3fbf47745.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030112-3b009a1840754659a01ff665fe545de8.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030113-48589935a2ce456491006d43f0001194.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030114-b2119fc6b17f46b998b9b1aed9be3481.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030115-40f1443a848f42d7bf0b1e4a7895315b.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030116-a6d802f5b1d040088d02bcd97ed58840.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030117-7f32be33ca2b4f2796884f595f31c118.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030118-69d2588cf500407c87744222d1b9f58a.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030120-cf3c2d9526e94c559da3122114a23bea.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030121-e5026bfd578247b585b0d1aa9f4f43e9.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030123-d35bcdb8e1a34c599da2c6af06b5999c.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030124-6dd8f7b0b6f64d43b78f007096a0266e.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030125-6496d651790a4eeaaf6ef01d89007434.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030128-39b83bc7128041ada8913de3d60d7f94.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030129-6cfe8b9d5e3e4eabb08e850336caa524.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030126-fdc18d55a95b49608130225d3aa15d67.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030127-dbc8906ff8e540c58e7cb598aabd35e9.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030130-c69ed9ae775445ef90e13bfcf726efd5.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030131-d32f2761eb464fb085b671a34b08ac0d.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030132-b483295fa7054414a91efcdfbdf689e0.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030134-3433028e01d941e38d143f0f4f2a7bea.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030135-13028e1a58e64b82a3f4a8f1316160fb.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030136-deeff4eb87f143ee95b33468a59a7883.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030137-486103db9fab4f16bb639e9ee13c0961.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030138-dc89cd6f155c48b1a917072b6805c15e.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030140-8a169a5294044d41bcfbc531ffa262fb.png">
+<meta property="og:image" content="https://eelve.com/upload/2020/3/2020030141-6749ff764e8f46c6a4a2a1e356c129de.png">
+<meta property="og:image" content="https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png">
+<meta property="article:published_time" content="2020-03-01T11:49:22.000Z">
+<meta property="article:modified_time" content="2021-04-19T07:47:19.512Z">
+<meta property="article:author" content="Chillo">
+<meta property="article:tag" content="hide">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://eelve.com/upload/2020/3/2020010303-6acab887ee4441b488ee408c30359ab5.png">
+
+<link rel="canonical" href="https://eelve.com/posts/1505cd3f.html">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Elastic Stack实战之Elasticsearch初体验(二)本地版 | 南国薏米</title>
+  
+
+
+  <script>
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?6206b88a2a2be02cc7450a7cb8c20126";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="南国薏米" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">南国薏米</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">南国不须收薏苡,百年终竟是芭蕉。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-commonweal">
+
+    <a href="/404.html" rel="section"><i class="fa fa-fw fa-heartbeat"></i>公益 404</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+  <a href="https://github.com/eelve" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://eelve.com/posts/1505cd3f.html">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/virrina.jpg">
+      <meta itemprop="name" content="Chillo">
+      <meta itemprop="description" content="A human being,who loves football and music.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="南国薏米">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Elastic Stack实战之Elasticsearch初体验(二)本地版
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-01 19:49:22" itemprop="dateCreated datePublished" datetime="2020-03-01T19:49:22+08:00">2020-03-01</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-19 15:47:19" itemprop="dateModified" datetime="2021-04-19T15:47:19+08:00">2021-04-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/hide/" itemprop="url" rel="index"><span itemprop="name">hide</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>7.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>7 分钟</span>
+            </span>
+            <div class="post-description">前面我们已经安装好了Elasticsearch，现在我们就来尝试简单的使用。</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>【<strong>前面的话</strong>】前面我们已经安装好了Elasticsearch，现在我们就来尝试简单的使用。</p>
+<hr>
+<h1 id="壹、Elasticsearch介绍"><a href="#壹、Elasticsearch介绍" class="headerlink" title="壹、Elasticsearch介绍"></a>壹、Elasticsearch介绍</h1><p><img src="https://eelve.com/upload/2020/3/2020010303-6acab887ee4441b488ee408c30359ab5.png" alt="2020010303"></p>
+<p>Elasticsearch是整个<strong>Elastic Stack</strong>的核心。</p>
+<p>Elasticsearch 是一个分布式、RESTful 风格的搜索和数据分析引擎，能够解决不断涌现出的各种用例。 作为 Elastic Stack 的核心，它集中存储您的数据，帮助您发现意料之中以及意料之外的情况。</p>
+<p>通过 Elasticsearch，您能够执行及合并多种类型的搜索（结构化数据、非结构化数据、地理位置、指标），搜索方式随心而变。先从一个简单的问题出发，试试看能够从中发现些什么。找到与查询最匹配的 10 个文档是一回事。但如果面对的是十亿行日志，又该如何解读呢？Elasticsearch 聚合让您能够从大处着眼，探索数据的趋势和模式。</p>
+<h1 id="贰、插件安装"><a href="#贰、插件安装" class="headerlink" title="贰、插件安装"></a>贰、插件安装</h1><p>由于ES官方并没有为ES提供界面管理工具，仅仅是提供了后台的服务。elasticsearch-head是一个为ES开发的一个页面客户端工具，其源码托管于GitHub，地址为：<br><a target="_blank" rel="noopener" href="https://github.com/mobz/elasticsearch-head">https://github.com/mobz/elasticsearch-head</a>。<br>安装方法也比较多：</p>
+<pre><code>1.源码安装，通过npm run start启动
+2.通过docker安装
+3.通过chrome插件安装
+4.通过ES的plugin方式安装
+</code></pre>
+<p>我这边就通过chrome插件的方式安装，在应用商店中搜索，然后安装即可，安装成功之后打开你会得到下面的页面</p>
+<p><img src="https://eelve.com/upload/2020/3/2020030106-e64fe73ddd004fb1bd87885b30563d48.png" alt="2020030106"></p>
+<p>然后连接集群，就可以进行操作了</p>
+<p><img src="https://eelve.com/upload/2020/3/2020030107-079a29b224d14779999957304c279291.png" alt="2020030107"></p>
+<pre><code>集群健康值
+1.绿色：代表集群所有分片和副本都可用
+2.黄色：代表集群中不是所有副本都可用，但是分片都可以用
+3.红色： 代表集群中不是所有分片都可用
+</code></pre>
+<p>另外我的集群中出现了<strong>Unassigned</strong>，是因为我搭建的是单机版，而Elasticsearch默认会创建1个副本。</p>
+<h1 id="叁、简单使用"><a href="#叁、简单使用" class="headerlink" title="叁、简单使用"></a>叁、简单使用</h1><h2 id="3-1-基本概念"><a href="#3-1-基本概念" class="headerlink" title="3.1 基本概念"></a>3.1 基本概念</h2><p><strong>索引</strong></p>
+<pre><code>索引（index）是Elasticsearch对逻辑数据的逻辑存储，所以它可以分为更小的部分。
+
+可以把索引看成关系型数据库的表，索引的结构是为快速有效的全文索引准备的，特别是它不存储原始值。
+
+Elasticsearch可以把索引存放在一台机器或者分散在多台服务器上，每个索引有一或多个分片（shard），每个
+分片可以有多个副本（replica）。
+</code></pre>
+<p><strong>文档</strong></p>
+<pre><code>存储在Elasticsearch中的主要实体叫文档（document）。用关系型数据库来类比的话，一个文档相当于数据库
+表中的一行记录。
+
+Elasticsearch和MongoDB中的文档类似，都可以有不同的结构，但Elasticsearch的文档中，相同字段必须有相
+同类型。
+
+文档由多个字段组成，每个字段可能多次出现在一个文档里，这样的字段叫多值字段（multivalued）。
+每个字段的类型，可以是文本、数值、日期等。字段类型也可以是复杂类型，一个字段包含其他子文档或者数
+组。
+</code></pre>
+<p><strong>映射</strong></p>
+<pre><code>所有文档写进索引之前都会先进行分析，如何将输入的文本分割为词条、哪些词条又会被过滤，这种行为叫做
+映射（mapping）。一般由用户自己定义规则。
+</code></pre>
+<p><strong>文档类型</strong></p>
+<pre><code>在Elasticsearch中，一个索引对象可以存储很多不同用途的对象。例如，一个博客应用程序可以保存文章和评
+论。
+
+每个文档可以有不同的结构。
+
+不同的文档类型不能为相同的属性设置不同的类型。例如，在同一索引中的所有文档类型中，一个叫title的字段
+必须具有相同的类型。
+</code></pre>
+<h2 id="3-2-RESTful-API"><a href="#3-2-RESTful-API" class="headerlink" title="3.2 RESTful API"></a>3.2 RESTful API</h2><pre><code>在Elasticsearch中，提供了功能丰富的RESTful API的操作，包括基本的CRUD、创建索引、删除索引等操作。
+</code></pre>
+<p>下面我就通过Postman来演示一遍</p>
+<h3 id="3-2-1-创建非结构化索引"><a href="#3-2-1-创建非结构化索引" class="headerlink" title="3.2.1 创建非结构化索引"></a>3.2.1 创建非结构化索引</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">#创建索引</span><br><span class="line">PUT &#x2F;eelve</span><br><span class="line"></span><br><span class="line">&#123;</span><br><span class="line">    &quot;settings&quot;: &#123;</span><br><span class="line">        &quot;index&quot;: &#123;</span><br><span class="line">        &quot;number_of_shards&quot;: &quot;2&quot;, #分片数</span><br><span class="line">        &quot;number_of_replicas&quot;: &quot;0&quot; #副本数</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://eelve.com/upload/2020/3/2020030108-491386349bf145df999db01f96dca5b7.png" alt="2020030108"><br><img src="https://eelve.com/upload/2020/3/2020030109-e2e0dbf0610e4c9e815507b3e08824e6.png" alt="2020030109"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">#删除索引</span><br><span class="line">DELETE &#x2F;eelve</span><br></pre></td></tr></table></figure>
+<p><img src="https://eelve.com/upload/2020/3/2020030110-0d0eae2e25ec4788b038d3066e0a34df.png" alt="2020030110"></p>
+<h3 id="3-2-2-插入数据"><a href="#3-2-2-插入数据" class="headerlink" title="3.2.2 插入数据"></a>3.2.2 插入数据</h3><pre><code>URL规则：
+POST /&#123;索引&#125;/&#123;类型&#125;/&#123;id&#125;
+</code></pre>
+<p>1、带id</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">POST &#x2F;eelve&#x2F;user&#x2F;1001</span><br><span class="line">#数据</span><br><span class="line">&#123;</span><br><span class="line">	&quot;id&quot;:1001,</span><br><span class="line">	&quot;name&quot;:&quot;leo&quot;,</span><br><span class="line">	&quot;age&quot;:26,</span><br><span class="line">	&quot;sex&quot;:&quot;男&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://eelve.com/upload/2020/3/2020030111-8901ba31e0c841ea9f19b3b3fbf47745.png" alt="2020030111"><br><img src="https://eelve.com/upload/2020/3/2020030112-3b009a1840754659a01ff665fe545de8.png" alt="2020030112"></p>
+<p>2、不带id </p>
+<p><img src="https://eelve.com/upload/2020/3/2020030113-48589935a2ce456491006d43f0001194.png" alt="2020030113"><br><img src="https://eelve.com/upload/2020/3/2020030114-b2119fc6b17f46b998b9b1aed9be3481.png" alt="2020030114"></p>
+<h3 id="3-2-3-更新数据"><a href="#3-2-3-更新数据" class="headerlink" title="3.2.3 更新数据"></a>3.2.3 更新数据</h3><pre><code>在Elasticsearch中，文档数据是不为修改的，但是可以通过覆盖的方式进行更新。
+</code></pre>
+<p>1、全部修改</p>
+<p><img src="https://eelve.com/upload/2020/3/2020030115-40f1443a848f42d7bf0b1e4a7895315b.png" alt="2020030115"><br><img src="https://eelve.com/upload/2020/3/2020030116-a6d802f5b1d040088d02bcd97ed58840.png" alt="2020030116"></p>
+<p>2、部分修改</p>
+<p><img src="https://eelve.com/upload/2020/3/2020030117-7f32be33ca2b4f2796884f595f31c118.png" alt="2020030117"><br><img src="https://eelve.com/upload/2020/3/2020030118-69d2588cf500407c87744222d1b9f58a.png" alt="2020030118"></p>
+<p>可以看到局部更新成功</p>
+<h3 id="3-2-4-删除数据"><a href="#3-2-4-删除数据" class="headerlink" title="3.2.4 删除数据"></a>3.2.4 删除数据</h3><p><img src="https://eelve.com/upload/2020/3/2020030120-cf3c2d9526e94c559da3122114a23bea.png" alt="2020030120"><br><img src="https://eelve.com/upload/2020/3/2020030121-e5026bfd578247b585b0d1aa9f4f43e9.png" alt="2020030121"></p>
+<p>数据删除成功之后不会马上删除，只是会打上那个删除标识，Elasticsearch将会在你之后添加更多索引的时候才会在后台进行删除内容的清理。</p>
+<h3 id="3-2-5-搜索数据"><a href="#3-2-5-搜索数据" class="headerlink" title="3.2.5 搜索数据"></a>3.2.5 搜索数据</h3><p>1、根据id搜索</p>
+<p><img src="https://eelve.com/upload/2020/3/2020030123-d35bcdb8e1a34c599da2c6af06b5999c.png" alt="2020030123"></p>
+<p>2、全部搜索</p>
+<p><img src="https://eelve.com/upload/2020/3/2020030124-6dd8f7b0b6f64d43b78f007096a0266e.png" alt="2020030124"></p>
+<p>3、关键词搜索</p>
+<p><img src="https://eelve.com/upload/2020/3/2020030125-6496d651790a4eeaaf6ef01d89007434.png" alt="2020030125"></p>
+<p>4、查询部分字段</p>
+<p><img src="https://eelve.com/upload/2020/3/2020030128-39b83bc7128041ada8913de3d60d7f94.png" alt="2020030128"></p>
+<p>5、分页查询</p>
+<pre><code>和SQL使用 LIMIT 关键字返回只有一页的结果一样，Elasticsearch接受 from 和 size 参数：
+
+size: 结果数，默认10
+from: 跳过开始的结果数，默认0
+</code></pre>
+<p><img src="https://eelve.com/upload/2020/3/2020030129-6cfe8b9d5e3e4eabb08e850336caa524.png" alt="2020030129"></p>
+<pre><code>应该当心分页太深或者一次请求太多的结果。结果在返回前会被排序。但是记住一个搜索请求常常涉及多个分片。每个分片生成自己排好序的结果，它们接着需要集中起来排序以确保整体排序正确。
+
+在集群系统中深度分页
+为了理解为什么深度分页是有问题的，让我们假设在一个有5个主分片的索引中搜索。当我们请求结果的第一页（结果1到10）时，每个分片产生自己最顶端10个结果然后返回它们给请求节点(requesting node)，
+它再排序这所有的50个结果以选出顶端的10个结果。现在假设我们请求第1000页——结果10001到10010。工作方式都相同，不同的是每个分片都必须产生顶端的10010个结果。
+然后请求节点排序这50050个结果并丢弃50040个！可以看到在分布式系统中，排序结果的花费随着分页的深入而成倍增长。这也是为什么网络搜索引擎中任何语句不能返回多于1000个结果的原因。
+</code></pre>
+<h3 id="3-2-6-DSL搜索"><a href="#3-2-6-DSL搜索" class="headerlink" title="3.2.6 DSL搜索"></a>3.2.6 DSL搜索</h3><pre><code>Elasticsearch提供丰富且灵活的查询语言叫做DSL查询(Query DSL),它允许你构建更加复杂、强大的查询。
+DSL(Domain Specific Language特定领域语言)以JSON请求体的形式出现
+</code></pre>
+<p><img src="https://eelve.com/upload/2020/3/2020030126-fdc18d55a95b49608130225d3aa15d67.png" alt="2020030126"></p>
+<p>如图我们查询了一个年龄大于10岁，性别为男性的数据</p>
+<h3 id="3-2-7-聚合"><a href="#3-2-7-聚合" class="headerlink" title="3.2.7 聚合"></a>3.2.7 聚合</h3><pre><code>在Elasticsearch中，支持聚合操作，类似SQL中的group by操作。
+</code></pre>
+<p><img src="https://eelve.com/upload/2020/3/2020030127-dbc8906ff8e540c58e7cb598aabd35e9.png" alt="2020030127"></p>
+<h3 id="3-2-8-bulk操作"><a href="#3-2-8-bulk操作" class="headerlink" title="3.2.8 _bulk操作"></a>3.2.8 _bulk操作</h3><pre><code>在Elasticsearch中，支持批量的插入、修改、删除操作，都是通过_bulk的api完成的。
+</code></pre>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123; action: &#123; metadata &#125;&#125;\n</span><br><span class="line">&#123; request body &#125;\n</span><br><span class="line">&#123; action: &#123; metadata &#125;&#125;\n</span><br><span class="line">&#123; request body &#125;\n</span><br><span class="line">...</span><br><span class="line"># 注意每行最后必须有 \n</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>1、批量插入</p>
+<p><img src="https://eelve.com/upload/2020/3/2020030130-c69ed9ae775445ef90e13bfcf726efd5.png" alt="2020030130"><br><img src="https://eelve.com/upload/2020/3/2020030131-d32f2761eb464fb085b671a34b08ac0d.png" alt="2020030131"></p>
+<p>2、批量删除</p>
+<p><img src="https://eelve.com/upload/2020/3/2020030132-b483295fa7054414a91efcdfbdf689e0.png" alt="2020030132"><br><img src="https://eelve.com/upload/2020/3/2020030134-3433028e01d941e38d143f0f4f2a7bea.png" alt="2020030134"></p>
+<p>3、批量删除</p>
+<p><img src="https://eelve.com/upload/2020/3/2020030135-13028e1a58e64b82a3f4a8f1316160fb.png" alt="2020030135"><br><img src="https://eelve.com/upload/2020/3/2020030136-deeff4eb87f143ee95b33468a59a7883.png" alt="2020030136"></p>
+<p>4、混合操作</p>
+<p><img src="https://eelve.com/upload/2020/3/2020030137-486103db9fab4f16bb639e9ee13c0961.png" alt="2020030137"><br><img src="https://eelve.com/upload/2020/3/2020030138-dc89cd6f155c48b1a917072b6805c15e.png" alt="2020030138"></p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">&quot;took&quot;</span>: <span class="number">5</span>,</span><br><span class="line">    <span class="attr">&quot;errors&quot;</span>: <span class="literal">false</span>,</span><br><span class="line">    <span class="attr">&quot;items&quot;</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">&quot;update&quot;</span>: &#123;</span><br><span class="line">                <span class="attr">&quot;_index&quot;</span>: <span class="string">&quot;eelve&quot;</span>,</span><br><span class="line">                <span class="attr">&quot;_type&quot;</span>: <span class="string">&quot;user&quot;</span>,</span><br><span class="line">                <span class="attr">&quot;_id&quot;</span>: <span class="string">&quot;2002&quot;</span>,</span><br><span class="line">                <span class="attr">&quot;_version&quot;</span>: <span class="number">2</span>,</span><br><span class="line">                <span class="attr">&quot;result&quot;</span>: <span class="string">&quot;updated&quot;</span>,</span><br><span class="line">                <span class="attr">&quot;_shards&quot;</span>: &#123;</span><br><span class="line">                    <span class="attr">&quot;total&quot;</span>: <span class="number">1</span>,</span><br><span class="line">                    <span class="attr">&quot;successful&quot;</span>: <span class="number">1</span>,</span><br><span class="line">                    <span class="attr">&quot;failed&quot;</span>: <span class="number">0</span></span><br><span class="line">                &#125;,</span><br><span class="line">                <span class="attr">&quot;_seq_no&quot;</span>: <span class="number">7</span>,</span><br><span class="line">                <span class="attr">&quot;_primary_term&quot;</span>: <span class="number">1</span>,</span><br><span class="line">                <span class="attr">&quot;status&quot;</span>: <span class="number">200</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">&quot;delete&quot;</span>: &#123;</span><br><span class="line">                <span class="attr">&quot;_index&quot;</span>: <span class="string">&quot;eelve&quot;</span>,</span><br><span class="line">                <span class="attr">&quot;_type&quot;</span>: <span class="string">&quot;user&quot;</span>,</span><br><span class="line">                <span class="attr">&quot;_id&quot;</span>: <span class="string">&quot;2003&quot;</span>,</span><br><span class="line">                <span class="attr">&quot;_version&quot;</span>: <span class="number">3</span>,</span><br><span class="line">                <span class="attr">&quot;result&quot;</span>: <span class="string">&quot;deleted&quot;</span>,</span><br><span class="line">                <span class="attr">&quot;_shards&quot;</span>: &#123;</span><br><span class="line">                    <span class="attr">&quot;total&quot;</span>: <span class="number">1</span>,</span><br><span class="line">                    <span class="attr">&quot;successful&quot;</span>: <span class="number">1</span>,</span><br><span class="line">                    <span class="attr">&quot;failed&quot;</span>: <span class="number">0</span></span><br><span class="line">                &#125;,</span><br><span class="line">                <span class="attr">&quot;_seq_no&quot;</span>: <span class="number">8</span>,</span><br><span class="line">                <span class="attr">&quot;_primary_term&quot;</span>: <span class="number">1</span>,</span><br><span class="line">                <span class="attr">&quot;status&quot;</span>: <span class="number">200</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code>整个批量请求需要被加载到接受我们请求节点的内存里，所以请求越大，给其它请求可用的内存就越小。有一个最佳的bulk请求大小。
+超过这个大小，性能不再提升而且可能降低。
+
+最佳大小，当然并不是一个固定的数字。它完全取决于你的硬件、你文档的大小和复杂度以及索引和搜索的负载。
+幸运的是，这个最佳点(sweetspot)还是容易找到的：试着批量索引标准的文档，随着大小的增长，当性能开始降低，
+说明你每个批次的大小太大了。开始的数量可以在1000~5000个文档之间，如果你的文档非常大，可以使用较小的批次。
+通常着眼于你请求批次的物理大小是非常有用的。一千个1kB的文档和一千个1MB的文档大不相同。一个好的批次最好保持在5-15MB大小间。
+</code></pre>
+<h3 id="3-2-9-字段映射"><a href="#3-2-9-字段映射" class="headerlink" title="3.2.9 字段映射"></a>3.2.9 字段映射</h3><p>前面我们创建的索引以及插入数据，都是由Elasticsearch进行自动判断类型，有些时候我们是需要进行明确字段类型的，否则，自动判断的类型和实际需求是不相符的。</p>
+<p>自动判断的规则如下：</p>
+<table>
+<thead>
+<tr>
+<th>SON type</th>
+<th>Field type</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Boolean:</td>
+<td>true or false “boolean”</td>
+</tr>
+<tr>
+<td>Whole number:</td>
+<td>123 “long”</td>
+</tr>
+<tr>
+<td>Floating point:</td>
+<td>123.45 “double”</td>
+</tr>
+<tr>
+<td>String, valid date:</td>
+<td>“2014-09-15” “date”</td>
+</tr>
+<tr>
+<td>String:</td>
+<td>“foo bar” “string”</td>
+</tr>
+</tbody></table>
+<p>Elasticsearch中支持的类型如下：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>表示的数据类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>String</td>
+<td>string , text , keyword</td>
+</tr>
+<tr>
+<td>Whole number:</td>
+<td>byte , short , integer , long</td>
+</tr>
+<tr>
+<td>Floating point:</td>
+<td>float , double</td>
+</tr>
+<tr>
+<td>Boolean</td>
+<td>boolean</td>
+</tr>
+<tr>
+<td>Date</td>
+<td>date</td>
+</tr>
+</tbody></table>
+<pre><code>string类型在ElasticSearch 旧版本中使用较多，从ElasticSearch 5.x开始不再支持string，由text和keyword类型替代。
+
+text 类型，当一个字段是要被全文搜索的，比如Email内容、产品描述，应该使用text类型。设置text类型以后，字段内容会被分析，
+在生成倒排索引以前，字符串会被分析器分成一个一个词项。text类型的字段不用于排序，很少用于聚合。
+
+keyword类型适用于索引结构化的字段，比如email地址、主机名、状态码和标签。如果字段需要进行过滤(比如查找已发布博客中status属性为published的文章)、排序、聚合。
+keyword类型的字段只能通过精确值搜索到。
+</code></pre>
+<p><img src="https://eelve.com/upload/2020/3/2020030140-8a169a5294044d41bcfbc531ffa262fb.png" alt="2020030140"></p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	<span class="attr">&quot;settings&quot;</span>: &#123;</span><br><span class="line">		<span class="attr">&quot;index&quot;</span>: &#123;</span><br><span class="line">			<span class="attr">&quot;number_of_shards&quot;</span>: <span class="string">&quot;2&quot;</span>,</span><br><span class="line">			<span class="attr">&quot;number_of_replicas&quot;</span>: <span class="string">&quot;0&quot;</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;,</span><br><span class="line">	<span class="attr">&quot;mappings&quot;</span>: &#123;</span><br><span class="line">		<span class="attr">&quot;properties&quot;</span>: &#123;</span><br><span class="line">			<span class="attr">&quot;name&quot;</span>: &#123;</span><br><span class="line">				<span class="attr">&quot;type&quot;</span>: <span class="string">&quot;text&quot;</span></span><br><span class="line">			&#125;,</span><br><span class="line">			<span class="attr">&quot;age&quot;</span>: &#123;</span><br><span class="line">				<span class="attr">&quot;type&quot;</span>: <span class="string">&quot;integer&quot;</span></span><br><span class="line">			&#125;,</span><br><span class="line">			<span class="attr">&quot;mail&quot;</span>: &#123;</span><br><span class="line">				<span class="attr">&quot;type&quot;</span>: <span class="string">&quot;keyword&quot;</span></span><br><span class="line">			&#125;,</span><br><span class="line">			<span class="attr">&quot;hobby&quot;</span>: &#123;</span><br><span class="line">				<span class="attr">&quot;type&quot;</span>: <span class="string">&quot;text&quot;</span></span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><img src="https://eelve.com/upload/2020/3/2020030141-6749ff764e8f46c6a4a2a1e356c129de.png" alt="2020030141"></p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">&quot;iio&quot;</span>: &#123;</span><br><span class="line">        <span class="attr">&quot;aliases&quot;</span>: &#123;&#125;,</span><br><span class="line">        <span class="attr">&quot;mappings&quot;</span>: &#123;</span><br><span class="line">            <span class="attr">&quot;properties&quot;</span>: &#123;</span><br><span class="line">                <span class="attr">&quot;age&quot;</span>: &#123;</span><br><span class="line">                    <span class="attr">&quot;type&quot;</span>: <span class="string">&quot;integer&quot;</span></span><br><span class="line">                &#125;,</span><br><span class="line">                <span class="attr">&quot;hobby&quot;</span>: &#123;</span><br><span class="line">                    <span class="attr">&quot;type&quot;</span>: <span class="string">&quot;text&quot;</span></span><br><span class="line">                &#125;,</span><br><span class="line">                <span class="attr">&quot;mail&quot;</span>: &#123;</span><br><span class="line">                    <span class="attr">&quot;type&quot;</span>: <span class="string">&quot;keyword&quot;</span></span><br><span class="line">                &#125;,</span><br><span class="line">                <span class="attr">&quot;name&quot;</span>: &#123;</span><br><span class="line">                    <span class="attr">&quot;type&quot;</span>: <span class="string">&quot;text&quot;</span></span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">&quot;settings&quot;</span>: &#123;</span><br><span class="line">            <span class="attr">&quot;index&quot;</span>: &#123;</span><br><span class="line">                <span class="attr">&quot;creation_date&quot;</span>: <span class="string">&quot;1583052049836&quot;</span>,</span><br><span class="line">                <span class="attr">&quot;number_of_shards&quot;</span>: <span class="string">&quot;2&quot;</span>,</span><br><span class="line">                <span class="attr">&quot;number_of_replicas&quot;</span>: <span class="string">&quot;0&quot;</span>,</span><br><span class="line">                <span class="attr">&quot;uuid&quot;</span>: <span class="string">&quot;CFfnz0C0SnSkgceUONQNEA&quot;</span>,</span><br><span class="line">                <span class="attr">&quot;version&quot;</span>: &#123;</span><br><span class="line">                    <span class="attr">&quot;created&quot;</span>: <span class="string">&quot;7060099&quot;</span></span><br><span class="line">                &#125;,</span><br><span class="line">                <span class="attr">&quot;provided_name&quot;</span>: <span class="string">&quot;iio&quot;</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注意的是7.x的版本我6.x的版本创建索引不一样，6.x还需要在properties外面用类型包裹，下面给一个示例</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">	<span class="attr">&quot;settings&quot;</span>: &#123;</span><br><span class="line">		<span class="attr">&quot;index&quot;</span>: &#123;</span><br><span class="line">			<span class="attr">&quot;number_of_shards&quot;</span>: <span class="string">&quot;2&quot;</span>,</span><br><span class="line">			<span class="attr">&quot;number_of_replicas&quot;</span>: <span class="string">&quot;0&quot;</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;,</span><br><span class="line">	<span class="attr">&quot;mappings&quot;</span>: &#123;</span><br><span class="line">		<span class="attr">&quot;person&quot;</span>: &#123;</span><br><span class="line">			<span class="attr">&quot;properties&quot;</span>: &#123;</span><br><span class="line">				<span class="attr">&quot;name&quot;</span>: &#123;</span><br><span class="line">					<span class="attr">&quot;type&quot;</span>: <span class="string">&quot;text&quot;</span></span><br><span class="line">				&#125;,</span><br><span class="line">				<span class="attr">&quot;age&quot;</span>: &#123;</span><br><span class="line">					<span class="attr">&quot;type&quot;</span>: <span class="string">&quot;integer&quot;</span></span><br><span class="line">				&#125;,</span><br><span class="line">				<span class="attr">&quot;mail&quot;</span>: &#123;</span><br><span class="line">					<span class="attr">&quot;type&quot;</span>: <span class="string">&quot;keyword&quot;</span></span><br><span class="line">				&#125;,</span><br><span class="line">				<span class="attr">&quot;hobby&quot;</span>: &#123;</span><br><span class="line">					<span class="attr">&quot;type&quot;</span>: <span class="string">&quot;text&quot;</span></span><br><span class="line">				&#125;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h1 id="肆、注意事项"><a href="#肆、注意事项" class="headerlink" title="肆、注意事项"></a>肆、注意事项</h1><p>注意版本差异，具体关注官方。我这边所演示的整个Elastic stack家族的版本都为7.6.0。另外批量操作的时候，如果有其中某一条执行失败的话，并不会影响其他执行正确的结果。</p>
+<hr>
+<p>【<strong>后面的话</strong>】记住Elasticsearch是整个<strong>Elastic Stack</strong>的核心。具有查询分析、高速度、可扩展性、相关度和弹性，后面我们还会具体实践。另外关于Elasticsearch的还有组合搜索，权重，分词等等还没有实践，等后面实践之后文章会继续更新，可能会写一篇关于Elasticsearch深度使用的文章。</p>
+<hr>
+<p><img src="https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png" alt="薏米笔记"></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/hide/" rel="tag"># hide</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/posts/975621af.html" rel="prev" title="Elastic Stack实战之Elasticsearch初体验(一)">
+      <i class="fa fa-chevron-left"></i> Elastic Stack实战之Elasticsearch初体验(一)
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/posts/3867bacd.html" rel="next" title="Elastic Stack实战之Elasticsearch初体验(二)">
+      Elastic Stack实战之Elasticsearch初体验(二) <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    
+  <div class="comments">
+    <div id="lv-container" data-id="city" data-uid="MTAyMC80NTk1NS8yMjQ2Ng=="></div>
+  </div>
+  
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%A3%B9%E3%80%81Elasticsearch%E4%BB%8B%E7%BB%8D"><span class="nav-number">1.</span> <span class="nav-text">壹、Elasticsearch介绍</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%B4%B0%E3%80%81%E6%8F%92%E4%BB%B6%E5%AE%89%E8%A3%85"><span class="nav-number">2.</span> <span class="nav-text">贰、插件安装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%81%E3%80%81%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8"><span class="nav-number">3.</span> <span class="nav-text">叁、简单使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-RESTful-API"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 RESTful API</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-1-%E5%88%9B%E5%BB%BA%E9%9D%9E%E7%BB%93%E6%9E%84%E5%8C%96%E7%B4%A2%E5%BC%95"><span class="nav-number">3.2.1.</span> <span class="nav-text">3.2.1 创建非结构化索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-2-%E6%8F%92%E5%85%A5%E6%95%B0%E6%8D%AE"><span class="nav-number">3.2.2.</span> <span class="nav-text">3.2.2 插入数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-3-%E6%9B%B4%E6%96%B0%E6%95%B0%E6%8D%AE"><span class="nav-number">3.2.3.</span> <span class="nav-text">3.2.3 更新数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-4-%E5%88%A0%E9%99%A4%E6%95%B0%E6%8D%AE"><span class="nav-number">3.2.4.</span> <span class="nav-text">3.2.4 删除数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-5-%E6%90%9C%E7%B4%A2%E6%95%B0%E6%8D%AE"><span class="nav-number">3.2.5.</span> <span class="nav-text">3.2.5 搜索数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-6-DSL%E6%90%9C%E7%B4%A2"><span class="nav-number">3.2.6.</span> <span class="nav-text">3.2.6 DSL搜索</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-7-%E8%81%9A%E5%90%88"><span class="nav-number">3.2.7.</span> <span class="nav-text">3.2.7 聚合</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-8-bulk%E6%93%8D%E4%BD%9C"><span class="nav-number">3.2.8.</span> <span class="nav-text">3.2.8 _bulk操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-9-%E5%AD%97%E6%AE%B5%E6%98%A0%E5%B0%84"><span class="nav-number">3.2.9.</span> <span class="nav-text">3.2.9 字段映射</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%82%86%E3%80%81%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="nav-number">4.</span> <span class="nav-text">肆、注意事项</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Chillo"
+      src="/images/virrina.jpg">
+  <p class="site-author-name" itemprop="name">Chillo</p>
+  <div class="site-description" itemprop="description">A human being,who loves football and music.</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">77</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">17</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">42</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/eelve" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;eelve" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:i@eelve.com" title="E-Mail → mailto:i@eelve.com"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/eivou" title="Weibo → https:&#x2F;&#x2F;weibo.com&#x2F;eivou" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      Links
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://eelve.com/" title="https:&#x2F;&#x2F;eelve.com&#x2F;">南国薏米</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://shilikun.com/" title="https:&#x2F;&#x2F;shilikun.com&#x2F;" rel="noopener" target="_blank">坤坤</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://binge.eelve.com/" title="https:&#x2F;&#x2F;binge.eelve.com&#x2F;" rel="noopener" target="_blank">Binge</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://bobo.eelve.com/" title="https:&#x2F;&#x2F;bobo.eelve.com&#x2F;" rel="noopener" target="_blank">BoBo</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://sunkening0.github.io/" title="https:&#x2F;&#x2F;sunkening0.github.io&#x2F;" rel="noopener" target="_blank">克宁</a>
+        </li>
+    </ul>
+  </div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        <a href="https://www.upyun.com/?utm_source=lianmeng&amp;utm_medium=referral" target="_blank"><img src="https://i.loli.net/2021/03/07/cM1D8kHpsetuyjR.png" style="width:48px"></a>
+  <div class="beian"><a href="http://www.beian.miit.gov.cn/" rel="noopener" target="_blank"> </a><a href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=16014637" rel="noopener" target="_blank">蜀ICP备16014637号-1 </a>
+  </div>
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">南国薏米</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+    <span title="站点总字数">484k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">7:20</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/medium-zoom@1/dist/medium-zoom.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/pangu@4/dist/browser/pangu.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/velocity-animate@1/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+<script type="text/javascript">
+  // console.clear();
+  console.log("%c 有朋自远方来, 不亦说乎.", "background:#24272A; color:#ffffff", "");
+  console.log("%c Github %c", "background:#24272A; color:#ffffff", "", "https://github.com/eelve");
+</script>
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<script>
+NexT.utils.loadComments(document.querySelector('#lv-container'), () => {
+  window.livereOptions = {
+    refer: location.pathname.replace(CONFIG.root, '').replace('index.html', '')
+  };
+  (function(d, s) {
+    var j, e = d.getElementsByTagName(s)[0];
+    if (typeof LivereTower === 'function') { return; }
+    j = d.createElement(s);
+    j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+    j.async = true;
+    e.parentNode.insertBefore(j, e);
+  })(document, 'script');
+});
+</script>
+
+</body>
+</html>
