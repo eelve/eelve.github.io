@@ -37,7 +37,7 @@
 <meta property="og:image" content="https://i.loli.net/2019/08/23/7oVYzxTwDEvWfPg.png">
 <meta property="og:image" content="https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png">
 <meta property="article:published_time" content="2019-08-24T09:26:17.000Z">
-<meta property="article:modified_time" content="2021-04-19T06:44:39.085Z">
+<meta property="article:modified_time" content="2023-09-30T08:39:39.682Z">
 <meta property="article:author" content="Chillo">
 <meta property="article:tag" content="Feign">
 <meta name="twitter:card" content="summary">
@@ -253,7 +253,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-19 14:44:39" itemprop="dateModified" datetime="2021-04-19T14:44:39+08:00">2021-04-19</time>
+                <time title="修改时间：2023-09-30 16:39:39" itemprop="dateModified" datetime="2023-09-30T16:39:39+08:00">2023-09-30</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -298,7 +298,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>【<strong>前面的话</strong>】书接上文，本文的某些知识依赖我的第一篇SpringCLoud的文章：<a href="https://eelve.com/archives/SpringCloudEureka">SpringCloud之Eureka</a>，如果没有看过可以先移步去看一下。另外在微服务架构中，业务都会被拆分成一个个独立的服务，服务与服务的通讯是基于http restful的。Spring cloud有两种服务调用方式，一种是ribbon+restTemplate，另一种是feign。上一篇文章已经讲过<a href="https://eelve.com/archives/SpringCloudRibbon">ribbon+rest</a>这种方式了，这一片博文主要讲feign的应用。</p>
+        <p>【<strong>前面的话</strong>】书接上文，本文的某些知识依赖我的第一篇SpringCLoud的文章：<a href="https://eelve.com/posts/cef2acbf.html">SpringCloud之Eureka</a>，如果没有看过可以先移步去看一下。另外在微服务架构中，业务都会被拆分成一个个独立的服务，服务与服务的通讯是基于http restful的。Spring cloud有两种服务调用方式，一种是ribbon+restTemplate，另一种是feign。上一篇文章已经讲过<a href="https://eelve.com/posts/d4b47d90.html">ribbon+rest</a>这种方式了，这一片博文主要讲feign的应用。</p>
 <hr>
 <h1 id="壹、Feign的简介"><a href="#壹、Feign的简介" class="headerlink" title="壹、Feign的简介"></a>壹、Feign的简介</h1><p>Feign是一个声明式的伪Http客户端，它使得写Http客户端变得更简单。使用Feign，只需要创建一个接口并注解。它具有可插拔的注解特性，可使用Feign 注解和JAX-RS注解。Feign支持可插拔的编码器和解码器。Feign默认集成了Ribbon，并和Eureka结合，默认实现了负载均衡的效果。</p>
 <p>简而言之：</p>

@@ -28,15 +28,16 @@
 <meta property="og:site_name" content="南国薏米">
 <meta property="og:description" content="Java中的Stream于1.8版本析出，平时项目中也有用到，今天就系统的来实践一下。下面借用重庆力帆队伍中我个人比较喜欢的球员来操作一波，队员的年龄为了便于展示某些api做了调整，请不要太认真哦。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://eelve.com/upload/2019/7/streamDataSource-df15382b03b24526955b1b14636316dd.png">
-<meta property="og:image" content="https://eelve.com/upload/2019/7/stream-d2e3fe9045e945ce9411d8db6043b32c.png">
+<meta property="og:image" content="https://image.eelve.com/eblog/streamDataSource-df15382b03b24526955b1b14636316dd.png">
+<meta property="og:image" content="https://image.eelve.com/eblog/stream-d2e3fe9045e945ce9411d8db6043b32c.png">
 <meta property="og:image" content="https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png">
 <meta property="article:published_time" content="2019-06-29T06:54:24.000Z">
-<meta property="article:modified_time" content="2021-04-19T06:44:39.278Z">
+<meta property="article:modified_time" content="2021-04-19T06:44:39.275Z">
 <meta property="article:author" content="Chillo">
-<meta property="article:tag" content="hide">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="stream">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://eelve.com/upload/2019/7/streamDataSource-df15382b03b24526955b1b14636316dd.png">
+<meta name="twitter:image" content="https://image.eelve.com/eblog/streamDataSource-df15382b03b24526955b1b14636316dd.png">
 
 <link rel="canonical" href="https://eelve.com/posts/61187cf0.html">
 
@@ -256,7 +257,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/hide/" itemprop="url" rel="index"><span itemprop="name">hide</span></a>
+                  <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
                 </span>
             </span>
 
@@ -301,7 +302,7 @@
 <h1 id="叁-API实践"><a href="#叁-API实践" class="headerlink" title="叁. API实践"></a>叁. API实践</h1><p>首先，定义一个用户对象，包含姓名、年龄、id三个成员变量：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.eelve.training.entity;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> lombok.*;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> javax.persistence.*;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@ClassName</span> User</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Description</span> TDO</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Author</span> zhao.zhilue</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Date</span> 2019/6/28 15:21</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@Version</span> 1.0</span></span><br><span class="line"><span class="comment"> **/</span></span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@Entity</span></span><br><span class="line"><span class="meta">@Table(name = &quot;user&quot;)</span></span><br><span class="line"><span class="meta">@ToString</span></span><br><span class="line"><span class="meta">@NoArgsConstructor</span></span><br><span class="line"><span class="meta">@AllArgsConstructor</span></span><br><span class="line"><span class="meta">@EqualsAndHashCode(exclude=&#123;&quot;id&quot;,&quot;name&quot;&#125;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> <span class="keyword">implements</span>  <span class="title">Comparable</span>&lt;<span class="title">User</span>&gt;</span>&#123;</span><br><span class="line">    <span class="meta">@Id</span></span><br><span class="line">    <span class="meta">@GeneratedValue(strategy = GenerationType.IDENTITY)</span></span><br><span class="line">    <span class="meta">@Column(name = &quot;id&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> Integer id;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Link name.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Column(name = &quot;name&quot;, columnDefinition = &quot;varchar(255) not null&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Column(name = &quot;age&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> Integer age;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">User</span><span class="params">(String name, Integer age)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.name = name;</span><br><span class="line">        <span class="keyword">this</span>.age = age;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compareTo</span><span class="params">(User o)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> age.compareTo(o.getAge());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>然后在数据库中插入测试数据，见下图：</p>
-<p><img src="https://eelve.com/upload/2019/7/streamDataSource-df15382b03b24526955b1b14636316dd.png" alt="streamDataSource"></p>
+<p><img src="https://image.eelve.com/eblog/streamDataSource-df15382b03b24526955b1b14636316dd.png" alt="streamDataSource"></p>
 <h2 id="3-1过滤"><a href="#3-1过滤" class="headerlink" title="3.1过滤"></a>3.1过滤</h2><h3 id="1）filter-过滤-T-gt-boolean"><a href="#1）filter-过滤-T-gt-boolean" class="headerlink" title="1）filter 过滤(T-&gt; boolean)"></a>1）filter 过滤(T-&gt; boolean)</h3><p>假如我们要实现过滤出40岁以下的队员，我们可以这样来实现：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">testUserStreamFilter</span><span class="params">()</span></span>&#123;</span><br><span class="line">        List&lt;User&gt; userList = userMapper.getALL();</span><br><span class="line">        List&lt;User&gt; resultList = userList.stream().filter(user -&gt; user.getAge() &lt;= <span class="number">40</span>).collect(Collectors.toList());</span><br><span class="line">        <span class="keyword">for</span> (User user :  resultList)&#123;</span><br><span class="line">            System.out.println(user.toString());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 <p>filter里面，-&gt;箭头后面跟着的是一个<strong>boolean</strong>值，可以写任何的过滤条件，就相当于sql中where后面的东西，换句话说，能用sql实现的功能这里都可以实现<br>执行结果为：</p>
@@ -392,7 +393,7 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">key= <span class="keyword">false</span> and value= [User(id=<span class="number">1</span>, name=费尔南多, age=<span class="number">25</span>), User(id=<span class="number">2</span>, name=费尔南迪尼奥, age=<span class="number">26</span>), User(id=<span class="number">3</span>, name=卡尔德克, age=<span class="number">27</span>), User(id=<span class="number">4</span>, name=阿德里安, age=<span class="number">28</span>), User(id=<span class="number">5</span>, name=隋维杰, age=<span class="number">26</span>)]</span><br><span class="line">key= <span class="keyword">true</span> and value= [User(id=<span class="number">6</span>, name=克鲁伊夫, age=<span class="number">43</span>)]</span><br></pre></td></tr></table></figure>
 <hr>
 <p>【<strong>写在后面的话</strong>】留下stream的类实现的方法和依赖图，前面的实践也只是挑选了几个比较常用的Api。</p>
-<p><img src="https://eelve.com/upload/2019/7/stream-d2e3fe9045e945ce9411d8db6043b32c.png" alt="stream"></p>
+<p><img src="https://image.eelve.com/eblog/stream-d2e3fe9045e945ce9411d8db6043b32c.png" alt="stream"></p>
 <hr>
 <p><img src="https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png" alt="薏米笔记"></p>
 
@@ -404,7 +405,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/hide/" rel="tag"># hide</a>
+              <a href="/tags/java/" rel="tag"># java</a>
+              <a href="/tags/stream/" rel="tag"># stream</a>
           </div>
 
         
