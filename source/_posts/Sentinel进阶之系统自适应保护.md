@@ -7,7 +7,7 @@ abbrlink: 97e25d71
 date: 2021-06-07 08:07:07
 ---
 
-【**前面的话**】在前文 [Sentinel进阶之熔断降级](https://eelve.com/archives/sentinel-circuit-breaking) 中简单介绍了一下`Sentinel`的流量控制，今天就来继续说一下Sentinel的系统自适应保护。
+【**前面的话**】在前文 [Sentinel进阶之熔断降级](https://eelve.com/posts/b6bfdc75.html) 中简单介绍了一下`Sentinel`的流量控制，今天就来继续说一下Sentinel的系统自适应保护。
 
 ---
 

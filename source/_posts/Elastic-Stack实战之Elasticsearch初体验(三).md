@@ -8,7 +8,7 @@ date: 2020-03-01 19:49:22
 description:
 ---
 
-【**前面的话**】书接上文[Elastic Stack实践之Elasticsearch使用(一)](https://eelve.com/archives/elasticsearch01)。
+【**前面的话**】书接上文[Elastic Stack实践之Elasticsearch使用(一)](https://eelve.com/posts/975621af.html)。
 
 ---
 

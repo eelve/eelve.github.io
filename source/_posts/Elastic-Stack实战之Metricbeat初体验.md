@@ -11,7 +11,7 @@ date: 2020-03-07 21:36:20
 ---
 
 
-【**前面的话**】[前面介绍了Elastic Stack的Beats家族](https://eelve.com/archives/beats)，并且[体验了Filebeat](https://eelve.com/archives/filebeat)，接下来我们就继续来体验一下
+【**前面的话**】[前面介绍了Elastic Stack的Beats家族](https://eelve.com/posts/d1a5ff40.html)，并且[体验了Filebeat](https://eelve.com/posts/1d8b943d.html)，接下来我们就继续来体验一下
 
 
 ---

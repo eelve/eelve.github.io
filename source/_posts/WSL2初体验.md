@@ -9,7 +9,7 @@ date: 2020-07-19 20:33:01
 
 
 
-【**前面的话**】前面已经对[WSL初体验](https://eelve.com/archives/hellowsl) ，今天就将升级为WSL2，并且前面已经对[WSL初体验](https://eelve.com/archives/hellowsl) ，今天就将升级为WSL2，并且在WSL2使用xrdp实现图形桌面。
+【**前面的话**】前面已经对[WSL初体验](https://eelve.com/posts/f42ecfec.html) ，今天就将升级为WSL2，并且前面已经对[WSL初体验](https://eelve.com/posts/f42ecfec.html) ，今天就将升级为WSL2，并且在WSL2使用xrdp实现图形桌面。
 
 ---
 

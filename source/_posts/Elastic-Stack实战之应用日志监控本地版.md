@@ -8,7 +8,7 @@ abbrlink: cd48ff18
 date: 2020-03-14 21:49:22
 ---
 
-【**前面的话**】在前面我们已经介绍了[Elasticsearch](https://eelve.com/archives/elasticsearchinstall)、[Logstash](https://eelve.com/archives/logstash)、[Kibana](https://eelve.com/archives/kibana)和[Beats](https://eelve.com/archives/beats)，并且都对各个组件进行了初步体验。今天我们就来模拟一把日常使用，来收集一个我们自己的应用的日志，并使用Kibana展示。
+【**前面的话**】在前面我们已经介绍了[Elasticsearch](https://eelve.com/posts/975621af.html)、[Logstash](https://eelve.com/posts/e05eadb0.html)、[Kibana](https://eelve.com/posts/b84d7094.html)和[Beats](https://eelve.com/posts/d1a5ff40.html)，并且都对各个组件进行了初步体验。今天我们就来模拟一把日常使用，来收集一个我们自己的应用的日志，并使用Kibana展示。
 
 ---
 

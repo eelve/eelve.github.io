@@ -7,7 +7,7 @@ abbrlink: fc6e2627
 date: 2020-03-07 17:49:22
 ---
 
-【**前面的话**】[前文](https://eelve.com/archives/beats)介绍了Elastic Stack的Beats家族，今天我们就来体验其中的专门用于采集文件的[Filebeat](https://www.elastic.co/cn/beats/filebeat)，走起。
+【**前面的话**】[前文](https://eelve.com/posts/d1a5ff40.html)介绍了Elastic Stack的Beats家族，今天我们就来体验其中的专门用于采集文件的[Filebeat](https://www.elastic.co/cn/beats/filebeat)，走起。
 
 
 ---

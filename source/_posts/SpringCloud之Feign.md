@@ -10,7 +10,7 @@ abbrlink: d9b4a7e3
 date: 2019-08-24 17:26:17
 ---
 
-【**前面的话**】书接上文，本文的某些知识依赖我的第一篇SpringCLoud的文章：[SpringCloud之Eureka](https://eelve.com/archives/SpringCloudEureka)，如果没有看过可以先移步去看一下。另外在微服务架构中，业务都会被拆分成一个个独立的服务，服务与服务的通讯是基于http restful的。Spring cloud有两种服务调用方式，一种是ribbon+restTemplate，另一种是feign。上一篇文章已经讲过[ribbon+rest](https://eelve.com/archives/SpringCloudRibbon)这种方式了，这一片博文主要讲feign的应用。
+【**前面的话**】书接上文，本文的某些知识依赖我的第一篇SpringCLoud的文章：[SpringCloud之Eureka](https://eelve.com/posts/cef2acbf.html)，如果没有看过可以先移步去看一下。另外在微服务架构中，业务都会被拆分成一个个独立的服务，服务与服务的通讯是基于http restful的。Spring cloud有两种服务调用方式，一种是ribbon+restTemplate，另一种是feign。上一篇文章已经讲过[ribbon+rest](https://eelve.com/posts/d4b47d90.html)这种方式了，这一片博文主要讲feign的应用。
 
 ---
 # 壹、Feign的简介

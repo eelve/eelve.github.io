@@ -7,7 +7,7 @@ abbrlink: b6bfdc75
 date: 2021-06-06 19:03:25
 ---
 
-【**前面的话**】在前文 [Sentinel进阶之流量](https://eelve.com/archives/sentinel-flow-control) 中简单介绍了一下`Sentinel`的流量控制，今天就来继续说一下Sentinel的熔断降级。
+【**前面的话**】在前文 [Sentinel进阶之流量](https://eelve.com/posts/2c2378a.html) 中简单介绍了一下`Sentinel`的流量控制，今天就来继续说一下Sentinel的熔断降级。
 
 ---
 

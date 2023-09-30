@@ -7,7 +7,7 @@ abbrlink: 2c2378a
 date: 2021-06-06 12:50:28
 ---
 
-【**前面的话**】在前文 [Sentinel进阶之基本原理](https://eelve.com/archives/sentinel-implementation) 中简单介绍了一下`Sentinel`的基本原理，今天就来具体说一下`Sentinel`的流量控制。
+【**前面的话**】在前文 [Sentinel进阶之基本原理](https://eelve.com/posts/950c5430.html) 中简单介绍了一下`Sentinel`的基本原理，今天就来具体说一下`Sentinel`的流量控制。
 
 ---
 

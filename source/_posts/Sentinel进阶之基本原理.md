@@ -7,7 +7,7 @@ abbrlink: 950c5430
 date: 2021-05-30 13:01:11
 ---
 
-【**前面的话**】在前文 [Sentinel入门指北](https://eelve.com/archives/hellosentinel) 中简单介绍了一下`Sentinel`，今天就来具体说一下`Sentinel`的基本原理。
+【**前面的话**】在前文 [Sentinel入门指北](https://eelve.com/posts/d2ca763d.html) 中简单介绍了一下`Sentinel`，今天就来具体说一下`Sentinel`的基本原理。
 
 ---
 

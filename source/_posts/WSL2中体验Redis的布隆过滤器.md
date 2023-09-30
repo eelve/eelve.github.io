@@ -9,7 +9,7 @@ date: 2020-08-15 11:39:40
 
 
 
-【**前面的话**】前面已经安装了[WSL2](https://eelve.com/archives/hellowsl2) ，最近准备研究一下Redis的布隆过滤器，现在就先搭建一下环境。
+【**前面的话**】前面已经安装了[WSL2](https://eelve.com/posts/22fec071.html) ，最近准备研究一下Redis的布隆过滤器，现在就先搭建一下环境。
 
 ---
 
