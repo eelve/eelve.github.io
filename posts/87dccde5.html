@@ -23,19 +23,19 @@
 
   <meta name="description" content="在日常开发过程中，我们总是不可避免的需要依赖某些不在中央仓库，同时也不在本地仓库中的jar包，这是我们就需要使用命令行将需要导入本地仓库中的jar包导入本地仓库，使得项目依赖本地仓库中的代码。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="用命令将本地jar包导入到本地maven仓库本地版">
+<meta property="og:title" content="用命令将本地jar包导入到本地maven仓库">
 <meta property="og:url" content="https://eelve.com/posts/87dccde5.html">
 <meta property="og:site_name" content="南国薏米">
 <meta property="og:description" content="在日常开发过程中，我们总是不可避免的需要依赖某些不在中央仓库，同时也不在本地仓库中的jar包，这是我们就需要使用命令行将需要导入本地仓库中的jar包导入本地仓库，使得项目依赖本地仓库中的代码。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://eelve.com/upload/2019/6/%E5%AF%BC%E5%85%A5jar%E5%8C%85%E7%BB%93%E6%9E%9C-859bee2db9f14a2a8079b449d38e061c.png">
+<meta property="og:image" content="https://image.eelve.com/eblog/%E5%AF%BC%E5%85%A5jar%E5%8C%85%E7%BB%93%E6%9E%9C-859bee2db9f14a2a8079b449d38e061c.png">
 <meta property="og:image" content="https://image.eelve.com/eblog/eblog-b269767ff45b4e01a1c380e38898c1c0.png">
 <meta property="article:published_time" content="2019-08-09T09:15:04.000Z">
-<meta property="article:modified_time" content="2021-04-19T07:44:38.010Z">
+<meta property="article:modified_time" content="2021-04-19T06:44:39.261Z">
 <meta property="article:author" content="Chillo">
-<meta property="article:tag" content="hide">
+<meta property="article:tag" content="maven">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://eelve.com/upload/2019/6/%E5%AF%BC%E5%85%A5jar%E5%8C%85%E7%BB%93%E6%9E%9C-859bee2db9f14a2a8079b449d38e061c.png">
+<meta name="twitter:image" content="https://image.eelve.com/eblog/%E5%AF%BC%E5%85%A5jar%E5%8C%85%E7%BB%93%E6%9E%9C-859bee2db9f14a2a8079b449d38e061c.png">
 
 <link rel="canonical" href="https://eelve.com/posts/87dccde5.html">
 
@@ -50,7 +50,7 @@
   };
 </script>
 
-  <title>用命令将本地jar包导入到本地maven仓库本地版 | 南国薏米</title>
+  <title>用命令将本地jar包导入到本地maven仓库 | 南国薏米</title>
   
 
 
@@ -230,7 +230,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          用命令将本地jar包导入到本地maven仓库本地版
+          用命令将本地jar包导入到本地maven仓库
         </h1>
 
         <div class="post-meta">
@@ -247,7 +247,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-04-19 15:44:38" itemprop="dateModified" datetime="2021-04-19T15:44:38+08:00">2021-04-19</time>
+                <time title="修改时间：2021-04-19 14:44:39" itemprop="dateModified" datetime="2021-04-19T14:44:39+08:00">2021-04-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -255,7 +255,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/hide/" itemprop="url" rel="index"><span itemprop="name">hide</span></a>
+                  <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
                 </span>
             </span>
 
@@ -304,7 +304,7 @@
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">-Dfile：jar包所在本地的具体路径</span><br><span class="line">-DgroupId：项目组织唯一的标识符，实际对应JAVA的包的结构</span><br><span class="line">-DartifactId：项目的唯一的标识符，实际对应项目的名称，就是项目根目录的名称</span><br><span class="line">-Dversion：版本号</span><br><span class="line">-Dpackaging：打包的类型</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <hr>
 <p>结果示例</p>
-<p><img src="https://eelve.com/upload/2019/6/%E5%AF%BC%E5%85%A5jar%E5%8C%85%E7%BB%93%E6%9E%9C-859bee2db9f14a2a8079b449d38e061c.png" alt="导入jar包结果"></p>
+<p><img src="https://image.eelve.com/eblog/%E5%AF%BC%E5%85%A5jar%E5%8C%85%E7%BB%93%E6%9E%9C-859bee2db9f14a2a8079b449d38e061c.png" alt="导入jar包结果"></p>
 <hr>
 <p>【小贴士】maven的仓库分类</p>
 <p>在maven中，仓库可以分为：本地仓库、远程仓库。<br>远程仓库可以分为：中央仓库、私服仓库。<br>中央仓库是maven官方指定的仓库，可以理解为“寻找的最后一站”。<br>私服仓库可以是自己建的，也可以是其它主体建的（比如aliyun的maven仓库，jboss的maven仓库等）。<br>私服可以分为：全局应用的私服仓库、应用到项目自身的私服仓库。</p>
@@ -322,7 +322,7 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/hide/" rel="tag"># hide</a>
+              <a href="/tags/maven/" rel="tag"># maven</a>
           </div>
 
         
@@ -331,12 +331,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/posts/a34aa1f3.html" rel="prev" title="使用Jasypt对SpringBoot配置文件加密">
-      <i class="fa fa-chevron-left"></i> 使用Jasypt对SpringBoot配置文件加密
+    <a href="/posts/bec45de.html" rel="prev" title="使用Jasypt对SpringBoot配置文件加密本地版">
+      <i class="fa fa-chevron-left"></i> 使用Jasypt对SpringBoot配置文件加密本地版
     </a></div>
       <div class="post-nav-item">
-    <a href="/posts/87dccde5.html" rel="next" title="用命令将本地jar包导入到本地maven仓库">
-      用命令将本地jar包导入到本地maven仓库 <i class="fa fa-chevron-right"></i>
+    <a href="/posts/87dccde5.html" rel="next" title="用命令将本地jar包导入到本地maven仓库本地版">
+      用命令将本地jar包导入到本地maven仓库本地版 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
