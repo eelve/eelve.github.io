@@ -52,7 +52,7 @@ language_switcher: false
 
 footer:
   # Specify the date when the site was setup. If not defined, current year will be used.
-  #since: 2015
+  since: 2019
 
   # Icon between year and copyright info.
   icon:
@@ -60,7 +60,7 @@ footer:
     # `heart` is recommended with animation in red (#ff0000).
     name: heart
     # If you want to animate the icon, set it to true.
-    animated: false
+    animated: true
     # Change the color of icon, using Hex Code.
     color: "#808080"
 
@@ -75,7 +75,7 @@ footer:
     enable: true
     icp: ''
     # The digit in the num of gongan beian.
-    gongan_id: 16014637
+    gongan_id: 蜀ICP备16014637号-1
     # The full num of gongan beian.
     gongan_num: 蜀ICP备16014637号-1
     # The icon for gongan beian. See: http://www.beian.gov.cn/portal/download
@@ -105,7 +105,7 @@ scheme: Pisces
 #scheme: Gemini
 
 # Dark Mode
-darkmode: false
+darkmode: true
 
 
 # ---------------------------------------------------------------
@@ -193,8 +193,8 @@ social:
 
 social_icons:
   enable: true
-  icons_only: false
-  transition: false
+  icons_only: true
+  transition: true
 
 # Blog rolls
 links_settings:
